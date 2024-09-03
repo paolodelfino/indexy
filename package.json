@@ -1,0 +1,48 @@
+{
+  "name": "indexy",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbo",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:migrate": "bun run src/db/migrate.ts",
+    "db:codegen": "kysely-codegen --url 'env(POSTGRES_URL_NO_SSL)'"
+  },
+  "dependencies": {
+    "@mantine/hooks": "^7.12.2",
+    "clsx": "^2.1.1",
+    "kysely": "^0.27.4",
+    "next": "15.0.0-canary.139",
+    "pg": "^8.12.0",
+    "react": "19.0.0-rc-f994737d14-20240522",
+    "react-dom": "19.0.0-rc-f994737d14-20240522",
+    "react-textarea-autosize": "^8.5.3",
+    "server-only": "^0.0.1",
+    "tailwind-merge": "^2.5.2",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/pg": "^8.11.8",
+    "@types/react": "npm:types-react@rc",
+    "@types/react-dom": "npm:types-react-dom@rc",
+    "babel-plugin-react-compiler": "^0.0.0-experimental-4e0eccf-20240830",
+    "eslint": "^8",
+    "eslint-config-next": "15.0.0-rc.0",
+    "eslint-plugin-jsx-a11y": "^6.9.0",
+    "eslint-plugin-react-compiler": "^0.0.0-experimental-b8a7b48-20240830",
+    "kysely-codegen": "^0.16.3",
+    "postcss": "^8",
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.6",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  },
+  "overrides": {
+    "@types/react": "npm:types-react@rc",
+    "@types/react-dom": "npm:types-react-dom@rc"
+  },
+  "packageManager": "pnpm@9.4.0+sha512.f549b8a52c9d2b8536762f99c0722205efc5af913e77835dbccc3b0b0b2ca9e7dc8022b78062c17291c48e88749c70ce88eb5a74f1fa8c4bf5e18bb46c8bd83a"
+}
