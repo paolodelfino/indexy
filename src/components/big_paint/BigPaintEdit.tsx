@@ -1,45 +1,40 @@
 "use client";
-import { editInspirationAction } from "@/actions/editInspirationAction";
-import { Star } from "@/components/icons";
+import { editBigPaintAction } from "@/actions/editBigPaintAction";
 import ModifyRelated from "@/components/ModifyRelated";
-import { cn } from "@/utils/cn";
 import Form from "next/form";
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect, useState } from "react";
-import TextArea from "react-textarea-autosize";
+import { useActionState, useEffect } from "react";
 
-export default function InspirationEdit({
-  data: { inspiration, relatedBigPaints, relatedInspirations },
+export default function BigPaintEdit({
+  data: { bigPaint, relatedBigPaints },
 }: {
   data: {
-    inspiration: {
-      content: string;
+    bigPaint: {
+      name: string;
       date: Date;
-      highlight: boolean;
       id: string;
     };
     relatedBigPaints: { id: string; name: string }[];
-    relatedInspirations: { id: string; name: string }[];
   };
 }) {
-  const bind = editInspirationAction.bind(null, inspiration.id);
+  const bind = editBigPaintAction.bind(null, bigPaint.id);
   const [state, dispatch, isPending] = useActionState(bind, {
     success: true,
     data: { message: "" },
   });
 
   const date =
-    String(inspiration.date.getUTCFullYear()).padStart(4, "0") +
+    String(bigPaint.date.getUTCFullYear()).padStart(4, "0") +
     "-" +
-    String(inspiration.date.getUTCMonth() + 1).padStart(2, "0") +
+    String(bigPaint.date.getUTCMonth() + 1).padStart(2, "0") +
     "-" +
-    String(inspiration.date.getUTCDate()).padStart(2, "0") +
+    String(bigPaint.date.getUTCDate()).padStart(2, "0") +
     "T" +
-    String(inspiration.date.getUTCHours()).padStart(2, "0") +
+    String(bigPaint.date.getUTCHours()).padStart(2, "0") +
     ":" +
-    String(inspiration.date.getUTCMinutes()).padStart(2, "0") +
+    String(bigPaint.date.getUTCMinutes()).padStart(2, "0") +
     ":" +
-    String(inspiration.date.getUTCSeconds()).padStart(2, "0");
+    String(bigPaint.date.getUTCSeconds()).padStart(2, "0");
 
   const router = useRouter();
 
@@ -53,8 +48,6 @@ export default function InspirationEdit({
       }
     }
   }, [state]);
-
-  const [highlight, setHighlight] = useState(inspiration.highlight);
 
   if (!state.success) {
     // TODO: Handle differently, for example using a toast
@@ -81,12 +74,14 @@ export default function InspirationEdit({
           {isPending ? "Saving..." : "Save"}
         </button>
       </div>
-      <TextArea
-        className="-mb-[7px] w-full hyphens-auto break-words rounded bg-neutral-700 p-4"
-        placeholder="Content"
-        defaultValue={inspiration.content}
-        name="content"
+      <input
+        className="w-full hyphens-auto break-words rounded bg-neutral-700 p-4"
+        placeholder="Name"
+        defaultValue={bigPaint.name}
+        name="name"
         required
+        type="text"
+        onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
       />
       <div className="flex min-h-9 items-center justify-end pr-2">
         <input
@@ -97,24 +92,8 @@ export default function InspirationEdit({
           step="1"
           className="bg-black text-neutral-500 [&::-webkit-calendar-picker-indicator]:-ml-6"
         />
-        <input
-          type="checkbox"
-          name="highlight"
-          checked={highlight}
-          className="hidden"
-          readOnly
-        />
-        <button
-          type="button"
-          aria-label="Toggle highlight"
-          className="pl-4 text-neutral-300"
-          onClick={() => setHighlight((prev) => !prev)}
-        >
-          <Star className={cn(highlight && "fill-current")} />
-        </button>
       </div>
       <ModifyRelated mode="bigPaint" currentRelated={relatedBigPaints} />
-      <ModifyRelated mode="inspiration" currentRelated={relatedInspirations} />
     </Form>
   );
 }

@@ -34,7 +34,7 @@ export default function Inspiration({
       onClick={() => {
         if (mode === "edit") {
           // router.push(`/edit/${data.id}`);
-          window.open(`/edit/${data.id}`, "_blank");
+          window.open(`/edit/inspiration/${data.id}`, "_blank");
           setMode("idle");
         }
       }}

@@ -16,7 +16,7 @@ export async function up(db: Kysely<any>): Promise<void> {
       date                      TIMESTAMPTZ NOT NULL DEFAULT now() CHECK (date <= now()),
       highlight                 BOOLEAN     NOT NULL DEFAULT false,
       content                   TEXT        NOT NULL,
-      related_big_paints_ids    UUID[]      NOT NULL DEFAULT ARRAY[]::UUID[] CHECK (array_length(related_big_paints_ids, 1) > 0),
+      related_big_paints_ids    UUID[]      NOT NULL DEFAULT ARRAY[]::UUID[],
       related_inspirations_ids  UUID[]      NOT NULL DEFAULT ARRAY[]::UUID[]
     );
   `.execute(db);
