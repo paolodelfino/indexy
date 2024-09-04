@@ -47,9 +47,9 @@ export default function InspirationEdit({
     if (state.success) {
       // TODO: Handle differently, for example using a toast
       // console.log(state.data.message);
-      // TODO: Until we complete the todo above, we redirect, because there are some problems with the state of the form after the submit
+      // TODO: There are some problems with the state of the form after the submit
       if (state.data.message !== "") {
-        router.refresh();
+        window.location.reload();
       }
     }
   }, [state]);
