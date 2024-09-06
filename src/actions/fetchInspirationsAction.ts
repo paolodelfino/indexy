@@ -1,11 +1,14 @@
 "use server";
 import { db } from "@/db/db";
 import { ActionReturn } from "@/utils/actionType";
-import { Selectable } from "kysely";
-import { DB } from "kysely-codegen/dist/db";
 
 type Return = ActionReturn<{
-  inspirations: Selectable<DB["inspiration"]>[];
+  inspirations: {
+    id: string;
+    date: Date;
+    content: string;
+    highlight: boolean;
+  }[];
   hasNext: boolean;
 }>;
 
@@ -40,7 +43,7 @@ export async function fetchInspirationsAction(
     .orderBy("date")
     .offset(offset)
     .limit(limit)
-    .selectAll()
+    .select(["id", "content", "highlight", "date"])
     .execute();
 
   const hasNext = inspirations.length > 0;

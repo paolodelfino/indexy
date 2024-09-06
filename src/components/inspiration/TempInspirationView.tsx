@@ -1,5 +1,4 @@
 "use client";
-import { fetchInspirationsAction } from "@/actions/fetchInspirationsAction";
 import {
   Add02,
   InkStroke20Filled,
@@ -11,96 +10,25 @@ import Inspiration from "@/components/inspiration/Inspiration";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import { cn } from "@/utils/cn";
 import { useHotkeys } from "@mantine/hooks";
-import {
-  startTransition,
-  useActionState,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useState } from "react";
 
-export default function InspirationView() {
-  const [state, dispatch, isPending] = useActionState(fetchInspirationsAction, {
-    success: true,
-    data: { hasNext: true, inspirations: [] },
-  });
-
-  const observedEntry = useRef<HTMLLIElement>(null);
-  const intersectionObserver = useRef<IntersectionObserver>(undefined);
-
-  useEffect(() => {
-    if (!state.success) {
-      throw new Error("For some reason action state is unsuccessful");
-    }
-
-    if (state.data.inspirations.length > 0) {
-      throw new Error(
-        "For some reason Inspiration array length is greater than 0",
-      );
-    }
-
-    startTransition(() => {
-      dispatch();
-    });
-
-    if (intersectionObserver.current) {
-      throw new Error("For some reason intersectionObserver already exists");
-    }
-
-    intersectionObserver.current = new IntersectionObserver(
-      (entries, observer) => {
-        if (entries.length > 1) {
-          throw new Error(
-            "For some reason intersectionObserver's entries are more than 1",
-          );
-        }
-
-        const entry = entries[0];
-
-        if (!entry) {
-          throw new Error(
-            "For some reason intersectionObserver's entry doesn't exist",
-          );
-        }
-
-        if (entry.isIntersecting) {
-          observer.disconnect();
-          startTransition(() => {
-            dispatch();
-          });
-        }
-      },
-    );
-  }, []);
-
-  useEffect(() => {
-    if (!!state.data?.inspirations.length && state.data.hasNext) {
-      if (!intersectionObserver.current) {
-        throw new Error("For some reason intersectionObserver doesn't exists");
-      }
-
-      if (!observedEntry.current) {
-        throw new Error("For some reason observedEntry doesn't exists");
-      }
-
-      intersectionObserver.current.observe(observedEntry.current);
-    }
-  }, [state]);
-
+export default function InspirationView({
+  data,
+}: {
+  data: { id: string; content: string; date: Date; highlight: boolean }[];
+}) {
   const [mode, setMode] = useState<"idle" | "edit">("idle");
 
   function toggleEdit() {
-    if (state.success && state.data.inspirations.length > 0) {
+    if (data.length > 0) {
       setMode((curr) => (curr === "edit" ? "idle" : "edit"));
     }
   }
 
   useHotkeys([["mod+shift+x", toggleEdit]]);
 
-  if (!state.success) {
-    // TODO: Handle differently, for example using a toast
-    console.log(state.errors);
-    return "Something went wrong. See the console";
+  if (data.length === 0) {
+    return "empty";
   }
 
   return (
@@ -165,7 +93,7 @@ export default function InspirationView() {
               </a>
             </PopoverContent>
           </Popover>
-          {state.data.inspirations.length > 0 && (
+          {data.length > 0 && (
             <button
               role="listitem"
               className="flex gap-2 bg-neutral-800 p-3 ring-1 ring-neutral-600 hover:bg-neutral-600 hover:ring-0 active:bg-neutral-700 active:ring-1"
@@ -177,17 +105,12 @@ export default function InspirationView() {
           )}
         </PopoverContent>
       </Popover>
-      {state.data.inspirations.length > 0 && (
+      {data.length > 0 && (
         <ul>
-          {state.data.inspirations.map((it, i) => {
-            const isLastEntry = i === state.data.inspirations.length - 1;
-
+          {data.map((it, i) => {
             return (
               <Inspiration
                 key={it.id}
-                ref={
-                  state.data.hasNext && isLastEntry ? observedEntry : undefined
-                }
                 data={it}
                 mode={mode}
                 setMode={setMode}
@@ -196,8 +119,6 @@ export default function InspirationView() {
           })}
         </ul>
       )}
-      {state.data.inspirations.length === 0 && !isPending && <span>empty</span>}
-      {isPending && <span>loading</span>}
     </>
   );
 }
