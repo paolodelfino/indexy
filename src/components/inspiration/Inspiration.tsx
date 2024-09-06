@@ -18,6 +18,14 @@ export default function Inspiration({
 }) {
   // const router = useRouter();
 
+  const dateTimeFormat = new Intl.DateTimeFormat(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  });
+
   return (
     <li
       ref={ref}
@@ -56,7 +64,9 @@ export default function Inspiration({
           </button>
         </div>
         <div className="flex">
-          <span className="text-neutral-500">{data.date.toUTCString()}</span>
+          <span className="text-neutral-500">
+            {dateTimeFormat.format(data.date)}
+          </span>
           <button
             disabled={mode === "edit"}
             aria-label="Toggle highlight"
