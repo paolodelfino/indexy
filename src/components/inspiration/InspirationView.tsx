@@ -117,6 +117,14 @@ export default function InspirationView() {
           className="z-20 flex min-w-16 max-w-[160px] flex-col"
           role="list"
         >
+          <a
+            href="/big_paint"
+            role="listitem"
+            className="flex gap-2 bg-neutral-800 p-3 ring-1 ring-neutral-600 hover:bg-neutral-600 hover:ring-0 active:bg-neutral-700 active:ring-1"
+          >
+            <Square />
+            <span className="text-neutral-300">BigPaints</span>
+          </a>
           <Popover placement="left-start">
             <PopoverTrigger
               role="listitem"
@@ -134,7 +142,6 @@ export default function InspirationView() {
                 target="_blank"
                 role="listitem"
                 className="flex gap-2 bg-neutral-800 p-3 ring-1 ring-neutral-600 hover:bg-neutral-600 hover:ring-0 active:bg-neutral-700 active:ring-1"
-                onClick={toggleEdit}
               >
                 <InkStroke20Filled />
                 <span className="text-neutral-300">Inspiration</span>
@@ -144,7 +151,6 @@ export default function InspirationView() {
                 target="_blank"
                 role="listitem"
                 className="flex gap-2 bg-neutral-800 p-3 ring-1 ring-neutral-600 hover:bg-neutral-600 hover:ring-0 active:bg-neutral-700 active:ring-1"
-                onClick={toggleEdit}
               >
                 <Square />
                 <span className="text-neutral-300">BigPaint</span>
