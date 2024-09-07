@@ -1,16 +1,15 @@
 "use client";
-import { Star } from "@/components/icons";
 import { cn } from "@/utils/cn";
 import { usePathname } from "next/navigation";
 import { RefObject, useEffect, useState } from "react";
 
-export default function Inspiration({
+export default function BigPaint({
   data,
   ref,
   mode,
   setMode,
 }: {
-  data: { id: string; date: Date; content: string; highlight: boolean };
+  data: { id: string; date: Date; name: string };
   ref?: RefObject<HTMLLIElement | null>;
   mode: "idle" | "edit";
   setMode: React.Dispatch<React.SetStateAction<"idle" | "edit">>;
@@ -28,14 +27,14 @@ export default function Inspiration({
   const pathname = usePathname();
   const isItsPage = pathname.endsWith(`/${data.id}`);
 
-  const openDetails = () => window.open(`/inspiration/${data.id}`, "_blank");
+  const openDetails = () => window.open(`/big_paint/${data.id}`, "_blank");
 
   return (
     <li
       ref={ref}
       onClick={() => {
         if (mode === "edit") {
-          window.open(`/edit/inspiration/${data.id}`, "_blank");
+          window.open(`/edit/big_paint/${data.id}`, "_blank");
           setMode("idle");
         }
       }}
@@ -46,9 +45,7 @@ export default function Inspiration({
         isItsPage && "border border-blue-500",
       )}
     >
-      <p className="hyphens-auto break-words bg-neutral-700 p-4">
-        {data.content}
-      </p>
+      <p className="hyphens-auto break-words bg-neutral-700 p-4">{data.name}</p>
       <div className="flex items-center justify-between pr-2">
         <div>
           <button
@@ -61,13 +58,6 @@ export default function Inspiration({
         </div>
         <div className="flex">
           <span className="text-neutral-500">{date}</span>
-          <button
-            disabled={mode === "edit"}
-            aria-label="Toggle highlight"
-            className="pl-4 text-neutral-300"
-          >
-            <Star className={cn(data.highlight && "fill-current")} />
-          </button>
         </div>
       </div>
     </li>

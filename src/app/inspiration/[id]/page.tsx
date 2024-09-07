@@ -26,7 +26,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           .selectFrom("inspiration")
           .where("id", "in", inspiration.related_inspirations_ids)
           .select(["id", "date", "content", "highlight"])
-          .orderBy("date desc")
+          .orderBy("date")
           .execute()
       : [];
 
@@ -34,26 +34,32 @@ export default async function Page({ params }: { params: { id: string } }) {
   inspirations.sort((a, b) => a.date.getTime() - b.date.getTime());
 
   return (
-    <div className="space-y-4">
-      <ul
-        className="flex flex-wrap gap-1.5 p-2"
-        aria-label="List of related bigpaints"
-      >
-        {relatedBigPaints.map((it) => {
-          return (
-            <a
-              href={`/big_paint/${it.id}`}
-              role="listitem"
-              key={it.id}
-              title={it.name}
-              className="max-w-32 overflow-hidden text-ellipsis whitespace-nowrap rounded-full bg-neutral-800 px-3 ring-1 ring-neutral-600 hover:bg-neutral-600 hover:ring-0 active:bg-neutral-700 active:ring-1"
-            >
-              {it.name}
-            </a>
-          );
-        })}
-      </ul>
-      <InspirationView data={inspirations} />
-    </div>
+    <>
+      <div className="space-y-6 px-3 py-5 7xl:px-0">
+        <h2 className="text-lg font-medium">Related BigPaints</h2>
+        <ul
+          className="flex flex-wrap gap-1.5"
+          aria-label="List of related bigpaints"
+        >
+          {relatedBigPaints.map((it) => {
+            return (
+              <a
+                href={`/big_paint/${it.id}`}
+                role="listitem"
+                key={it.id}
+                title={it.name}
+                className="max-w-32 overflow-hidden text-ellipsis whitespace-nowrap rounded-full bg-neutral-800 px-3 ring-1 ring-neutral-600 hover:bg-neutral-600 hover:ring-0 active:bg-neutral-700 active:ring-1"
+              >
+                {it.name}
+              </a>
+            );
+          })}
+        </ul>
+      </div>
+      <div className="space-y-6 px-3 py-5 7xl:px-0">
+        <h2 className="text-lg font-medium">Related Inspirations</h2>
+        <InspirationView data={inspirations} />
+      </div>
+    </>
   );
 }

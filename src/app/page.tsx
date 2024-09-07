@@ -1,4 +1,9 @@
-import InspirationView from "@/components/inspiration/InspirationView";
+import { lazy } from "react";
+
+const InspirationView = lazy(
+  () => import("@/components/inspiration/InspirationView"),
+);
+const BigPaintView = lazy(() => import("../components/big_paint/BigPaintView"));
 
 export default async function Home({
   searchParams,
@@ -13,6 +18,6 @@ export default async function Home({
   }
 
   if (view === "big_paint") {
-    return "todo: big paint view to implement";
+    return <BigPaintView />;
   }
 }
