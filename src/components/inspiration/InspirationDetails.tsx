@@ -1,8 +1,15 @@
 import InspirationView from "@/components/inspiration/TempInspirationView";
-import { db } from "@/db/db";
+import { Kysely } from "kysely";
+import { DB } from "kysely-codegen/dist/db";
 import { notFound } from "next/navigation";
 
-export default async function InspirationDetails({ id }: { id: string }) {
+export default async function InspirationDetails({
+  id,
+  db,
+}: {
+  id: string;
+  db: Kysely<DB>;
+}) {
   const inspiration = await db
     .selectFrom("inspiration")
     .where("id", "=", id)

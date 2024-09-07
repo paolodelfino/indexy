@@ -1,8 +1,15 @@
 import BigPaintView from "@/components/big_paint/TempBigPaintView";
-import { db } from "@/db/db";
+import { Kysely } from "kysely";
+import { DB } from "kysely-codegen/dist/db";
 import { notFound } from "next/navigation";
 
-export default async function BigPaintDetails({ id }: { id: string }) {
+export default async function BigPaintDetails({
+  id,
+  db,
+}: {
+  id: string;
+  db: Kysely<DB>;
+}) {
   const bigPaint = await db
     .selectFrom("big_paint")
     .where("id", "=", id)

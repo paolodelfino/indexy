@@ -1,9 +1,11 @@
-import { lazy } from "react";
+import dynamic from "next/dynamic";
 
-const InspirationView = lazy(
+const InspirationView = dynamic(
   () => import("@/components/inspiration/InspirationView"),
 );
-const BigPaintView = lazy(() => import("../components/big_paint/BigPaintView"));
+const BigPaintView = dynamic(
+  () => import("@/components/big_paint/BigPaintView"),
+);
 
 export default async function Home({
   searchParams,

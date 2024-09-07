@@ -1,9 +1,9 @@
-import { lazy } from "react";
+import dynamic from "next/dynamic";
 
-const BigPaintCreate = lazy(
+const BigPaintCreate = dynamic(
   () => import("@/components/big_paint/BigPaintCreate"),
 );
-const InspirationCreate = lazy(
+const InspirationCreate = dynamic(
   () => import("@/components/inspiration/InspirationCreate"),
 );
 
@@ -17,7 +17,9 @@ export default async function Page({
 
   if (type === "big_paint") {
     return <BigPaintCreate />;
-  } else {
+  }
+
+  if (type === "inspiration") {
     return <InspirationCreate />;
   }
 }
