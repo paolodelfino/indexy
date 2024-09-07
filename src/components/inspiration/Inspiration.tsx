@@ -28,14 +28,14 @@ export default function Inspiration({
   const pathname = usePathname();
   const isItsPage = pathname.endsWith(`/${data.id}`);
 
-  const openDetails = () => window.open(`/inspiration/${data.id}`, "_blank");
+  const openDetails = () => window.open(`/${data.id}?type=inspiration`, "_blank");
 
   return (
     <li
       ref={ref}
       onClick={() => {
         if (mode === "edit") {
-          window.open(`/edit/inspiration/${data.id}`, "_blank");
+          window.open(`/edit/${data.id}?type=inspiration`, "_blank");
           setMode("idle");
         }
       }}

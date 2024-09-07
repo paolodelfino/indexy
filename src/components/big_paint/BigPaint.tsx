@@ -27,14 +27,14 @@ export default function BigPaint({
   const pathname = usePathname();
   const isItsPage = pathname.endsWith(`/${data.id}`);
 
-  const openDetails = () => window.open(`/big_paint/${data.id}`, "_blank");
+  const openDetails = () => window.open(`/${data.id}?type=big_paint`, "_blank");
 
   return (
     <li
       ref={ref}
       onClick={() => {
         if (mode === "edit") {
-          window.open(`/edit/big_paint/${data.id}`, "_blank");
+          window.open(`/edit/${data.id}?type=big_paint`, "_blank");
           setMode("idle");
         }
       }}

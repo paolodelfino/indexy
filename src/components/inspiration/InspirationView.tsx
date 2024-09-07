@@ -146,22 +146,22 @@ export default function InspirationView() {
               role="list"
             >
               <a
-                href="/create/inspiration"
-                target="_blank"
-                role="listitem"
-                className="flex gap-2 bg-neutral-800 p-3 ring-1 ring-neutral-600 hover:bg-neutral-600 hover:ring-0 active:bg-neutral-700 active:ring-1"
-              >
-                <InkStroke20Filled />
-                <span className="text-neutral-300">Inspiration</span>
-              </a>
-              <a
-                href="/create/big_paint"
+                href="/create?type=big_paint"
                 target="_blank"
                 role="listitem"
                 className="flex gap-2 bg-neutral-800 p-3 ring-1 ring-neutral-600 hover:bg-neutral-600 hover:ring-0 active:bg-neutral-700 active:ring-1"
               >
                 <Square />
                 <span className="text-neutral-300">BigPaint</span>
+              </a>
+              <a
+                href="/create?type=inspiration"
+                target="_blank"
+                role="listitem"
+                className="flex gap-2 bg-neutral-800 p-3 ring-1 ring-neutral-600 hover:bg-neutral-600 hover:ring-0 active:bg-neutral-700 active:ring-1"
+              >
+                <InkStroke20Filled />
+                <span className="text-neutral-300">Inspiration</span>
               </a>
             </PopoverContent>
           </Popover>

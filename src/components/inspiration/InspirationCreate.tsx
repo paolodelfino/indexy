@@ -1,10 +1,11 @@
 "use client";
-import { createBigPaintAction } from "@/actions/createBigPaintAction";
+import { createInspirationAction } from "@/actions/createInspirationAction";
 import Form from "next/form";
 import { useActionState, useEffect } from "react";
+import TextArea from "react-textarea-autosize";
 
-export default function Page() {
-  const [state, dispatch, isPending] = useActionState(createBigPaintAction, {
+export default function InspirationCreate() {
+  const [state, dispatch, isPending] = useActionState(createInspirationAction, {
     success: true,
     data: { message: "" },
   });
@@ -46,11 +47,10 @@ export default function Page() {
           {isPending ? "Saving..." : "Save"}
         </button>
       </div>
-      <input
-        className="w-full hyphens-auto break-words rounded bg-neutral-700 p-4"
-        type="text"
-        placeholder="Name"
-        name="name"
+      <TextArea
+        className="-mb-[7px] w-full hyphens-auto break-words rounded bg-neutral-700 p-4"
+        placeholder="Content"
+        name="content"
         required
       />
     </Form>

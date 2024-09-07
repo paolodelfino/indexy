@@ -2,10 +2,10 @@ import InspirationView from "@/components/inspiration/TempInspirationView";
 import { db } from "@/db/db";
 import { notFound } from "next/navigation";
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function InspirationDetails({ id }: { id: string }) {
   const inspiration = await db
     .selectFrom("inspiration")
-    .where("id", "=", params.id)
+    .where("id", "=", id)
     .selectAll()
     .executeTakeFirst();
 
@@ -44,7 +44,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           {relatedBigPaints.map((it) => {
             return (
               <a
-                href={`/big_paint/${it.id}`}
+                href={`/${it.id}?type=big_paint`}
                 role="listitem"
                 key={it.id}
                 title={it.name}

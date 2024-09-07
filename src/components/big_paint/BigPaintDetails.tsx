@@ -2,10 +2,10 @@ import BigPaintView from "@/components/big_paint/TempBigPaintView";
 import { db } from "@/db/db";
 import { notFound } from "next/navigation";
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function BigPaintDetails({ id }: { id: string }) {
   const bigPaint = await db
     .selectFrom("big_paint")
-    .where("id", "=", params.id)
+    .where("id", "=", id)
     .selectAll()
     .executeTakeFirst();
 
