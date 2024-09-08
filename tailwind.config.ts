@@ -15,9 +15,27 @@ const config: Config = {
       screens: {
         "6xl": "72rem",
         "7xl": "82rem",
+        monitor: "1600px",
       },
     },
   },
-  plugins: [],
+  plugins: [
+    {
+      handler: function ({ addUtilities }) {
+        const newUtilities = {
+          ".scrollbar-hidden": {
+            "-ms-overflow-style": "none" /* Internet Explorer 10+ */,
+            "scrollbar-width": "none" /* Firefox */,
+            "&::-webkit-scrollbar": {
+              display: "none" /* Safari and Chrome */,
+            },
+          },
+        };
+
+        addUtilities(newUtilities);
+      },
+    },
+  ],
 };
+
 export default config;

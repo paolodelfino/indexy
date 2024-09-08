@@ -28,8 +28,6 @@ export default function Inspiration({
   const pathname = usePathname();
   const isItsPage = pathname.endsWith(`/${data.id}`);
 
-  const openDetails = () => window.open(`/${data.id}?type=inspiration`, "_blank");
-
   return (
     <li
       ref={ref}
@@ -39,7 +37,6 @@ export default function Inspiration({
           setMode("idle");
         }
       }}
-      onDoubleClick={openDetails}
       className={cn(
         mode === "edit" &&
           "hover:relative hover:cursor-pointer hover:before:absolute hover:before:left-0 hover:before:top-0 hover:before:h-full hover:before:w-full hover:before:bg-blue-500/20 hover:before:ring hover:before:ring-inset",
@@ -53,7 +50,9 @@ export default function Inspiration({
         <div>
           <button
             disabled={mode === "edit" || isItsPage}
-            onClick={openDetails}
+            onClick={() =>
+              window.open(`/${data.id}?type=inspiration`, "_blank")
+            }
             className="size-9 border border-white/20 text-neutral-300"
           >
             ...

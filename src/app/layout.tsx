@@ -1,3 +1,4 @@
+import Toolbar from "@/components/Toolbar";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -24,9 +25,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} mx-auto max-w-6xl bg-black font-sans text-white`}
+        className={`${geistSans.variable} ${geistMono.variable} mx-auto flex max-w-[1600px] bg-black font-sans text-white`}
       >
-        {children}
+        <div className="hidden monitor:block monitor:flex-1">
+          <Toolbar />
+        </div>
+        <main className="mx-auto flex max-h-screen w-full max-w-4xl flex-col pb-16 monitor:max-h-full monitor:max-w-6xl monitor:flex-[3]">
+          <div className="overflow-y-auto scrollbar-hidden">{children}</div>
+          <Toolbar mini />
+          {/* TODO: Why don't I use monitor instead of mini prop? */}
+        </main>
+        <div className="hidden monitor:block monitor:flex-1" />
       </body>
     </html>
   );
