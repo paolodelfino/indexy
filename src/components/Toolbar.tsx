@@ -9,19 +9,27 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import { useApp } from "@/stores/useApp";
 import { cn } from "@/utils/cn";
 
-export default function Toolbar({ mini = false }: { mini?: boolean }) {
+export default function Toolbar({
+  variant,
+}: {
+  variant: "monitor" | "mobile";
+}) {
   const { changeMode, isEmpty, mode } = useApp();
 
   return (
     <header
       className={cn(
-        mini
-          ? "fixed bottom-0 max-h-16 w-full max-w-4xl bg-black monitor:hidden"
-          : "hidden monitor:block",
+        variant === "mobile" &&
+          "fixed bottom-0 max-h-16 w-full max-w-4xl bg-black monitor:hidden",
+        variant === "monitor" && "hidden monitor:block",
       )}
     >
-      <nav className={cn(mini && "overflow-x-auto scrollbar-hidden")}>
-        <ul className={cn("flex", !mini && "flex-col")}>
+      <nav
+        className={cn(
+          variant === "mobile" && "overflow-x-auto scrollbar-hidden",
+        )}
+      >
+        <ul className={cn("flex", variant === "monitor" && "flex-col")}>
           <a
             href="/?view=big_paint"
             role="listitem"
