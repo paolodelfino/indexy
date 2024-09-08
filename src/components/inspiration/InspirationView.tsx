@@ -2,7 +2,6 @@
 import { fetchInspirationsAction } from "@/actions/fetchInspirationsAction";
 import Inspiration from "@/components/inspiration/Inspiration";
 import { useApp } from "@/stores/useApp";
-import { useHotkeys } from "@mantine/hooks";
 import { startTransition, useActionState, useEffect, useRef } from "react";
 
 export default function InspirationView() {
@@ -78,14 +77,6 @@ export default function InspirationView() {
       intersectionObserver.current.observe(observedEntry.current);
     }
   }, [state]);
-
-  function toggleEdit() {
-    if (state.success && state.data.inspirations.length > 0) {
-      changeMode((curr) => (curr === "edit" ? "idle" : "edit"));
-    }
-  }
-
-  useHotkeys([["mod+shift+x", toggleEdit]]);
 
   if (!state.success) {
     // TODO: Handle differently, for example using a toast

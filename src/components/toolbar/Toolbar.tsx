@@ -8,6 +8,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import { useApp } from "@/stores/useApp";
 import { cn } from "@/utils/cn";
+import { useHotkeys } from "@mantine/hooks";
 
 export default function Toolbar({
   variant,
@@ -15,6 +16,18 @@ export default function Toolbar({
   variant: "monitor" | "mobile";
 }) {
   const { changeMode, isEmpty, mode } = useApp();
+
+  const showEditOption = !isEmpty;
+
+  const toggleEdit = () => {
+    console.log("hllo", variant);
+
+    if (!showEditOption) return;
+
+    changeMode((curr) => (curr === "edit" ? "idle" : "edit"));
+  };
+
+  useHotkeys([["mod+shift+x", toggleEdit]]);
 
   return (
     <header
@@ -78,13 +91,11 @@ export default function Toolbar({
               </a>
             </PopoverContent>
           </Popover>
-          {!isEmpty && (
+          {showEditOption && (
             <button
               role="listitem"
               className="flex gap-2 px-3 py-5 ring-neutral-600 hover:bg-neutral-600 active:bg-neutral-700"
-              onClick={() =>
-                changeMode((prev) => (prev === "edit" ? "idle" : "edit"))
-              }
+              onClick={toggleEdit}
             >
               <PencilEdit01 className={cn(mode === "edit" && "fill-current")} />
               <span className="text-neutral-300">Edit</span>

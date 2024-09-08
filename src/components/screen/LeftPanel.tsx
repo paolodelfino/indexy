@@ -1,5 +1,5 @@
 "use client";
-import Toolbar from "@/components/Toolbar";
+import MonitorToolbar from "@/components/toolbar/MonitorToolbar";
 import { useMediaQuery } from "@mantine/hooks";
 
 export default function LeftPanel() {
@@ -8,7 +8,7 @@ export default function LeftPanel() {
   if (isMonitor) {
     return (
       <div className="flex-1">
-        <Toolbar variant="monitor" />
+        <MonitorToolbar />
       </div>
     );
   }

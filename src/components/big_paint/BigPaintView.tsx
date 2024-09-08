@@ -2,7 +2,6 @@
 import { fetchBigPaintsAction } from "@/actions/fetchBigPaintsAction";
 import BigPaint from "@/components/big_paint/BigPaint";
 import { useApp } from "@/stores/useApp";
-import { useHotkeys } from "@mantine/hooks";
 import { startTransition, useActionState, useEffect, useRef } from "react";
 
 export default function BigPaintView() {
@@ -78,14 +77,6 @@ export default function BigPaintView() {
       intersectionObserver.current.observe(observedEntry.current);
     }
   }, [state]);
-
-  function toggleEdit() {
-    if (state.success && state.data.bigPaints.length > 0) {
-      changeMode((curr) => (curr === "edit" ? "idle" : "edit"));
-    }
-  }
-
-  useHotkeys([["mod+shift+x", toggleEdit]]);
 
   if (!state.success) {
     // TODO: Handle differently, for example using a toast
