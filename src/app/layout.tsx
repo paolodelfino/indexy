@@ -25,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} mx-auto flex max-w-[1600px] bg-black font-sans text-white`}
+        className={`${geistSans.variable} ${geistMono.variable} mx-auto flex max-w-screen-monitor bg-black font-sans text-white`}
       >
         <div className="hidden monitor:block monitor:flex-1">
           <Toolbar variant="monitor" />
