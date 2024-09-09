@@ -15,7 +15,11 @@ export default function Toolbar({
 }: {
   variant: "monitor" | "mobile";
 }) {
-  const { changeMode, isEmpty, mode } = useApp();
+  const [changeMode, isEmpty, mode] = useApp((state) => [
+    state.changeMode,
+    state.isEmpty,
+    state.mode,
+  ]);
 
   const showEditOption = !isEmpty;
 

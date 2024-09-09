@@ -58,7 +58,11 @@ export default function InspirationView() {
     );
   }, []);
 
-  const { setIsEmpty, mode, changeMode } = useApp();
+  const [setIsEmpty, mode, changeMode] = useApp((state) => [
+    state.setIsEmpty,
+    state.mode,
+    state.changeMode,
+  ]);
 
   useEffect(() => {
     if (state.data) {
