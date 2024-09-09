@@ -1,6 +1,8 @@
 "use client";
 import { cn } from "@/utils/cn";
-import { usePathname } from "next/navigation";
+import { useMediaQuery } from "@mantine/hooks";
+import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { RefObject, useEffect, useState } from "react";
 
 export default function BigPaint({
@@ -27,12 +29,29 @@ export default function BigPaint({
   const pathname = usePathname();
   const isItsPage = pathname.endsWith(`/${data.id}`);
 
+  const router = useRouter();
+
+  const isMonitor = useMediaQuery("(min-width: 1600px)", false);
+
+  const searchParams = useSearchParams();
+  const [url, setUrl] = useState("");
+
+  useEffect(() => {
+    const search = searchParams.toString();
+    const url = `${pathname}${search ? `?${search}` : ""}`;
+    setUrl(url);
+  }, [pathname, searchParams]);
+
   return (
     <li
       ref={ref}
       onClick={() => {
         if (mode === "edit") {
-          window.open(`/edit/${data.id}?type=big_paint`, "_blank");
+          const endpoint = `/edit/${data.id}?type=big_paint`;
+          router.push(
+            `${isMonitor && url !== endpoint ? "/redirect?url=" : ""}${endpoint}`,
+          );
+          // window.open(`/edit/${data.id}?type=big_paint`, "_blank");
           setMode("idle");
         }
       }}
@@ -45,13 +64,20 @@ export default function BigPaint({
       <p className="hyphens-auto break-words bg-neutral-700 p-4">{data.name}</p>
       <div className="flex items-center justify-between pr-2">
         <div>
-          <button
-            disabled={mode === "edit" || isItsPage}
-            onClick={() => window.open(`/${data.id}?type=big_paint`, "_blank")}
-            className="size-9 border border-white/20 text-neutral-300"
+          <Link
+            href={
+              mode === "edit" || isItsPage
+                ? "#"
+                : `${isMonitor && url !== `/${data.id}?type=big_paint` ? "/redirect?url=" : ""}${`/${data.id}?type=big_paint`}`
+            }
+            aria-disabled={mode === "edit" || isItsPage}
+            className={cn(
+              "block size-9 border border-white/20 text-center text-neutral-300",
+              (mode === "edit" || isItsPage) && "pointer-events-none",
+            )}
           >
             ...
-          </button>
+          </Link>
         </div>
         <div className="flex">
           <span className="text-neutral-500">{date}</span>

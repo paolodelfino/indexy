@@ -8,7 +8,10 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import { useApp } from "@/stores/useApp";
 import { cn } from "@/utils/cn";
-import { useHotkeys } from "@mantine/hooks";
+import { useHotkeys, useMediaQuery } from "@mantine/hooks";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Toolbar({
   variant,
@@ -32,6 +35,18 @@ export default function Toolbar({
   };
 
   useHotkeys([["mod+shift+x", toggleEdit]]);
+
+  const isMonitor = useMediaQuery("(min-width: 1600px)", false);
+
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [url, setUrl] = useState("");
+
+  useEffect(() => {
+    const search = searchParams.toString();
+    const url = `${pathname}${search ? `?${search}` : ""}`;
+    setUrl(url);
+  }, [pathname, searchParams]);
 
   return (
     <header
@@ -75,24 +90,24 @@ export default function Toolbar({
               className="z-20 flex min-w-16 max-w-[160px] flex-col"
               role="list"
             >
-              <a
-                href="/create?type=big_paint"
-                target="_blank"
+              <Link
+                href={`${isMonitor && !url.startsWith("/create") ? "/redirect?url=" : ""}/create?type=big_paint`}
+                // target="_blank"
                 role="listitem"
                 className="flex gap-2 bg-neutral-800 p-3 ring-1 ring-neutral-600 hover:bg-neutral-600 hover:ring-0 active:bg-neutral-700 active:ring-1"
               >
                 <Square />
                 <span className="text-neutral-300">BigPaint</span>
-              </a>
-              <a
-                href="/create?type=inspiration"
-                target="_blank"
+              </Link>
+              <Link
+                href={`${isMonitor && !url.startsWith("/create") ? "/redirect?url=" : ""}/create?type=inspiration`}
+                // target="_blank"
                 role="listitem"
                 className="flex gap-2 bg-neutral-800 p-3 ring-1 ring-neutral-600 hover:bg-neutral-600 hover:ring-0 active:bg-neutral-700 active:ring-1"
               >
                 <InkStroke20Filled />
                 <span className="text-neutral-300">Inspiration</span>
-              </a>
+              </Link>
             </PopoverContent>
           </Popover>
           {showEditOption && (

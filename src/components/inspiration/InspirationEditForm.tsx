@@ -101,6 +101,7 @@ export default function InspirationEdit({
     return "Something went wrong. See the console";
   }
 
+  // TODO: Fix values not updating when new data comes
   return (
     <Form action={dispatch}>
       <div className="flex items-center justify-between p-4">
@@ -145,7 +146,7 @@ export default function InspirationEdit({
         required
       />
       <div className="flex min-h-9 items-center justify-end pr-2">
-        <input
+        <input // TODO: Fix invalid value on iphone safari
           type="datetime-local"
           name="date"
           required

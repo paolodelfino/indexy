@@ -21,8 +21,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  rightPanel,
 }: Readonly<{
   children: React.ReactNode;
+  rightPanel: React.ReactNode;
 }>) {
   return (
     <html lang="en">
@@ -31,7 +33,7 @@ export default function RootLayout({
       >
         <LeftPanel />
         <CenterPanel>{children}</CenterPanel>
-        <RightPanel />
+        <RightPanel>{rightPanel}</RightPanel>
       </body>
     </html>
   );
