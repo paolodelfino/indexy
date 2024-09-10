@@ -5,6 +5,7 @@ import { Star } from "@/components/icons";
 import ModifyRelated from "@/components/ModifyRelated";
 import { cn } from "@/utils/cn";
 import Form from "next/form";
+import { useRouter } from "next/navigation";
 import { startTransition, useActionState, useEffect, useState } from "react";
 import TextArea from "react-textarea-autosize";
 
@@ -99,6 +100,8 @@ export default function InspirationEdit({
     setContent(inspiration.content);
   }, [inspiration.content]);
 
+  const router = useRouter();
+
   if (!state.success) {
     // TODO: Handle differently, for example using a toast
     console.log(state.errors);
@@ -118,7 +121,7 @@ export default function InspirationEdit({
         <button
           type="button"
           onClick={() => {
-            window.close();
+            router.back();
           }}
           className="max-w-32 overflow-hidden text-ellipsis whitespace-nowrap rounded-full bg-neutral-800 px-3 ring-1 ring-neutral-600 hover:bg-neutral-600 hover:ring-0 active:bg-neutral-700 active:ring-1"
         >

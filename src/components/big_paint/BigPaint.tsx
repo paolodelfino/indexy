@@ -1,4 +1,5 @@
 "use client";
+import { useApp } from "@/stores/useApp";
 import { cn } from "@/utils/cn";
 import { useMediaQuery } from "@mantine/hooks";
 import Link from "next/link";
@@ -8,13 +9,9 @@ import { RefObject, useEffect, useState } from "react";
 export default function BigPaint({
   data,
   ref,
-  mode,
-  setMode,
 }: {
   data: { id: string; date: Date; name: string };
   ref?: RefObject<HTMLLIElement | null>;
-  mode: "idle" | "edit";
-  setMode: React.Dispatch<React.SetStateAction<"idle" | "edit">>;
 }) {
   const dateTimeFormat = new Intl.DateTimeFormat(undefined, {
     month: "short",
@@ -42,6 +39,8 @@ export default function BigPaint({
     setUrl(url);
   }, [pathname, searchParams]);
 
+  const [mode, changeMode] = useApp((state) => [state.mode, state.changeMode]);
+
   return (
     <li
       ref={ref}
@@ -52,7 +51,7 @@ export default function BigPaint({
             `${isMonitor && url !== endpoint ? "/redirect?url=" : ""}${endpoint}`,
           );
           // window.open(`/edit/${data.id}?type=big_paint`, "_blank");
-          setMode("idle");
+          changeMode("idle");
         }
       }}
       className={cn(

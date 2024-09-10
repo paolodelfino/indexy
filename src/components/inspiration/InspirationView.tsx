@@ -58,11 +58,7 @@ export default function InspirationView() {
     );
   }, []);
 
-  const [setIsEmpty, mode, changeMode] = useApp((state) => [
-    state.setIsEmpty,
-    state.mode,
-    state.changeMode,
-  ]);
+  const setIsEmpty = useApp((state) => state.setIsEmpty);
 
   useEffect(() => {
     if (state.data) {
@@ -80,6 +76,10 @@ export default function InspirationView() {
 
       intersectionObserver.current.observe(observedEntry.current);
     }
+
+    return () => {
+      setIsEmpty(true);
+    };
   }, [state]);
 
   if (!state.success) {
@@ -102,8 +102,6 @@ export default function InspirationView() {
                   state.data.hasNext && isLastEntry ? observedEntry : undefined
                 }
                 data={it}
-                mode={mode}
-                setMode={changeMode}
               />
             );
           })}
