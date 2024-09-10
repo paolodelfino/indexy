@@ -1,6 +1,7 @@
 "use client";
 import { createInspirationAction } from "@/actions/createInspirationAction";
 import Form from "next/form";
+import { useRouter } from "next/navigation";
 import { useActionState, useEffect } from "react";
 import TextArea from "react-textarea-autosize";
 
@@ -21,6 +22,8 @@ export default function InspirationCreate() {
     }
   }, [state]);
 
+  const router = useRouter();
+
   if (!state.success) {
     // TODO: Handle differently, for example using a toast
     console.log(state.errors);
@@ -28,12 +31,12 @@ export default function InspirationCreate() {
   }
 
   return (
-    <Form action={dispatch}>
+    <Form action={dispatch} className="space-y-6">
       <div className="flex items-center justify-between p-4">
         <button
           type="button"
           onClick={() => {
-            window.close();
+            router.back();
           }}
           className="max-w-32 overflow-hidden text-ellipsis whitespace-nowrap rounded-full bg-neutral-800 px-3 ring-1 ring-neutral-600 hover:bg-neutral-600 hover:ring-0 active:bg-neutral-700 active:ring-1"
         >
@@ -47,6 +50,7 @@ export default function InspirationCreate() {
           {isPending ? "Saving..." : "Save"}
         </button>
       </div>
+      <h1 className="text-lg font-medium">Create Inspiration</h1>
       <TextArea
         className="-mb-[7px] w-full hyphens-auto break-words rounded bg-neutral-700 p-4"
         placeholder="Content"

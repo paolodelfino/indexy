@@ -13,8 +13,6 @@ export default async function _Page({
   const pathname = url.pathname;
   const searchParams = normalizeSearchParams(url.searchParams);
 
-  console.log(pathname, getParams(pathname, true), searchParams);
-
   if (pathname === "/create") {
     return CreatePage({ searchParams });
   }
@@ -25,6 +23,7 @@ export default async function _Page({
   }
 
   if (pathname.startsWith("/")) {
+    // Should be used on /[id]
     const params = getParams(pathname, true);
     return DetailsPage({ searchParams, params: { id: params[0] } });
   }

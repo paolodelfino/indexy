@@ -27,8 +27,6 @@ export default function Toolbar({
   const showEditOption = !isEmpty;
 
   const toggleEdit = () => {
-    console.log("hllo", variant);
-
     if (!showEditOption) return;
 
     changeMode((curr) => (curr === "edit" ? "idle" : "edit"));
@@ -53,7 +51,7 @@ export default function Toolbar({
       className={cn(
         variant === "mobile" &&
           "fixed bottom-0 max-h-16 w-full max-w-4xl bg-black monitor:hidden",
-        variant === "monitor" && "hidden monitor:block",
+        variant === "monitor" && "sticky top-0 hidden monitor:block",
       )}
     >
       <nav
@@ -62,22 +60,22 @@ export default function Toolbar({
         )}
       >
         <ul className={cn("flex", variant === "monitor" && "flex-col")}>
-          <a
+          <Link
             href="/?view=big_paint"
             role="listitem"
             className="flex gap-2 px-3 py-5 ring-neutral-600 hover:bg-neutral-600 active:bg-neutral-700"
           >
             <Square />
             <span className="text-neutral-300">BigPaints</span>
-          </a>
-          <a
+          </Link>
+          <Link
             href="/?view=inspiration"
             role="listitem"
             className="flex gap-2 px-3 py-5 ring-neutral-600 hover:bg-neutral-600 active:bg-neutral-700"
           >
             <InkStroke20Filled />
             <span className="text-neutral-300">Inspirations</span>
-          </a>
+          </Link>
           <Popover placement="left-start">
             <PopoverTrigger
               role="listitem"

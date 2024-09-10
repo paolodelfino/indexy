@@ -9,6 +9,6 @@ export default function RightPanel({
   const isMonitor = useMediaQuery("(min-width: 1600px)", false);
 
   if (isMonitor) {
-    return <div className="flex-1">{children}</div>;
+    return <div className="flex-1 overflow-hidden p-2">{children}</div>;
   }
 }

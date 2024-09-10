@@ -52,7 +52,7 @@ export default function BigPaintEdit({
     const date = `${year}-${month}-${day}T${hour}:${minute}:${second}.${fractionalSecond}`;
 
     setDate(date);
-  }, []);
+  }, [bigPaint.date]);
 
   useEffect(() => {
     if (state.success) {
@@ -60,7 +60,7 @@ export default function BigPaintEdit({
       // console.log(state.data.message);
       // TODO: Until we complete the todo above, we redirect, because there are some problems with the state of the form after the submit
       if (state.data.message !== "") {
-        window.location.reload();
+        // window.location.reload();
       }
     }
   }, [state]);
@@ -82,6 +82,12 @@ export default function BigPaintEdit({
     }
   }, [state2]);
 
+  const [name, setName] = useState(bigPaint.name);
+
+  useEffect(() => {
+    setName(bigPaint.name);
+  }, [bigPaint.name]);
+
   if (!state.success) {
     // TODO: Handle differently, for example using a toast
     console.log(state.errors);
@@ -95,7 +101,7 @@ export default function BigPaintEdit({
   }
 
   return (
-    <Form action={dispatch}>
+    <Form action={dispatch} className="space-y-6">
       <div className="flex items-center justify-between p-4">
         <button
           type="button"
@@ -130,24 +136,27 @@ export default function BigPaintEdit({
           </button>
         </div>
       </div>
-      <input
-        className="w-full hyphens-auto break-words rounded bg-neutral-700 p-4"
-        placeholder="Name"
-        defaultValue={bigPaint.name}
-        name="name"
-        required
-        type="text"
-        onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
-      />
-      <div className="flex min-h-9 items-center justify-end pr-2">
+      <div>
         <input
-          type="datetime-local"
-          name="date"
+          className="w-full hyphens-auto break-words rounded bg-neutral-700 p-4"
+          placeholder="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          name="name"
           required
-          defaultValue={date}
-          step="1"
-          className="bg-black text-neutral-500 [&::-webkit-calendar-picker-indicator]:-ml-6"
+          type="text"
+          onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
         />
+        <div className="flex min-h-9 items-center justify-end pr-2">
+          <input
+            type="datetime-local"
+            name="date"
+            required
+            defaultValue={date}
+            step="1"
+            className="bg-black text-neutral-500 [&::-webkit-calendar-picker-indicator]:-ml-6"
+          />
+        </div>
       </div>
       <ModifyRelated mode="bigPaint" currentRelated={relatedBigPaints} />
     </Form>

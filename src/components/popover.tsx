@@ -22,6 +22,7 @@ interface PopoverOptions {
   modal?: boolean;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  targetRef?: React.RefObject<HTMLElement | null>;
 }
 
 export function usePopover({
@@ -30,6 +31,7 @@ export function usePopover({
   modal,
   open: controlledOpen,
   onOpenChange: setControlledOpen,
+  targetRef,
 }: PopoverOptions = {}) {
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(initialOpen);
   const [labelId, setLabelId] = React.useState<string | undefined>();
@@ -54,6 +56,9 @@ export function usePopover({
       }),
       shift({ padding: 5 }),
     ],
+    elements: {
+      reference: targetRef?.current, // Use targetRef if provided
+    },
   });
 
   const context = data.context;

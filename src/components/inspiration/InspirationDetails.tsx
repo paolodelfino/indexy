@@ -44,24 +44,26 @@ export default async function InspirationDetails({
     <>
       <div className="space-y-6 px-3 py-5 7xl:px-0">
         <h2 className="text-lg font-medium">Related BigPaints</h2>
-        <ul
-          className="flex flex-wrap gap-1.5"
-          aria-label="List of related bigpaints"
-        >
-          {relatedBigPaints.map((it) => {
-            return (
-              <a
-                href={`/${it.id}?type=big_paint`}
-                role="listitem"
-                key={it.id}
-                title={it.name}
-                className="max-w-32 overflow-hidden text-ellipsis whitespace-nowrap rounded-full bg-neutral-800 px-3 ring-1 ring-neutral-600 hover:bg-neutral-600 hover:ring-0 active:bg-neutral-700 active:ring-1"
-              >
-                {it.name}
-              </a>
-            );
-          })}
-        </ul>
+        {relatedBigPaints.length > 0 && (
+          <ul
+            className="flex flex-wrap gap-1.5"
+            aria-label="List of related bigpaints"
+          >
+            {relatedBigPaints.map((it) => {
+              return (
+                <a
+                  href={`/${it.id}?type=big_paint`}
+                  role="listitem"
+                  key={it.id}
+                  title={it.name}
+                  className="max-w-32 overflow-hidden text-ellipsis whitespace-nowrap rounded-full bg-neutral-800 px-3 ring-1 ring-neutral-600 hover:bg-neutral-600 hover:ring-0 active:bg-neutral-700 active:ring-1"
+                >
+                  {it.name}
+                </a>
+              );
+            })}
+          </ul>
+        )}
       </div>
       <div className="space-y-6 px-3 py-5 7xl:px-0">
         <h2 className="text-lg font-medium">Related Inspirations</h2>

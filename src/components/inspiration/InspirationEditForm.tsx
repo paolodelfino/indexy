@@ -57,7 +57,7 @@ export default function InspirationEdit({
     const date = `${year}-${month}-${day}T${hour}:${minute}:${second}.${fractionalSecond}`;
 
     setDate(date);
-  }, []);
+  }, [inspiration.date]);
 
   useEffect(() => {
     if (state.success) {
@@ -65,7 +65,7 @@ export default function InspirationEdit({
       // console.log(state.data.message);
       // TODO: There are some problems with the state of the form after the submit
       if (state.data.message !== "") {
-        window.location.reload();
+        // window.location.reload();
       }
     }
   }, [state]);
@@ -89,6 +89,16 @@ export default function InspirationEdit({
 
   const [highlight, setHighlight] = useState(inspiration.highlight);
 
+  useEffect(() => {
+    setHighlight(inspiration.highlight);
+  }, [inspiration.highlight]);
+
+  const [content, setContent] = useState(inspiration.content);
+
+  useEffect(() => {
+    setContent(inspiration.content);
+  }, [inspiration.content]);
+
   if (!state.success) {
     // TODO: Handle differently, for example using a toast
     console.log(state.errors);
@@ -103,7 +113,7 @@ export default function InspirationEdit({
 
   // TODO: Fix values not updating when new data comes
   return (
-    <Form action={dispatch}>
+    <Form action={dispatch} className="space-y-6">
       <div className="flex items-center justify-between p-4">
         <button
           type="button"
@@ -138,37 +148,40 @@ export default function InspirationEdit({
           </button>
         </div>
       </div>
-      <TextArea
-        className="-mb-[7px] w-full hyphens-auto break-words rounded bg-neutral-700 p-4"
-        placeholder="Content"
-        defaultValue={inspiration.content}
-        name="content"
-        required
-      />
-      <div className="flex min-h-9 items-center justify-end pr-2">
-        <input // TODO: Fix invalid value on iphone safari
-          type="datetime-local"
-          name="date"
+      <div>
+        <TextArea
+          className="-mb-[7px] w-full hyphens-auto break-words rounded bg-neutral-700 p-4"
+          placeholder="Content"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          name="content"
           required
-          defaultValue={date}
-          step="1"
-          className="bg-black text-neutral-500 [&::-webkit-calendar-picker-indicator]:-ml-6"
         />
-        <input
-          type="checkbox"
-          name="highlight"
-          checked={highlight}
-          className="hidden"
-          readOnly
-        />
-        <button
-          type="button"
-          aria-label="Toggle highlight"
-          className="pl-4 text-neutral-300"
-          onClick={() => setHighlight((prev) => !prev)}
-        >
-          <Star className={cn(highlight && "fill-current")} />
-        </button>
+        <div className="flex min-h-9 items-center justify-end pr-2">
+          <input // TODO: Fix invalid value on iphone safari
+            type="datetime-local"
+            name="date"
+            required
+            defaultValue={date}
+            step="1"
+            className="bg-black text-neutral-500 [&::-webkit-calendar-picker-indicator]:-ml-6"
+          />
+          <input
+            type="checkbox"
+            name="highlight"
+            checked={highlight}
+            className="hidden"
+            readOnly
+          />
+          <button
+            type="button"
+            aria-label="Toggle highlight"
+            className="pl-4 text-neutral-300"
+            onClick={() => setHighlight((prev) => !prev)}
+          >
+            <Star className={cn(highlight && "fill-current")} />
+          </button>
+        </div>
       </div>
       <ModifyRelated mode="bigPaint" currentRelated={relatedBigPaints} />
       <ModifyRelated mode="inspiration" currentRelated={relatedInspirations} />

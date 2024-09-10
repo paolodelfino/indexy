@@ -1,6 +1,7 @@
 "use client";
 import { createBigPaintAction } from "@/actions/createBigPaintAction";
 import Form from "next/form";
+import { useRouter } from "next/navigation";
 import { useActionState, useEffect } from "react";
 
 export default function BigPaintCreate() {
@@ -20,6 +21,8 @@ export default function BigPaintCreate() {
     }
   }, [state]);
 
+  const router = useRouter();
+
   if (!state.success) {
     // TODO: Handle differently, for example using a toast
     console.log(state.errors);
@@ -27,12 +30,12 @@ export default function BigPaintCreate() {
   }
 
   return (
-    <Form action={dispatch}>
+    <Form action={dispatch} className="space-y-6">
       <div className="flex items-center justify-between p-4">
         <button
           type="button"
           onClick={() => {
-            window.close();
+            router.back();
           }}
           className="max-w-32 overflow-hidden text-ellipsis whitespace-nowrap rounded-full bg-neutral-800 px-3 ring-1 ring-neutral-600 hover:bg-neutral-600 hover:ring-0 active:bg-neutral-700 active:ring-1"
         >
@@ -46,6 +49,7 @@ export default function BigPaintCreate() {
           {isPending ? "Saving..." : "Save"}
         </button>
       </div>
+      <h1 className="text-lg font-medium">Create BigPaint</h1>
       <input
         className="w-full hyphens-auto break-words rounded bg-neutral-700 p-4"
         type="text"
