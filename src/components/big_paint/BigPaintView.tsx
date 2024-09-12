@@ -2,113 +2,75 @@
 import { fetchBigPaintsAction } from "@/actions/fetchBigPaintsAction";
 import BigPaint from "@/components/big_paint/BigPaint";
 import { useApp } from "@/stores/useApp";
-import { startTransition, useActionState, useEffect, useRef } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { Fragment, useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 
 export default function BigPaintView() {
-  const [state, dispatch, isPending] = useActionState(fetchBigPaintsAction, {
-    success: true,
-    data: { hasNext: true, bigPaints: [] },
+  const [ref, inView] = useInView();
+
+  const {
+    status,
+    data,
+    error,
+    isFetchingNextPage: isFetchingNext,
+    fetchNextPage: fetchNext,
+    hasNextPage: hasNext,
+  } = useInfiniteQuery({
+    queryKey: ["big_paints"],
+    queryFn: ({ pageParam: offset }) => fetchBigPaintsAction(offset, 20),
+    initialPageParam: 0,
+    getPreviousPageParam: (firstData) => firstData?.previousOffset,
+    getNextPageParam: (lastData) => lastData?.nextOffset,
+    refetchInterval: 1000,
   });
 
-  const observedEntry = useRef<HTMLLIElement>(null);
-  const intersectionObserver = useRef<IntersectionObserver>(undefined);
+  useEffect(() => {
+    if (inView) fetchNext();
+  }, [inView]);
+
+  const makeEditAvailable = useApp((state) => state.makeEditAvailable);
 
   useEffect(() => {
-    if (!state.success) {
-      throw new Error("For some reason action state is unsuccessful");
-    }
-
-    if (state.data.bigPaints.length > 0) {
-      throw new Error(
-        "For some reason Inspiration array length is greater than 0",
-      );
-    }
-
-    startTransition(() => {
-      dispatch();
-    });
-
-    if (intersectionObserver.current) {
-      throw new Error("For some reason intersectionObserver already exists");
-    }
-
-    intersectionObserver.current = new IntersectionObserver(
-      (entries, observer) => {
-        if (entries.length > 1) {
-          throw new Error(
-            "For some reason intersectionObserver's entries are more than 1",
-          );
-        }
-
-        const entry = entries[0];
-
-        if (!entry) {
-          throw new Error(
-            "For some reason intersectionObserver's entry doesn't exist",
-          );
-        }
-
-        if (entry.isIntersecting) {
-          observer.disconnect();
-          startTransition(() => {
-            dispatch();
-          });
-        }
-      },
-    );
-  }, []);
-
-  const setIsEmpty = useApp((state) => state.setIsEmpty);
-
-  useEffect(() => {
-    if (state.data) {
-      setIsEmpty(state.data.bigPaints.length === 0);
-    }
-
-    if (!!state.data?.bigPaints.length && state.data.hasNext) {
-      if (!intersectionObserver.current) {
-        throw new Error("For some reason intersectionObserver doesn't exists");
-      }
-
-      if (!observedEntry.current) {
-        throw new Error("For some reason observedEntry doesn't exists");
-      }
-
-      intersectionObserver.current.observe(observedEntry.current);
-    }
+    if (status === "success" && data && data.pages.length > 0)
+      makeEditAvailable(true);
+    else makeEditAvailable(false);
 
     return () => {
-      setIsEmpty(true);
+      makeEditAvailable(false);
     };
-  }, [state]);
+  }, [data]);
 
-  if (!state.success) {
-    // TODO: Handle differently, for example using a toast
-    console.log(state.errors);
-    return "Something went wrong. See the console";
-  }
+  if (status === "error") throw error;
+
+  if (status === "pending") return <span>loading no cache</span>;
+
+  if (data.pages.length <= 0) return <span>empty</span>;
 
   return (
     <>
-      {state.data.bigPaints.length > 0 && (
-        <ul>
-          {state.data.bigPaints.map((it, i) => {
-            const isLastEntry = i === state.data.bigPaints.length - 1;
+      <ul>
+        {data.pages.map((page, pageIndex) => (
+          <Fragment
+            key={`${pageIndex}-${page.previousOffset}-${page.nextOffset}-${page.data.length}`}
+          >
+            {page.data.map((it, itemIndex) => {
+              const isLastEntry =
+                pageIndex === data.pages.length - 1 &&
+                itemIndex === page.data.length - 1;
 
-            return (
-              <BigPaint
-                key={it.id}
-                ref={
-                  state.data.hasNext && isLastEntry ? observedEntry : undefined
-                }
-                data={it}
-              />
-            );
-          })}
-        </ul>
-      )}
-      {state.data.bigPaints.length === 0 && !isPending && <span>empty</span>}
-      {isPending && <span>loading</span>}
+              return (
+                <BigPaint
+                  key={it.id}
+                  ref={hasNext && isLastEntry ? ref : undefined}
+                  data={it}
+                />
+              );
+            })}
+          </Fragment>
+        ))}
+      </ul>
+      {isFetchingNext && <span>loading next</span>}
     </>
   );
 }

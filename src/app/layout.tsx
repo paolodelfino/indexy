@@ -1,3 +1,4 @@
+import Providers from "@/components/Providers";
 import CenterPanel from "@/components/screen/CenterPanel";
 import LeftPanel from "@/components/screen/LeftPanel";
 import RightPanel from "@/components/screen/RightPanel";
@@ -31,9 +32,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} mx-auto flex max-w-screen-monitor bg-black font-sans text-white`}
       >
-        <LeftPanel />
-        <CenterPanel>{children}</CenterPanel>
-        <RightPanel>{rightPanel}</RightPanel>
+        <Providers>
+          <LeftPanel />
+          <CenterPanel>{children}</CenterPanel>
+          <RightPanel>{rightPanel}</RightPanel>
+        </Providers>
       </body>
     </html>
   );

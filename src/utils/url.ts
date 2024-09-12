@@ -18,7 +18,15 @@ export function normalizeSearchParams(searchParams: URLSearchParams): {
   return result;
 }
 
-export function getParams(path: string, firstIsParam: boolean = false) {
+export function getDynamicParams(path: string, firstIsParam: boolean = false) {
   const parts = path.split("/").filter(Boolean);
   return parts.slice(firstIsParam ? 0 : 1);
+}
+
+export function getPathnameFromRedirect(url: string): string {
+  const params = new URLSearchParams(
+    new URL(url, "http://localhost:3000").search,
+  );
+  const endpoint = params.get("url");
+  return endpoint ? new URL(endpoint).pathname : "";
 }

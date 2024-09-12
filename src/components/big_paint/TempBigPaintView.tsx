@@ -8,13 +8,13 @@ export default function TempBigPaintView({
 }: {
   data: { id: string; name: string; date: Date }[];
 }) {
-  const setIsEmpty = useApp((state) => state.setIsEmpty);
+  const makeEditAvailable = useApp((state) => state.makeEditAvailable);
 
   useEffect(() => {
-    setIsEmpty(data.length === 0);
+    makeEditAvailable(data.length > 0);
 
     return () => {
-      setIsEmpty(true);
+      makeEditAvailable(false);
     };
   }, [data]);
 

@@ -1,6 +1,14 @@
 {
-  "extends": ["next/core-web-vitals", "plugin:jsx-a11y/recommended"],
-  "plugins": ["eslint-plugin-react-compiler", "jsx-a11y"],
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:jsx-a11y/recommended",
+    "plugin:@tanstack/eslint-plugin-query/recommended"
+  ],
+  "plugins": [
+    "eslint-plugin-react-compiler",
+    "jsx-a11y",
+    "@tanstack/eslint-plugin-query/recommended"
+  ],
   "rules": {
     "react-compiler/react-compiler": "error"
   }

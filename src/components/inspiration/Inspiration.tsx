@@ -5,14 +5,14 @@ import { cn } from "@/utils/cn";
 import { useMediaQuery } from "@mantine/hooks";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { RefObject, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Inspiration({
   data,
   ref,
 }: {
   data: { id: string; date: Date; content: string; highlight: boolean };
-  ref?: RefObject<HTMLLIElement | null>;
+  ref?: (node?: Element | null) => void;
 }) {
   const dateTimeFormat = new Intl.DateTimeFormat(undefined, {
     month: "short",

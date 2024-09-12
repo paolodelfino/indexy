@@ -1,7 +1,7 @@
 import DetailsPage from "@/app/[id]/page";
 import CreatePage from "@/app/create/page";
 import EditPage from "@/app/edit/[id]/page";
-import { getParams, normalizeSearchParams } from "@/utils/url";
+import { getDynamicParams, normalizeSearchParams } from "@/utils/url";
 import { notFound } from "next/navigation";
 
 export default async function _Page({
@@ -18,13 +18,13 @@ export default async function _Page({
   }
 
   if (pathname.startsWith("/edit")) {
-    const params = getParams(pathname);
+    const params = getDynamicParams(pathname);
     return EditPage({ searchParams, params: { id: params[0] } });
   }
 
   if (pathname.startsWith("/")) {
     // Should be used on /[id]
-    const params = getParams(pathname, true);
+    const params = getDynamicParams(pathname, true);
     return DetailsPage({ searchParams, params: { id: params[0] } });
   }
 

@@ -18,16 +18,14 @@ export default function Toolbar({
 }: {
   variant: "monitor" | "mobile";
 }) {
-  const [changeMode, isEmpty, mode] = useApp((state) => [
-    state.changeMode,
-    state.isEmpty,
+  const [mode, changeMode, isEditAvailable] = useApp((state) => [
     state.mode,
+    state.changeMode,
+    state.isEditAvailable,
   ]);
 
-  const showEditOption = !isEmpty;
-
   const toggleEdit = () => {
-    if (!showEditOption) return;
+    if (!isEditAvailable) return;
 
     changeMode((curr) => (curr === "edit" ? "idle" : "edit"));
   };
@@ -108,7 +106,7 @@ export default function Toolbar({
               </Link>
             </PopoverContent>
           </Popover>
-          {showEditOption && (
+          {isEditAvailable && (
             <button
               role="listitem"
               className="flex gap-2 px-3 py-5 ring-neutral-600 hover:bg-neutral-600 active:bg-neutral-700"
