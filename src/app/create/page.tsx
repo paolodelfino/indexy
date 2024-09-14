@@ -1,10 +1,10 @@
 import dynamic from "next/dynamic";
 
-const BigPaintCreate = dynamic(
-  () => import("@/components/big_paint/BigPaintCreate"),
+const BigPaintCreateForm = dynamic(
+  () => import("@/components/big_paint/BigPaintCreateForm"),
 );
-const InspirationCreate = dynamic(
-  () => import("@/components/inspiration/InspirationCreate"),
+const InspirationCreateForm = dynamic(
+  () => import("@/components/inspiration/InspirationCreateForm"),
 );
 
 export default async function Page({
@@ -16,10 +16,10 @@ export default async function Page({
     searchParams["type"] === "big_paint" ? "big_paint" : "inspiration";
 
   if (type === "big_paint") {
-    return <BigPaintCreate />;
+    return <BigPaintCreateForm />;
   }
 
   if (type === "inspiration") {
-    return <InspirationCreate />;
+    return <InspirationCreateForm />;
   }
 }
