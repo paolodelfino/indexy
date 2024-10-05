@@ -1,15 +1,8 @@
-import InspirationEditForm from "@/components/inspiration/InspirationEditForm";
-import { Kysely } from "kysely";
-import { DB } from "kysely-codegen/dist/db";
+"use server";
+import { db } from "@/db/db";
 import { notFound } from "next/navigation";
 
-export default async function InspirationEdit({
-  id,
-  db,
-}: {
-  id: string;
-  db: Kysely<DB>;
-}) {
+export async function fetchInspirationAction(id: string) {
   const inspiration = await db
     .selectFrom("inspiration")
     .where("id", "=", id)
@@ -32,22 +25,16 @@ export default async function InspirationEdit({
       ? await db
           .selectFrom("inspiration")
           .where("id", "in", inspiration.related_inspirations_ids)
-          .select(["id", "content as name"])
+          .select(["id", "content"])
           .execute()
       : [];
 
-  return (
-    <InspirationEditForm
-      data={{
-        inspiration: {
-          content: inspiration.content,
-          date: inspiration.date,
-          highlight: inspiration.highlight,
-          id: inspiration.id,
-        },
-        relatedBigPaints,
-        relatedInspirations,
-      }}
-    />
-  );
+  return {
+    id: inspiration.id,
+    content: inspiration.content,
+    date: inspiration.date,
+    highlight: inspiration.highlight,
+    relatedBigPaints,
+    relatedInspirations,
+  };
 }

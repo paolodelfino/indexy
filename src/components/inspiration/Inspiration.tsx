@@ -14,6 +14,7 @@ export default function Inspiration({
   data: { id: string; date: Date; content: string; highlight: boolean };
   ref?: (node?: Element | null) => void;
 }) {
+  // TODO: Date doesn't update
   const dateTimeFormat = new Intl.DateTimeFormat(undefined, {
     month: "short",
     day: "numeric",

@@ -13,6 +13,7 @@ export default function BigPaint({
   data: { id: string; date: Date; name: string };
   ref?: (node?: Element | null) => void;
 }) {
+  // TODO: date doesnt't get updated
   const dateTimeFormat = new Intl.DateTimeFormat(undefined, {
     month: "short",
     day: "numeric",
