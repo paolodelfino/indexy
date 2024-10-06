@@ -14,10 +14,24 @@ import React, {
 } from "react";
 import { tv } from "tailwind-variants";
 
-// TODO: Make styles
 const searchSelect = tv({
   slots: {
-    input: "w-full hyphens-auto break-words rounded bg-neutral-700 p-4",
+    error: "",
+    base: "space-y-6 px-3 py-5 7xl:px-0",
+    titleBase: "group flex items-center",
+    titleH2: "text-lg font-medium",
+    titleButton: "opacity-0 transition-opacity group-hover:opacity-100",
+    titleIcon: "",
+    selectedBase: "flex flex-wrap gap-1.5",
+    selectedItem:
+      "max-w-32 overflow-hidden text-ellipsis hyphens-auto whitespace-nowrap break-words rounded-full bg-neutral-800 px-3 text-start ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0",
+    searchBase: "",
+    searchInput: "h-10 w-full rounded-none px-2",
+    searchResultList: "",
+    searchResultEmpty: "",
+    searchResultLoading: "",
+    searchResultItem:
+      "w-full hyphens-auto break-words bg-neutral-800 p-2 px-2 text-start ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0",
   },
 });
 
@@ -65,7 +79,7 @@ export function SearchSelect<T, U>({
       values: { query: string },
     ) => Promise<T[]>;
   }) {
-  const { input } = searchSelect(classNames);
+  const style = searchSelect();
 
   const error = useValidationError(
     value,
@@ -91,7 +105,12 @@ export function SearchSelect<T, U>({
     void 0,
   );
 
-  if (error) return <span>{error}</span>;
+  if (error)
+    return (
+      <span className={style.error({ className: classNames?.error })}>
+        {error}
+      </span>
+    );
 
   return (
     <SearchSelectContext.Provider
@@ -110,31 +129,38 @@ export function SearchSelect<T, U>({
         blacklist,
       }}
     >
-      <div className="space-y-6 px-3 py-5 7xl:px-0">
-        <Title />
-        <SelectedState />
-        <div>
-          <Search />
-          {showResults && <SearchResult />}
+      <div className={style.base({ className: classNames?.base })}>
+        <Title classNames={classNames} />
+        <SelectedState classNames={classNames} />
+        <div
+          className={style.searchBase({ className: classNames?.searchBase })}
+        >
+          <Search classNames={classNames} />
+          {showResults && <SearchResult classNames={classNames} />}
         </div>
       </div>
     </SearchSelectContext.Provider>
   );
 }
 
-function Title() {
+function Title({ classNames }: ComponentProps<SearchSelectSlots>) {
+  const style = searchSelect();
+
   const context = useContext(SearchSelectContext);
 
   return (
-    <div className="group flex items-center">
-      <h2 className="text-lg font-medium">{context.title}</h2>
+    <div className={style.titleBase({ className: classNames?.titleBase })}>
+      <h2 className={style.titleH2({ className: classNames?.titleH2 })}>
+        {context.title}
+      </h2>
       <button
         type="button"
         disabled={context.disabled}
         onClick={() => context.setShowResults((curr) => !curr)}
-        className="opacity-0 transition-opacity group-hover:opacity-100"
+        className={style.titleButton({ className: classNames?.titleButton })}
       >
         <ArrowDown01
+          className={style.titleIcon({ className: classNames?.titleIcon })}
           style={{
             transform: `rotate(${context.showResults ? 0 : 270}deg)`,
           }}
@@ -144,23 +170,34 @@ function Title() {
   );
 }
 
-function SelectedState() {
+function SelectedState({ classNames }: ComponentProps<SearchSelectSlots>) {
+  const style = searchSelect();
+
   const context = useContext(SearchSelectContext);
 
   return (
     <div
-      className="flex flex-wrap gap-1.5"
+      className={style.selectedBase({ className: classNames?.selectedBase })}
       role="list"
       aria-label={`List of selected ${context.title}`}
     >
       {context.selected.map((it) => (
-        <SelectedItem key={context.selectId(it)} data={it} />
+        <SelectedItem
+          classNames={classNames}
+          key={context.selectId(it)}
+          data={it}
+        />
       ))}
     </div>
   );
 }
 
-function SelectedItem({ data }: { data: any }) {
+function SelectedItem({
+  classNames,
+  data,
+}: ComponentProps<SearchSelectSlots> & { data: any }) {
+  const style = searchSelect();
+
   const context = useContext(SearchSelectContext);
 
   const id = context.selectId(data);
@@ -171,7 +208,7 @@ function SelectedItem({ data }: { data: any }) {
       type="button"
       title={context.selectContent(data)}
       disabled={context.disabled}
-      className="max-w-32 overflow-hidden text-ellipsis hyphens-auto whitespace-nowrap break-words rounded-full bg-neutral-800 px-3 text-start ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0"
+      className={style.selectedItem({ className: classNames?.selectedItem })}
       onClick={() =>
         context.setSelected((selected) => selected.filter((it) => it.id !== id))
       }
@@ -181,13 +218,15 @@ function SelectedItem({ data }: { data: any }) {
   );
 }
 
-function Search<T>() {
+function Search<T>({ classNames }: ComponentProps<SearchSelectSlots>) {
+  const style = searchSelect();
+
   const context = useContext(SearchSelectContext);
 
   return (
     <input
       type="search"
-      className="h-10 w-full rounded-none px-2"
+      className={style.searchInput({ className: classNames?.searchInput })}
       required
       disabled={context.isSearching || context.disabled}
       form="unexisting"
@@ -204,27 +243,56 @@ function Search<T>() {
   );
 }
 
-function SearchResult<T>() {
+function SearchResult<T>({ classNames }: ComponentProps<SearchSelectSlots>) {
+  const style = searchSelect();
+
   const context = useContext(SearchSelectContext);
 
   return (
     <React.Fragment>
       {(context.searchResult?.length || 0) > 0 && !context.isSearching && (
-        <ul>
+        <ul
+          className={style.searchResultList({
+            className: classNames?.searchResultList,
+          })}
+        >
           {context.searchResult!.map((it) => (
-            <SearchResultItem key={context.selectId(it)} data={it} />
+            <SearchResultItem
+              classNames={classNames}
+              key={context.selectId(it)}
+              data={it}
+            />
           ))}
         </ul>
       )}
       {context.searchResult?.length === 0 && !context.isSearching && (
-        <span>empty</span>
+        <span
+          className={style.searchResultEmpty({
+            className: classNames?.searchResultEmpty,
+          })}
+        >
+          empty
+        </span>
       )}
-      {context.isSearching && <span>loading</span>}
+      {context.isSearching && (
+        <span
+          className={style.searchResultLoading({
+            className: classNames?.searchResultLoading,
+          })}
+        >
+          loading
+        </span>
+      )}
     </React.Fragment>
   );
 }
 
-function SearchResultItem({ data }: { data: any }) {
+function SearchResultItem({
+  data,
+  classNames,
+}: ComponentProps<SearchSelectSlots> & { data: any }) {
+  const style = searchSelect();
+
   const context = useContext(SearchSelectContext);
 
   const id = context.selectId(data);
@@ -232,7 +300,9 @@ function SearchResultItem({ data }: { data: any }) {
   return (
     <button
       role="listitem"
-      className="w-full hyphens-auto break-words bg-neutral-800 p-2 px-2 text-start ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0"
+      className={style.searchResultItem({
+        className: classNames?.searchResultItem,
+      })}
       type="button"
       disabled={
         context.selected.findIndex((it) => context.selectId(it) === id) !==

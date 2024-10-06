@@ -69,7 +69,6 @@ export default function BigPaintEditForm({ id }: { id: string }) {
 
   if (queryStatus === "pending") return <span>pending</span>;
 
-  // TODO: Add validation
   return (
     <form
       onSubmit={(e) => {

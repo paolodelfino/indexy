@@ -28,6 +28,8 @@ export function DateInput({
 
   return (
     <React.Fragment>
+      {/* TODO: Iphone safari (actually webkit I guess) doesn't work with
+      seconds and milliseconds */}
       <input
         className={style}
         type="datetime-local"
