@@ -8,7 +8,6 @@ import { SearchSelect } from "@/components/SearchSelect";
 import { TextInput } from "@/components/TextInput";
 import { editBigPaintSchema } from "@/schemas/editBigPaintSchema";
 import { useEditBigPaint } from "@/stores/useEditBigPaint";
-import { transformDate } from "@/utils/date";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { startTransition, useActionState, useEffect } from "react";
 
@@ -49,7 +48,7 @@ export default function BigPaintEditForm({ id }: { id: string }) {
         form.set({
           name: queryData.name,
           related_big_paints_ids: queryData.relatedBigPaints.map((it) => it.id),
-          date: transformDate(queryData.date),
+          date: queryData.date,
         });
       }
     });
@@ -108,7 +107,7 @@ export default function BigPaintEditForm({ id }: { id: string }) {
       </div>
       <div>
         <TextInput
-          value={form.name || ""}
+          value={form.name!}
           setValue={(value) => form.set({ name: value })}
           validation={editBigPaintSchema.shape.name}
           formPushError={form.pushError}
@@ -117,7 +116,7 @@ export default function BigPaintEditForm({ id }: { id: string }) {
         />
         <div className="flex min-h-9 items-center justify-end pr-2">
           <DateInput
-            value={form.date || ""}
+            value={form.date!}
             setValue={(value) => form.set({ date: value })}
             validation={editBigPaintSchema.shape.date}
             formPushError={form.pushError}
@@ -130,7 +129,7 @@ export default function BigPaintEditForm({ id }: { id: string }) {
         formPushError={form.pushError}
         formPopError={form.popError}
         defaultValue={queryData.relatedBigPaints}
-        value={form.related_big_paints_ids || []}
+        value={form.related_big_paints_ids!}
         setValue={(value) => form.set({ related_big_paints_ids: value })}
         validation={editBigPaintSchema.shape.related_big_paints_ids}
         searchAction={searchBigPaintsAction}

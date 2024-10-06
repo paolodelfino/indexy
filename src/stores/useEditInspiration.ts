@@ -4,7 +4,7 @@ import { createForm } from "@/utils/form";
 
 export interface Values {
   content: string | undefined;
-  date: string | undefined;
+  date: Date | undefined;
   highlight: boolean | undefined;
   related_big_paints_ids: string[] | undefined;
   related_inspirations_ids: string[] | undefined;

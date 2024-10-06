@@ -30,6 +30,7 @@ async function migrateToLatest() {
   });
 
   // const { error, results } = await migrator.migrateTo(NO_MIGRATIONS);
+  // const { error, results } = await migrator.migrateDown();
   const { error, results } = await migrator.migrateToLatest();
 
   results?.forEach((it) => {

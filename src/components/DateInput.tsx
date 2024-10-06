@@ -1,5 +1,6 @@
 "use client";
 import { useValidationError } from "@/hooks/useValidationError";
+import { dateToIsoString } from "@/utils/date";
 import { FormFieldProps } from "@/utils/form";
 import React from "react";
 import { tv } from "tailwind-variants";
@@ -16,7 +17,7 @@ export function DateInput({
   formPopError,
   disabled,
   className,
-}: FormFieldProps<string> & { className?: string }) {
+}: FormFieldProps<Date> & { className?: string }) {
   const style = dateInput({ className });
 
   const error = useValidationError(
@@ -28,14 +29,15 @@ export function DateInput({
 
   return (
     <React.Fragment>
-      {/* TODO: Iphone safari (actually webkit I guess) doesn't work with
-      seconds and milliseconds */}
       <input
         className={style}
         type="datetime-local"
         step="1"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
+        value={dateToIsoString(value)}
+        onChange={(e) => {
+          const date = new Date(e.target.value);
+          setValue(date);
+        }}
         disabled={disabled}
       />
       {error && <span>{error}</span>}

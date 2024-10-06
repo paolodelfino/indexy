@@ -10,7 +10,6 @@ import { SearchSelect } from "@/components/SearchSelect";
 import { TextInput } from "@/components/TextInput";
 import { editInspirationSchema } from "@/schemas/editInspirationSchema";
 import { useEditInspiration } from "@/stores/useEditInspiration";
-import { transformDate } from "@/utils/date";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { startTransition, useActionState, useEffect } from "react";
 
@@ -54,7 +53,7 @@ export default function InspirationEditForm({ id }: { id: string }) {
           related_inspirations_ids: queryData.relatedInspirations.map(
             (it) => it.id,
           ),
-          date: transformDate(queryData.date),
+          date: queryData.date,
           highlight: queryData.highlight,
         });
       }
@@ -115,7 +114,7 @@ export default function InspirationEditForm({ id }: { id: string }) {
       <div>
         <TextInput
           multiple
-          value={form.content || ""}
+          value={form.content!}
           setValue={(value) => form.set({ content: value })}
           validation={editInspirationSchema.shape.content}
           formPushError={form.pushError}
@@ -123,9 +122,8 @@ export default function InspirationEditForm({ id }: { id: string }) {
           disabled={isEditActionPending || isDeleteActionPending}
         />
         <div className="flex min-h-9 items-center justify-end pr-2">
-          {/* TODO: Fix invalid value on iphone safari */}
           <DateInput
-            value={form.date || ""}
+            value={form.date!}
             setValue={(value) => form.set({ date: value })}
             validation={editInspirationSchema.shape.date}
             formPushError={form.pushError}
@@ -133,7 +131,7 @@ export default function InspirationEditForm({ id }: { id: string }) {
             disabled={isEditActionPending || isDeleteActionPending}
           />
           <CheckboxInput
-            value={form.highlight || false}
+            value={form.highlight!}
             setValue={(value) => form.set({ highlight: value })}
             validation={editInspirationSchema.shape.highlight}
             formPushError={form.pushError}
@@ -147,7 +145,7 @@ export default function InspirationEditForm({ id }: { id: string }) {
         formPushError={form.pushError}
         formPopError={form.popError}
         defaultValue={queryData.relatedBigPaints}
-        value={form.related_big_paints_ids || []}
+        value={form.related_big_paints_ids!}
         setValue={(value) => form.set({ related_big_paints_ids: value })}
         validation={editInspirationSchema.shape.related_big_paints_ids}
         searchAction={searchBigPaintsAction}
@@ -161,7 +159,7 @@ export default function InspirationEditForm({ id }: { id: string }) {
         formPushError={form.pushError}
         formPopError={form.popError}
         defaultValue={queryData.relatedInspirations}
-        value={form.related_big_paints_ids || []}
+        value={form.related_big_paints_ids!}
         setValue={(value) => form.set({ related_inspirations_ids: value })}
         validation={editInspirationSchema.shape.related_big_paints_ids}
         searchAction={searchInspirationsAction}

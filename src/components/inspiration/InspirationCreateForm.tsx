@@ -37,7 +37,7 @@ export default function InspirationCreateForm() {
           {isPending ? "Saving..." : "Save"}
         </button>
       </div>
-      <h1 className="text-lg font-medium">Create BigPaint</h1>
+      <h1 className="text-lg font-medium">Create Inspiration</h1>
       <TextArea
         className="-mb-[7px] w-full hyphens-auto break-words rounded bg-neutral-700 p-4"
         placeholder="Content"

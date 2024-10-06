@@ -1,3 +1,5 @@
+import "client-only";
+
 const dateTimeFormat = new Intl.DateTimeFormat(undefined, {
   year: "numeric",
   month: "2-digit",
@@ -8,7 +10,7 @@ const dateTimeFormat = new Intl.DateTimeFormat(undefined, {
   fractionalSecondDigits: 3,
 });
 
-export function transformDate(value: Date): string {
+export function dateToIsoString(value: Date): string {
   const parts = dateTimeFormat.formatToParts(value);
   const year = parts
     .find((part) => part.type === "year")!
