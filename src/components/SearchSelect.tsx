@@ -115,7 +115,7 @@ export function SearchSelect<T, U>({
         <SelectedState />
         <div>
           <Search />
-          {showResults && <SearchResults />}
+          {showResults && <SearchResult />}
         </div>
       </div>
     </SearchSelectContext.Provider>
@@ -153,28 +153,31 @@ function SelectedState() {
       role="list"
       aria-label={`List of selected ${context.title}`}
     >
-      {context.selected.map((it) => {
-        const id = context.selectId(it);
-
-        return (
-          <button
-            role="listitem"
-            type="button"
-            key={context.selectId(it)}
-            title={context.selectContent(it)}
-            disabled={context.disabled}
-            className="max-w-32 overflow-hidden text-ellipsis hyphens-auto whitespace-nowrap break-words rounded-full bg-neutral-800 px-3 text-start ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0"
-            onClick={() =>
-              context.setSelected((selected) =>
-                selected.filter((it) => it.id !== id),
-              )
-            }
-          >
-            {context.selectContent(it)}
-          </button>
-        );
-      })}
+      {context.selected.map((it) => (
+        <SelectedItem key={context.selectId(it)} data={it} />
+      ))}
     </div>
+  );
+}
+
+function SelectedItem({ data }: { data: any }) {
+  const context = useContext(SearchSelectContext);
+
+  const id = context.selectId(data);
+
+  return (
+    <button
+      role="listitem"
+      type="button"
+      title={context.selectContent(data)}
+      disabled={context.disabled}
+      className="max-w-32 overflow-hidden text-ellipsis hyphens-auto whitespace-nowrap break-words rounded-full bg-neutral-800 px-3 text-start ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0"
+      onClick={() =>
+        context.setSelected((selected) => selected.filter((it) => it.id !== id))
+      }
+    >
+      {context.selectContent(data)}
+    </button>
   );
 }
 
@@ -201,41 +204,16 @@ function Search<T>() {
   );
 }
 
-function SearchResults<T>() {
+function SearchResult<T>() {
   const context = useContext(SearchSelectContext);
 
   return (
     <React.Fragment>
       {(context.searchResult?.length || 0) > 0 && !context.isSearching && (
         <ul>
-          {context.searchResult!.map((it) => {
-            const id = context.selectId(it);
-
-            return (
-              <button
-                role="listitem"
-                key={id}
-                className="w-full hyphens-auto break-words bg-neutral-800 p-2 px-2 text-start ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0"
-                type="button"
-                disabled={
-                  context.selected.findIndex(
-                    (it) => context.selectId(it) === id,
-                  ) !== -1 ||
-                  context.blacklist?.findIndex(
-                    (it) => id === context.selectId(it),
-                  ) !== -1 ||
-                  context.disabled
-                }
-                onClick={() =>
-                  context.setSelected((selected) => {
-                    return [...selected, it];
-                  })
-                }
-              >
-                {context.selectContent(it)}
-              </button>
-            );
-          })}
+          {context.searchResult!.map((it) => (
+            <SearchResultItem key={context.selectId(it)} data={it} />
+          ))}
         </ul>
       )}
       {context.searchResult?.length === 0 && !context.isSearching && (
@@ -243,5 +221,33 @@ function SearchResults<T>() {
       )}
       {context.isSearching && <span>loading</span>}
     </React.Fragment>
+  );
+}
+
+function SearchResultItem({ data }: { data: any }) {
+  const context = useContext(SearchSelectContext);
+
+  const id = context.selectId(data);
+
+  return (
+    <button
+      role="listitem"
+      className="w-full hyphens-auto break-words bg-neutral-800 p-2 px-2 text-start ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0"
+      type="button"
+      disabled={
+        context.selected.findIndex((it) => context.selectId(it) === id) !==
+          -1 ||
+        context.blacklist?.findIndex((it) => id === context.selectId(it)) !==
+          -1 ||
+        context.disabled
+      }
+      onClick={() =>
+        context.setSelected((selected) => {
+          return [...selected, data];
+        })
+      }
+    >
+      {context.selectContent(data)}
+    </button>
   );
 }

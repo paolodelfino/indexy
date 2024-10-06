@@ -51,6 +51,47 @@ export function createForm<T extends object>(emptyValues: T) {
   }));
 }
 
+// export function createFormHook<T extends object>(emptyValues: T): FormState<T> {
+//   const [state, setState] = useState<
+//     T & { isInvalid: boolean; _errorsCount: number }
+//   >({ ...emptyValues, isInvalid: false, _errorsCount: 0 });
+
+//   const set: (values: Partial<T>) => void = (values) => {
+//     setState((state) => ({ ...state, ...values }));
+//   };
+//   const reset: () => void = () => {
+//     setState((state) => ({ ...state, ...emptyValues }));
+//   };
+//   const values: () => T = () => {
+//     const {
+//       _errorsCount,
+//       isInvalid,
+//       /* Change above whenever you update form interface */ ...rest
+//     } = state;
+//     return rest as any;
+//   };
+
+//   const pushError: () => void = () => {
+//     const _errorsCount = ++state._errorsCount;
+//     const isInvalid = _errorsCount > 0;
+//     setState((state) => ({ ...state, _errorsCount, isInvalid }));
+//   };
+//   const popError: () => void = () => {
+//     const _errorsCount = Math.max(0, --state._errorsCount);
+//     const isInvalid = _errorsCount > 0;
+//     setState((state) => ({ ...state, _errorsCount, isInvalid }));
+//   };
+
+//   return {
+//     ...state,
+//     set,
+//     reset,
+//     values,
+//     pushError,
+//     popError,
+//   };
+// }
+
 export type FormHook<T extends object> = ReturnType<typeof createForm<T>>;
 
 export type FormFieldProps<T> = {
