@@ -12,6 +12,7 @@ export default async function Home({
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
+  // TODO: strings view
   const view =
     searchParams["view"] === "big_paint" ? "big_paint" : "inspiration";
 

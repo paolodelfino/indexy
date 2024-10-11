@@ -67,7 +67,7 @@ export function SearchSelect<Display, Output extends Array<any> | undefined>({
   selectId,
   selectContent,
   disabled,
-  blacklist,
+  blacklist, // TODO: Exclude from search database query
 }: ComponentProps<SearchSelectSlots> &
   FormFieldProps<Output> & {
     defaultValue: Display[];
