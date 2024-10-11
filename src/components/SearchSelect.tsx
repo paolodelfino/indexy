@@ -53,7 +53,8 @@ const SearchSelectContext = createContext<{
   blacklist?: any[];
 }>();
 
-export function SearchSelect<T, U>({
+// TODO: Support accept indeterminate
+export function SearchSelect<Display, Output extends Array<any> | undefined>({
   classNames,
   value,
   setValue,
@@ -68,16 +69,16 @@ export function SearchSelect<T, U>({
   disabled,
   blacklist,
 }: ComponentProps<SearchSelectSlots> &
-  FormFieldProps<U[]> & {
-    defaultValue: T[];
+  FormFieldProps<Output> & {
+    defaultValue: Display[];
     title: string;
-    selectId: (value: T) => U;
-    selectContent: (value: T) => ReactNode;
-    blacklist?: T[];
+    selectId: (value: Display) => NonNullable<Output>[number];
+    selectContent: (value: Display) => ReactNode;
+    blacklist?: Display[];
     searchAction: (
       prevState: unknown,
       values: { query: string },
-    ) => Promise<T[]>;
+    ) => Promise<Display[]>;
   }) {
   const style = searchSelect();
 
@@ -90,13 +91,14 @@ export function SearchSelect<T, U>({
 
   const [showResults, setShowResults] = useState(false);
 
-  const [selected, setSelected] = useState<T[]>(defaultValue);
+  const [selected, setSelected] = useState<Display[]>(defaultValue);
 
   useEffect(() => {
     setSelected(defaultValue);
   }, [defaultValue]);
 
   useEffect(() => {
+    // @ts-expect-error
     setValue(selected.map(selectId));
   }, [selected]);
 
@@ -131,7 +133,7 @@ export function SearchSelect<T, U>({
     >
       <div className={style.base({ className: classNames?.base })}>
         <Title classNames={classNames} />
-        <SelectedState classNames={classNames} />
+        {selected.length > 0 && <SelectedState classNames={classNames} />}
         <div
           className={style.searchBase({ className: classNames?.searchBase })}
         >
@@ -307,8 +309,9 @@ function SearchResultItem({
       disabled={
         context.selected.findIndex((it) => context.selectId(it) === id) !==
           -1 ||
-        context.blacklist?.findIndex((it) => id === context.selectId(it)) !==
-          -1 ||
+        (context.blacklist !== undefined &&
+          context.blacklist.findIndex((it) => id === context.selectId(it)) !==
+            -1) ||
         context.disabled
       }
       onClick={() =>

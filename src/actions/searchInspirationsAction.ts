@@ -6,6 +6,7 @@ const schema = z.object({
   query: z.string().trim().min(1),
 });
 
+// TODO: We can remove this bullscheisse
 export async function searchInspirationsAction(
   prevState: unknown,
   values: { query: string },

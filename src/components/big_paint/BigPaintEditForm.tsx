@@ -6,15 +6,15 @@ import { searchBigPaintsAction } from "@/actions/searchBigPaintsAction";
 import { DateInput } from "@/components/DateInput";
 import { SearchSelect } from "@/components/SearchSelect";
 import { TextInput } from "@/components/TextInput";
-import { editBigPaintSchema } from "@/schemas/editBigPaintSchema";
-import { useEditBigPaint } from "@/stores/useEditBigPaint";
+import { editBigPaintFormSchema } from "@/schemas/editBigPaintFormSchema";
+import { useEditBigPaintForm } from "@/stores/useEditBigPaintForm";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { startTransition, useActionState, useEffect } from "react";
 
 export default function BigPaintEditForm({ id }: { id: string }) {
   const queryClient = useQueryClient();
 
-  const form = useEditBigPaint();
+  const form = useEditBigPaintForm();
 
   const {
     status: queryStatus,
@@ -109,7 +109,7 @@ export default function BigPaintEditForm({ id }: { id: string }) {
         <TextInput
           value={form.name!}
           setValue={(value) => form.set({ name: value })}
-          validation={editBigPaintSchema.shape.name}
+          validation={editBigPaintFormSchema.shape.name}
           formPushError={form.pushError}
           formPopError={form.popError}
           disabled={isEditActionPending || isDeleteActionPending}
@@ -118,7 +118,7 @@ export default function BigPaintEditForm({ id }: { id: string }) {
           <DateInput
             value={form.date!}
             setValue={(value) => form.set({ date: value })}
-            validation={editBigPaintSchema.shape.date}
+            validation={editBigPaintFormSchema.shape.date}
             formPushError={form.pushError}
             formPopError={form.popError}
             disabled={isEditActionPending || isDeleteActionPending}
@@ -131,7 +131,7 @@ export default function BigPaintEditForm({ id }: { id: string }) {
         defaultValue={queryData.relatedBigPaints}
         value={form.related_big_paints_ids!}
         setValue={(value) => form.set({ related_big_paints_ids: value })}
-        validation={editBigPaintSchema.shape.related_big_paints_ids}
+        validation={editBigPaintFormSchema.shape.related_big_paints_ids}
         searchAction={searchBigPaintsAction}
         title="Related BigPaints"
         selectId={(value) => value.id}

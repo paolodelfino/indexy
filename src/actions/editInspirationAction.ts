@@ -1,15 +1,14 @@
 "use server";
 import { db } from "@/db/db";
-import { editInspirationSchema } from "@/schemas/editInspirationSchema";
-import { Values } from "@/stores/useEditInspiration";
+import { editInspirationFormSchema } from "@/schemas/editInspirationFormSchema";
+import { FormValues } from "@/utils/form";
 
 export async function editInspirationAction(
   id: string,
   prevState: unknown,
-  values: Values,
+  values: FormValues<typeof editInspirationFormSchema>,
 ) {
-  // TODO: Il fatto che ci sia ogni prop anche se col valore undefined fa lo stesso sì che venga presa in considerazione cercando di aggiornare lo stesso la riga?
-  const validated = editInspirationSchema.parse(values);
+  const validated = editInspirationFormSchema.parse(values);
   await db
     .updateTable("inspiration")
     .where("id", "=", id)

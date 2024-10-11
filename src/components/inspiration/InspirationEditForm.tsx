@@ -8,15 +8,15 @@ import { CheckboxInput } from "@/components/CheckboxInput";
 import { DateInput } from "@/components/DateInput";
 import { SearchSelect } from "@/components/SearchSelect";
 import { TextInput } from "@/components/TextInput";
-import { editInspirationSchema } from "@/schemas/editInspirationSchema";
-import { useEditInspiration } from "@/stores/useEditInspiration";
+import { editInspirationFormSchema } from "@/schemas/editInspirationFormSchema";
+import { useEditInspirationForm } from "@/stores/useEditInspirationForm";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { startTransition, useActionState, useEffect } from "react";
 
 export default function InspirationEditForm({ id }: { id: string }) {
   const queryClient = useQueryClient();
 
-  const form = useEditInspiration();
+  const form = useEditInspirationForm();
 
   const {
     status: queryStatus,
@@ -116,7 +116,7 @@ export default function InspirationEditForm({ id }: { id: string }) {
           multiple
           value={form.content!}
           setValue={(value) => form.set({ content: value })}
-          validation={editInspirationSchema.shape.content}
+          validation={editInspirationFormSchema.shape.content}
           formPushError={form.pushError}
           formPopError={form.popError}
           disabled={isEditActionPending || isDeleteActionPending}
@@ -125,15 +125,16 @@ export default function InspirationEditForm({ id }: { id: string }) {
           <DateInput
             value={form.date!}
             setValue={(value) => form.set({ date: value })}
-            validation={editInspirationSchema.shape.date}
+            validation={editInspirationFormSchema.shape.date}
             formPushError={form.pushError}
             formPopError={form.popError}
             disabled={isEditActionPending || isDeleteActionPending}
           />
           <CheckboxInput
             value={form.highlight!}
+            acceptIndeterminate={false}
             setValue={(value) => form.set({ highlight: value })}
-            validation={editInspirationSchema.shape.highlight}
+            validation={editInspirationFormSchema.shape.highlight}
             formPushError={form.pushError}
             formPopError={form.popError}
             disabled={isEditActionPending || isDeleteActionPending}
@@ -147,7 +148,7 @@ export default function InspirationEditForm({ id }: { id: string }) {
         defaultValue={queryData.relatedBigPaints}
         value={form.related_big_paints_ids!}
         setValue={(value) => form.set({ related_big_paints_ids: value })}
-        validation={editInspirationSchema.shape.related_big_paints_ids}
+        validation={editInspirationFormSchema.shape.related_big_paints_ids}
         searchAction={searchBigPaintsAction}
         title="Related BigPaints"
         selectId={(value) => value.id}
@@ -159,9 +160,9 @@ export default function InspirationEditForm({ id }: { id: string }) {
         formPushError={form.pushError}
         formPopError={form.popError}
         defaultValue={queryData.relatedInspirations}
-        value={form.related_big_paints_ids!}
+        value={form.related_inspirations_ids!}
         setValue={(value) => form.set({ related_inspirations_ids: value })}
-        validation={editInspirationSchema.shape.related_big_paints_ids}
+        validation={editInspirationFormSchema.shape.related_inspirations_ids}
         searchAction={searchInspirationsAction}
         title="Related Inspirations"
         selectId={(value) => value.id}

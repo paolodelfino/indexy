@@ -6,6 +6,7 @@ import {
   offset,
   Placement,
   shift,
+  size,
   useClick,
   useDismiss,
   useFloating,
@@ -23,6 +24,8 @@ interface PopoverOptions {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   targetRef?: React.RefObject<HTMLElement | null>;
+  matchRefWidth?: boolean;
+  offset?: number;
 }
 
 export function usePopover({
@@ -32,6 +35,8 @@ export function usePopover({
   open: controlledOpen,
   onOpenChange: setControlledOpen,
   targetRef,
+  matchRefWidth = true,
+  offset: offsetValue = 5,
 }: PopoverOptions = {}) {
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(initialOpen);
   const [labelId, setLabelId] = React.useState<string | undefined>();
@@ -48,13 +53,22 @@ export function usePopover({
     onOpenChange: setOpen,
     whileElementsMounted: autoUpdate,
     middleware: [
-      offset(5),
+      offset(offsetValue),
       flip({
         crossAxis: placement.includes("-"),
         fallbackAxisSideDirection: "end",
         padding: 5,
       }),
       shift({ padding: 5 }),
+      matchRefWidth
+        ? size({
+            apply({ rects, elements }) {
+              Object.assign(elements.floating.style, {
+                minWidth: `${rects.reference.width}px`,
+              });
+            },
+          })
+        : undefined,
     ],
     elements: {
       reference: targetRef?.current, // Use targetRef if provided

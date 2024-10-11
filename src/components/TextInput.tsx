@@ -23,7 +23,12 @@ export function TextInput({
   disabled,
   multiple,
   className,
-}: FormFieldProps<string> & { multiple?: boolean; className?: string }) {
+  placeholder,
+}: FormFieldProps<string | undefined> & {
+  multiple?: boolean;
+  className?: string;
+  placeholder?: string;
+}) {
   const style = textInput({ multiple, className });
 
   const error = useValidationError(
@@ -39,8 +44,9 @@ export function TextInput({
         <TextArea
           className={style}
           disabled={disabled}
-          value={value}
+          value={value || ""}
           onChange={(e) => setValue(e.target.value)}
+          placeholder={placeholder}
         />
       )}
       {!multiple && (
@@ -48,9 +54,10 @@ export function TextInput({
           className={style}
           type="text"
           disabled={disabled}
-          value={value}
+          value={value || ""}
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
+          placeholder={placeholder}
         />
       )}
       {error && <span>{error}</span>}

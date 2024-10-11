@@ -6,6 +6,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { Fragment, useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 
+// TODO: Combine with the temporary version
 export default function InspirationView() {
   const { ref, inView } = useInView();
 

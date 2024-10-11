@@ -1,13 +1,20 @@
 "use client";
 import { useValidationError } from "@/hooks/useValidationError";
+import { ComponentProps } from "@/utils/component";
 import { dateToIsoString } from "@/utils/date";
 import { FormFieldProps } from "@/utils/form";
-import React from "react";
 import { tv } from "tailwind-variants";
 
 const dateInput = tv({
-  base: "bg-black text-neutral-500 [&::-webkit-calendar-picker-indicator]:-ml-6",
+  slots: {
+    dateInput:
+      "bg-black text-neutral-500 [&::-webkit-calendar-picker-indicator]:-ml-6",
+    clearButton:
+      "hyphens-auto break-words rounded p-2 px-2 text-start disabled:text-neutral-500",
+  },
 });
+
+type DateInputSlots = keyof ReturnType<typeof dateInput>;
 
 export function DateInput({
   value,
@@ -16,9 +23,14 @@ export function DateInput({
   formPushError,
   formPopError,
   disabled,
-  className,
-}: FormFieldProps<Date> & { className?: string }) {
-  const style = dateInput({ className });
+  classNames,
+  acceptIndeterminate,
+}: (
+  | ({ acceptIndeterminate?: false } & FormFieldProps<Date>)
+  | ({ acceptIndeterminate: true } & FormFieldProps<Date | undefined>)
+) &
+  ComponentProps<DateInputSlots>) {
+  const style = dateInput();
 
   const error = useValidationError(
     value,
@@ -28,19 +40,29 @@ export function DateInput({
   );
 
   return (
-    <React.Fragment>
+    <div>
       <input
-        className={style}
+        className={style.dateInput({ className: classNames?.dateInput })}
         type="datetime-local"
         step="1"
-        value={dateToIsoString(value)}
+        value={value === undefined ? "" : dateToIsoString(value)}
         onChange={(e) => {
           const date = new Date(e.target.value);
           setValue(date);
         }}
         disabled={disabled}
       />
+      {acceptIndeterminate && (
+        <button
+          type="button"
+          disabled={disabled}
+          className={style.clearButton({ className: classNames?.clearButton })}
+          onClick={() => setValue(undefined)}
+        >
+          Clear
+        </button>
+      )}
       {error && <span>{error}</span>}
-    </React.Fragment>
+    </div>
   );
 }

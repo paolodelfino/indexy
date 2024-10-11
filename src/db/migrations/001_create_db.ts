@@ -1,6 +1,7 @@
 import { Kysely, sql } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
+  // TODO: Create indexes for fetching, searching, whatever (like GIN index on the tsvector)
   await sql`
     CREATE EXTENSION "uuid-ossp";
 

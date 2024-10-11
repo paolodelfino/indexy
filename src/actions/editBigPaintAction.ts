@@ -1,15 +1,14 @@
 "use server";
 import { db } from "@/db/db";
-import { editBigPaintSchema } from "@/schemas/editBigPaintSchema";
-import { Values } from "@/stores/useEditBigPaint";
+import { editBigPaintFormSchema } from "@/schemas/editBigPaintFormSchema";
+import { FormValues } from "@/utils/form";
 
 export async function editBigPaintAction(
   id: string,
   prevState: unknown,
-  values: Values,
+  values: FormValues<typeof editBigPaintFormSchema>,
 ) {
-  // TODO: Il fatto che ci sia ogni prop anche se col valore undefined fa lo stesso sì che venga presa in considerazione cercando di aggiornare lo stesso la riga?
-  const validated = editBigPaintSchema.parse(values);
+  const validated = editBigPaintFormSchema.parse(values);
   await db
     .updateTable("big_paint")
     .where("id", "=", id)
