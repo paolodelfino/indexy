@@ -1,4 +1,4 @@
-import type { SVGProps } from "react"
+import type { SVGProps } from "react";
 
 export function Star(props: SVGProps<SVGSVGElement>) {
   return (
@@ -7,6 +7,7 @@ export function Star(props: SVGProps<SVGSVGElement>) {
       width={24}
       height={24}
       viewBox="0 0 24 24"
+      fill="none"
       {...props}
     >
       <path
@@ -28,6 +29,7 @@ export function PencilEdit01(props: SVGProps<SVGSVGElement>) {
       width={24}
       height={24}
       viewBox="0 0 24 24"
+      fill="none"
       {...props}
     >
       <path
@@ -49,6 +51,7 @@ export function Add02(props: SVGProps<SVGSVGElement>) {
       width={24}
       height={24}
       viewBox="0 0 24 24"
+      fill="none"
       {...props}
     >
       <path
@@ -70,6 +73,7 @@ export function MenuSquare(props: SVGProps<SVGSVGElement>) {
       width={24}
       height={24}
       viewBox="0 0 24 24"
+      fill="none"
       {...props}
     >
       <path
@@ -91,6 +95,7 @@ export function Square(props: SVGProps<SVGSVGElement>) {
       width={24}
       height={24}
       viewBox="0 0 24 24"
+      fill="none"
       {...props}
     >
       <path
@@ -112,6 +117,7 @@ export function InkStroke20Filled(props: SVGProps<SVGSVGElement>) {
       width={24}
       height={24}
       viewBox="0 0 20 20"
+      fill="none"
       {...props}
     >
       <path
@@ -129,6 +135,7 @@ export function ArrowDown01(props: SVGProps<SVGSVGElement>) {
       width={24}
       height={24}
       viewBox="0 0 24 24"
+      fill="none"
       {...props}
     >
       <path
@@ -150,6 +157,7 @@ export function SearchSquare(props: SVGProps<SVGSVGElement>) {
       width={24}
       height={24}
       viewBox="0 0 24 24"
+      fill="none"
       {...props}
     >
       <g
@@ -173,6 +181,7 @@ export function RemoveSquare(props: SVGProps<SVGSVGElement>) {
       width={24}
       height={24}
       viewBox="0 0 24 24"
+      fill="none"
       {...props}
     >
       <path
