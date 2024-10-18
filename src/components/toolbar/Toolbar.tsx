@@ -1,4 +1,5 @@
 "use client";
+import Button, { ButtonLink } from "@/components/Button";
 import {
   Add02,
   InkStroke20Filled,
@@ -10,7 +11,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import { useApp } from "@/stores/useApp";
 import { cn } from "@/utils/cn";
 import { useHotkeys, useMediaQuery } from "@mantine/hooks";
-import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -59,26 +59,32 @@ export default function Toolbar({
         )}
       >
         <ul className={cn("flex", variant === "monitor" && "flex-col")}>
-          <Link
+          <ButtonLink
             href="/?view=big_paint"
             role="listitem"
-            className="flex gap-2 px-3 py-5 ring-neutral-600 hover:bg-neutral-600 active:bg-neutral-700"
+            color="ghost"
+            size="large"
+            className="py-5"
           >
             <Square />
             <span className="text-neutral-300">BigPaints</span>
-          </Link>
-          <Link
+          </ButtonLink>
+          <ButtonLink
             href="/?view=inspiration"
             role="listitem"
-            className="flex gap-2 px-3 py-5 ring-neutral-600 hover:bg-neutral-600 active:bg-neutral-700"
+            color="ghost"
+            size="large"
+            className="py-5"
           >
             <InkStroke20Filled />
             <span className="text-neutral-300">Inspirations</span>
-          </Link>
+          </ButtonLink>
           <Popover placement="left-start">
             <PopoverTrigger
               role="listitem"
-              className="flex gap-2 px-3 py-5 ring-neutral-600 hover:bg-neutral-600 active:bg-neutral-700"
+              color="ghost"
+              size="large"
+              className="py-5"
             >
               <Add02 />
               <span className="text-neutral-300">Create</span>
@@ -87,40 +93,45 @@ export default function Toolbar({
               className="z-20 flex min-w-16 max-w-[160px] flex-col"
               role="list"
             >
-              <Link
+              <ButtonLink
+                className="w-full"
                 href={`${isMonitor && !url.startsWith("/create") ? "/redirect?url=" : ""}/create?type=big_paint`}
                 // target="_blank"
                 role="listitem"
-                className="flex gap-2 bg-neutral-800 p-3 ring-1 ring-neutral-600 hover:bg-neutral-600 hover:ring-0 active:bg-neutral-700 active:ring-1"
+                size="large"
               >
                 <Square />
                 <span className="text-neutral-300">BigPaint</span>
-              </Link>
-              <Link
+              </ButtonLink>
+              <ButtonLink
+                className="w-full"
                 href={`${isMonitor && !url.startsWith("/create") ? "/redirect?url=" : ""}/create?type=inspiration`}
                 // target="_blank"
                 role="listitem"
-                className="flex gap-2 bg-neutral-800 p-3 ring-1 ring-neutral-600 hover:bg-neutral-600 hover:ring-0 active:bg-neutral-700 active:ring-1"
+                size="large"
               >
                 <InkStroke20Filled />
                 <span className="text-neutral-300">Inspiration</span>
-              </Link>
+              </ButtonLink>
             </PopoverContent>
           </Popover>
           {isEditAvailable && (
-            <button
+            <Button
               role="listitem"
-              className="flex gap-2 px-3 py-5 ring-neutral-600 hover:bg-neutral-600 active:bg-neutral-700"
+              color="ghost"
+              size="large"
               onClick={toggleEdit}
             >
               <PencilEdit01 className={cn(mode === "edit" && "fill-current")} />
               <span className="text-neutral-300">Edit</span>
-            </button>
+            </Button>
           )}
           <Popover placement="left-start">
             <PopoverTrigger
               role="listitem"
-              className="flex gap-2 px-3 py-5 ring-neutral-600 hover:bg-neutral-600 active:bg-neutral-700"
+              color="ghost"
+              size="large"
+              className="py-5"
             >
               <SearchSquare />
               <span className="text-neutral-300">Search</span>
@@ -129,22 +140,24 @@ export default function Toolbar({
               className="z-20 flex min-w-16 max-w-[160px] flex-col"
               role="list"
             >
-              <Link
+              <ButtonLink
+                className="w-full"
                 href="/search?type=big_paint"
                 role="listitem"
-                className="flex gap-2 bg-neutral-800 p-3 ring-1 ring-neutral-600 hover:bg-neutral-600 hover:ring-0 active:bg-neutral-700 active:ring-1"
+                size="large"
               >
                 <Square />
                 <span className="text-neutral-300">BigPaint</span>
-              </Link>
-              <Link
+              </ButtonLink>
+              <ButtonLink
+                className="w-full"
                 href="/search?type=inspiration"
                 role="listitem"
-                className="flex gap-2 bg-neutral-800 p-3 ring-1 ring-neutral-600 hover:bg-neutral-600 hover:ring-0 active:bg-neutral-700 active:ring-1"
+                size="large"
               >
                 <InkStroke20Filled />
                 <span className="text-neutral-300">Inspiration</span>
-              </Link>
+              </ButtonLink>
             </PopoverContent>
           </Popover>
         </ul>

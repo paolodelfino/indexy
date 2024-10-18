@@ -3,6 +3,7 @@ import { deleteBigPaintAction } from "@/actions/deleteBigPaintAction";
 import { editBigPaintAction } from "@/actions/editBigPaintAction";
 import { fetchBigPaintAction } from "@/actions/fetchBigPaintAction";
 import { searchBigPaintsAction } from "@/actions/searchBigPaintsAction";
+import Button from "@/components/Button";
 import { DateInput } from "@/components/DateInput";
 import { SearchSelect } from "@/components/SearchSelect";
 import { TextInput } from "@/components/TextInput";
@@ -81,7 +82,7 @@ export default function BigPaintEditForm({ id }: { id: string }) {
       className="space-y-6"
     >
       <div className="flex items-center justify-end gap-4 p-4">
-        <button
+        <Button
           onClick={() => {
             if (confirm("Are you sure?")) {
               startTransition(() => {
@@ -90,20 +91,19 @@ export default function BigPaintEditForm({ id }: { id: string }) {
             }
           }}
           disabled={isDeleteActionPending || isEditActionPending}
-          type="button"
-          className="max-w-32 overflow-hidden text-ellipsis whitespace-nowrap rounded bg-red-800 px-3 ring-1 ring-red-600 hover:bg-red-600 hover:ring-0 active:bg-red-700 active:ring-1"
+          color="danger"
         >
           {isDeleteActionPending ? "Deleting..." : "Delete"}
-        </button>
-        <button
+        </Button>
+        <Button
           type="submit"
-          className="max-w-32 overflow-hidden text-ellipsis whitespace-nowrap rounded bg-blue-500 px-3 ring-1 ring-blue-300 hover:bg-blue-300 hover:ring-0 active:bg-blue-400 active:ring-1"
+          color="accent"
           disabled={
             isEditActionPending || isDeleteActionPending || form.isInvalid
           }
         >
           {isEditActionPending ? "Saving..." : "Save"}
-        </button>
+        </Button>
       </div>
       <div>
         <TextInput

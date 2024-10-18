@@ -1,4 +1,5 @@
 "use client";
+import Button from "@/components/Button";
 import { ArrowDown01 } from "@/components/icons";
 import { useValidationError } from "@/hooks/useValidationError";
 import { ComponentProps } from "@/utils/component";
@@ -23,15 +24,13 @@ const searchSelect = tv({
     titleButton: "opacity-0 transition-opacity group-hover:opacity-100",
     titleIcon: "",
     selectedBase: "flex flex-wrap gap-1.5",
-    selectedItem:
-      "max-w-32 overflow-hidden text-ellipsis hyphens-auto whitespace-nowrap break-words rounded-full bg-neutral-800 px-3 text-start ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0",
+    selectedItem: "max-w-32 rounded-full px-3",
     searchBase: "",
     searchInput: "h-10 w-full rounded-none px-2",
     searchResultList: "",
     searchResultEmpty: "",
     searchResultLoading: "",
-    searchResultItem:
-      "w-full hyphens-auto break-words bg-neutral-800 p-2 px-2 text-start ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0",
+    searchResultItem: "w-full",
   },
 });
 
@@ -155,9 +154,9 @@ function Title({ classNames }: ComponentProps<SearchSelectSlots>) {
       <h2 className={style.titleH2({ className: classNames?.titleH2 })}>
         {context.title}
       </h2>
-      <button
-        type="button"
+      <Button
         disabled={context.disabled}
+        color="ghost"
         onClick={() => context.setShowResults((curr) => !curr)}
         className={style.titleButton({ className: classNames?.titleButton })}
       >
@@ -167,7 +166,7 @@ function Title({ classNames }: ComponentProps<SearchSelectSlots>) {
             transform: `rotate(${context.showResults ? 0 : 270}deg)`,
           }}
         />
-      </button>
+      </Button>
     </div>
   );
 }
@@ -205,9 +204,8 @@ function SelectedItem({
   const id = context.selectId(data);
 
   return (
-    <button
+    <Button
       role="listitem"
-      type="button"
       title={context.selectContent(data)}
       disabled={context.disabled}
       className={style.selectedItem({ className: classNames?.selectedItem })}
@@ -216,7 +214,7 @@ function SelectedItem({
       }
     >
       {context.selectContent(data)}
-    </button>
+    </Button>
   );
 }
 
@@ -300,12 +298,12 @@ function SearchResultItem({
   const id = context.selectId(data);
 
   return (
-    <button
+    <Button
       role="listitem"
+      size="large"
       className={style.searchResultItem({
         className: classNames?.searchResultItem,
       })}
-      type="button"
       disabled={
         context.selected.findIndex((it) => context.selectId(it) === id) !==
           -1 ||
@@ -321,6 +319,6 @@ function SearchResultItem({
       }
     >
       {context.selectContent(data)}
-    </button>
+    </Button>
   );
 }

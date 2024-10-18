@@ -1,4 +1,5 @@
 "use client";
+import Button from "@/components/Button";
 import { useValidationError } from "@/hooks/useValidationError";
 import { ComponentProps } from "@/utils/component";
 import { dateToIsoString } from "@/utils/date";
@@ -9,8 +10,7 @@ const dateInput = tv({
   slots: {
     dateInput:
       "bg-black text-neutral-500 [&::-webkit-calendar-picker-indicator]:-ml-6",
-    clearButton:
-      "hyphens-auto break-words rounded p-2 px-2 text-start disabled:text-neutral-500",
+    clearButton: "",
   },
 });
 
@@ -40,7 +40,7 @@ export function DateInput({
   );
 
   return (
-    <div>
+    <div className="flex">
       <input
         className={style.dateInput({ className: classNames?.dateInput })}
         type="datetime-local"
@@ -53,14 +53,14 @@ export function DateInput({
         disabled={disabled}
       />
       {acceptIndeterminate && (
-        <button
-          type="button"
+        <Button
           disabled={disabled}
+          color="ghost"
           className={style.clearButton({ className: classNames?.clearButton })}
           onClick={() => setValue(undefined)}
         >
           Clear
-        </button>
+        </Button>
       )}
       {error && <span>{error}</span>}
     </div>

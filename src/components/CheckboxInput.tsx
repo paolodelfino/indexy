@@ -1,4 +1,5 @@
 "use client";
+import Button from "@/components/Button";
 import { RemoveSquare, Square, Star } from "@/components/icons";
 import { useValidationError } from "@/hooks/useValidationError";
 import { FormFieldProps } from "@/utils/form";
@@ -46,9 +47,8 @@ export function CheckboxInput({
   );
 
   if (acceptIndeterminate) {
-    const Button = (
-      <button
-        type="button"
+    const _Button = (
+      <Button
         id={id}
         aria-label="Change checkbox state"
         className={style.button({ className: classNames?.button })}
@@ -60,14 +60,14 @@ export function CheckboxInput({
         {value === true && <Square className="fill-current" />}
         {value === false && <Square />}
         {value === undefined && <RemoveSquare />}
-      </button>
+      </Button>
     );
 
     return (
       <React.Fragment>
         {label && (
           <div className="flex flex-row items-center gap-2">
-            {Button}
+            {_Button}
             <label
               className={style.label({ className: classNames?.label })}
               htmlFor={id}
@@ -76,7 +76,7 @@ export function CheckboxInput({
             </label>
           </div>
         )}
-        {!label && Button}
+        {!label && _Button}
         {error && <span>{error}</span>}
       </React.Fragment>
     );
@@ -84,15 +84,15 @@ export function CheckboxInput({
 
   return (
     <React.Fragment>
-      <button
-        type="button"
+      <Button
         aria-label="Toggle checkbox"
+        color="ghost"
         className={style.button({ className: classNames?.button })}
         onClick={() => setValue(!value)}
         disabled={disabled}
       >
         <Star className={style.icon({ className: classNames?.icon })} />
-      </button>
+      </Button>
       {error && <span>{error}</span>}
     </React.Fragment>
   );

@@ -1,4 +1,5 @@
 "use client";
+import Button from "@/components/Button";
 import { Star } from "@/components/icons";
 import { useApp } from "@/stores/useApp";
 import { cn } from "@/utils/cn";
@@ -84,13 +85,13 @@ export default function Inspiration({
         </div>
         <div className="flex">
           <span className="text-neutral-500">{date}</span>
-          <button
+          <Button
             disabled={mode === "edit"}
             aria-label="Toggle highlight"
             className="pl-4 text-neutral-300"
           >
             <Star className={cn(data.highlight && "fill-current")} />
-          </button>
+          </Button>
         </div>
       </div>
     </li>

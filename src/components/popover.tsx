@@ -1,3 +1,4 @@
+import Button from "@/components/Button";
 import {
   autoUpdate,
   flip,
@@ -144,39 +145,54 @@ interface PopoverTriggerProps {
   asChild?: boolean;
 }
 
-export const PopoverTrigger = React.forwardRef<
-  HTMLElement,
-  React.HTMLProps<HTMLElement> & PopoverTriggerProps
->(function PopoverTrigger({ children, asChild = false, ...props }, propRef) {
+export function PopoverTrigger({
+  children,
+  asChild = false,
+  ref,
+  color,
+  size,
+  ...rest
+}: PopoverTriggerProps &
+  (
+    | ({ asChild?: false } & Parameters<typeof Button>["0"])
+    | ({ asChild?: true } & {
+        color?: never;
+        size?: never;
+        ref?: React.Ref<HTMLElement>;
+      })
+  )) {
   const context = usePopoverContext();
   const childrenRef = (children as any).ref;
-  const ref = useMergeRefs([context.refs.setReference, propRef, childrenRef]);
+  const mergedRef = useMergeRefs([context.refs.setReference, ref, childrenRef]);
 
   // `asChild` allows the user to pass any element as the anchor
-  if (asChild && React.isValidElement(children)) {
-    return React.cloneElement(
-      children,
-      context.getReferenceProps({
-        ref,
-        ...props,
-        ...(children.props as any),
-        "data-state": context.open ? "open" : "closed",
-      }),
-    );
+  if (asChild) {
+    if (React.isValidElement(children))
+      return React.cloneElement(
+        children,
+        context.getReferenceProps({
+          ref: mergedRef,
+          ...rest,
+          ...(children.props as any),
+          "data-state": context.open ? "open" : "closed",
+        }),
+      );
+    throw new Error("Children is not a valid react element");
   }
 
   return (
-    <button
-      ref={ref}
-      type="button"
+    <Button
+      ref={mergedRef}
       // The user can style the trigger based on the state
       data-state={context.open ? "open" : "closed"}
-      {...context.getReferenceProps(props)}
+      color={color}
+      size={size}
+      {...context.getReferenceProps(rest)}
     >
       {children}
-    </button>
+    </Button>
   );
-});
+}
 
 export const PopoverContent = React.forwardRef<
   HTMLDivElement,
@@ -242,15 +258,10 @@ export const PopoverDescription = React.forwardRef<
   return <p {...props} ref={ref} id={id} />;
 });
 
-export const PopoverClose = React.forwardRef<
-  HTMLButtonElement,
-  React.ButtonHTMLAttributes<HTMLButtonElement>
->(function PopoverClose(props, ref) {
+export function PopoverClose(props: Parameters<typeof Button>["0"]) {
   const { setOpen } = usePopoverContext();
   return (
-    <button
-      type="button"
-      ref={ref}
+    <Button
       {...props}
       onClick={(event) => {
         props.onClick?.(event);
@@ -258,4 +269,4 @@ export const PopoverClose = React.forwardRef<
       }}
     />
   );
-});
+}

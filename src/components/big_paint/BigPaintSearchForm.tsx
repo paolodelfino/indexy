@@ -2,6 +2,7 @@
 import { searchBigPaintAction } from "@/actions/searchBigPaintAction";
 import { searchBigPaintsAction } from "@/actions/searchBigPaintsAction";
 import BigPaintView from "@/components/big_paint/TempBigPaintView";
+import Button from "@/components/Button";
 import { DateInput } from "@/components/DateInput";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import { SearchSelect } from "@/components/SearchSelect";
@@ -15,7 +16,7 @@ import React, { useEffect, useState } from "react";
 import { z } from "zod";
 
 // TODO: Possibilità di andare avanti e indietro
-export default function SearchBigPaintForm() {
+export default function BigPaintSearchForm() {
   const form = useSearchBigPaintForm();
 
   const [fetchedAtLeastOnce, setFetchedAtLeastOnce] = useState(false);
@@ -74,13 +75,13 @@ export default function SearchBigPaintForm() {
             formPopError={form.popError}
             formPushError={form.pushError}
           />
-          <button
+          <Button
             type="submit"
-            className="max-w-32 overflow-hidden text-ellipsis whitespace-nowrap rounded bg-blue-500 px-3 ring-1 ring-blue-300 hover:bg-blue-300 hover:ring-0 active:bg-blue-400 active:ring-1"
+            color="accent"
             disabled={isSearchPending || form.isInvalid}
           >
             {isSearchPending ? "Searching..." : "Search"}
-          </button>
+          </Button>
         </div>
         <TextInput
           value={form.name}
@@ -161,28 +162,29 @@ function OrderBy({
       <Popover placement="bottom-start">
         <PopoverTrigger
           disabled={disabled}
-          className="hyphens-auto break-words rounded bg-neutral-800 p-2 px-2 text-start ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0"
         >{`Order by (${value})`}</PopoverTrigger>
         <PopoverContent
           className="z-20 flex min-w-16 max-w-[160px] flex-col"
           role="list"
         >
-          <button
+          <Button
             disabled={disabled}
+            className="w-full"
             role="listitem"
-            className="flex gap-2 bg-neutral-800 p-3 ring-1 ring-neutral-600 hover:bg-neutral-600 hover:ring-0 active:bg-neutral-700 active:ring-1"
+            size="large"
             onClick={() => setValue("date")}
           >
             date
-          </button>
-          <button
+          </Button>
+          <Button
             disabled={disabled}
+            className="w-full"
             role="listitem"
-            className="flex gap-2 bg-neutral-800 p-3 ring-1 ring-neutral-600 hover:bg-neutral-600 hover:ring-0 active:bg-neutral-700 active:ring-1"
+            size="large"
             onClick={() => setValue("name")}
           >
             name
-          </button>
+          </Button>
         </PopoverContent>
       </Popover>
       {error && <span>{error}</span>}
@@ -210,28 +212,29 @@ function OrderByDir({
       <Popover placement="bottom-start">
         <PopoverTrigger
           disabled={disabled}
-          className="hyphens-auto break-words rounded bg-neutral-800 p-2 px-2 text-start ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0"
         >{`Order by dir (${value})`}</PopoverTrigger>
         <PopoverContent
           className="z-20 flex min-w-16 max-w-[160px] flex-col"
           role="list"
         >
-          <button
+          <Button
+            className="w-full"
             disabled={disabled}
             role="listitem"
-            className="flex gap-2 overflow-hidden text-ellipsis hyphens-auto whitespace-nowrap break-words bg-neutral-800 p-3 text-start ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0"
+            size="large"
             onClick={() => setValue("asc")}
           >
             asc
-          </button>
-          <button
+          </Button>
+          <Button
+            className="w-full"
             disabled={disabled}
             role="listitem"
-            className="flex gap-2 bg-neutral-800 p-3 ring-1 ring-neutral-600 hover:bg-neutral-600 hover:ring-0 active:bg-neutral-700 active:ring-1"
+            size="large"
             onClick={() => setValue("desc")}
           >
             desc
-          </button>
+          </Button>
         </PopoverContent>
       </Popover>
       {error && <span>{error}</span>}
@@ -277,68 +280,74 @@ function Date_({
       <Popover placement="bottom-start">
         <PopoverTrigger
           disabled={disabled}
-          className="w-fit hyphens-auto break-words rounded bg-neutral-800 p-2 px-2 text-start ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0"
         >{`Comparison (${comparison})`}</PopoverTrigger>
         <PopoverContent
           className="z-20 flex min-w-16 max-w-[160px] flex-col"
           role="list"
         >
-          <button
+          <Button
+            className="w-full"
             disabled={disabled}
             role="listitem"
-            className="flex gap-2 overflow-hidden text-ellipsis hyphens-auto whitespace-nowrap break-words bg-neutral-800 p-3 text-start ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0"
+            size="large"
             onClick={() => setComparison(undefined)}
           >
             undefined
-          </button>
-          <button
+          </Button>
+          <Button
+            className="w-full"
             disabled={disabled}
             role="listitem"
-            className="flex gap-2 overflow-hidden text-ellipsis hyphens-auto whitespace-nowrap break-words bg-neutral-800 p-3 text-start ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0"
+            size="large"
             onClick={() => setComparison(">")}
           >
             {">"}
-          </button>
-          <button
+          </Button>
+          <Button
+            className="w-full"
             disabled={disabled}
             role="listitem"
-            className="flex gap-2 overflow-hidden text-ellipsis hyphens-auto whitespace-nowrap break-words bg-neutral-800 p-3 text-start ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0"
+            size="large"
             onClick={() => setComparison("<")}
           >
             {"<"}
-          </button>
-          <button
+          </Button>
+          <Button
+            className="w-full"
             disabled={disabled}
             role="listitem"
-            className="flex gap-2 overflow-hidden text-ellipsis hyphens-auto whitespace-nowrap break-words bg-neutral-800 p-3 text-start ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0"
+            size="large"
             onClick={() => setComparison("=")}
           >
             {"="}
-          </button>
-          <button
+          </Button>
+          <Button
+            className="w-full"
             disabled={disabled}
             role="listitem"
-            className="flex gap-2 overflow-hidden text-ellipsis hyphens-auto whitespace-nowrap break-words bg-neutral-800 p-3 text-start ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0"
+            size="large"
             onClick={() => setComparison(">=")}
           >
             {">="}
-          </button>
-          <button
+          </Button>
+          <Button
+            className="w-full"
             disabled={disabled}
             role="listitem"
-            className="flex gap-2 overflow-hidden text-ellipsis hyphens-auto whitespace-nowrap break-words bg-neutral-800 p-3 text-start ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0"
+            size="large"
             onClick={() => setComparison("<=")}
           >
             {"<="}
-          </button>
-          <button
+          </Button>
+          <Button
+            className="w-full"
             disabled={disabled}
             role="listitem"
-            className="flex gap-2 overflow-hidden text-ellipsis hyphens-auto whitespace-nowrap break-words bg-neutral-800 p-3 text-start ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0"
+            size="large"
             onClick={() => setComparison("between")}
           >
             {"between"}
-          </button>
+          </Button>
         </PopoverContent>
       </Popover>
       <DateInput

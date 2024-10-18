@@ -1,10 +1,10 @@
 import dynamic from "next/dynamic";
 
 const SearchInspirationForm = dynamic(
-  () => import("@/components/inspiration/SearchInspirationForm"),
+  () => import("@/components/inspiration/InspirationSearchForm"),
 );
 const SearchBigPaintForm = dynamic(
-  () => import("@/components/big_paint/SearchBigPaintForm"),
+  () => import("@/components/big_paint/BigPaintSearchForm"),
 );
 
 export default async function Page({
