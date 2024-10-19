@@ -1,7 +1,7 @@
 import Button from "@/components/Button";
 import {
+  flip as _flip,
   autoUpdate,
-  flip,
   FloatingFocusManager,
   FloatingPortal,
   offset,
@@ -27,6 +27,7 @@ interface PopoverOptions {
   targetRef?: React.RefObject<HTMLElement | null>;
   matchRefWidth?: boolean;
   offset?: number;
+  flip?: boolean;
 }
 
 export function usePopover({
@@ -38,6 +39,7 @@ export function usePopover({
   targetRef,
   matchRefWidth = true,
   offset: offsetValue = 5,
+  flip = true,
 }: PopoverOptions = {}) {
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(initialOpen);
   const [labelId, setLabelId] = React.useState<string | undefined>();
@@ -55,11 +57,13 @@ export function usePopover({
     whileElementsMounted: autoUpdate,
     middleware: [
       offset(offsetValue),
-      flip({
-        crossAxis: placement.includes("-"),
-        fallbackAxisSideDirection: "end",
-        padding: 5,
-      }),
+      flip
+        ? _flip({
+            crossAxis: placement.includes("-"),
+            fallbackAxisSideDirection: "end",
+            padding: 5,
+          })
+        : undefined,
       shift({ padding: 5 }),
       matchRefWidth
         ? size({

@@ -310,6 +310,7 @@ function SearchResultItem({
           className: classNames?.searchResultItem,
         }),
       }}
+      multiple
       disabled={
         context.selected.findIndex((it) => context.selectId(it) === id) !==
           -1 ||

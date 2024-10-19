@@ -3,11 +3,10 @@ import { ClassValue, tv, VariantProps } from "tailwind-variants";
 
 const styles = tv({
   slots: {
-    button:
-      "overflow-hidden text-ellipsis hyphens-auto whitespace-nowrap break-words flex gap-2 text-start m-px w-min",
+    button: "flex gap-2 text-start m-px w-min",
     icon: "flex-shrink-0",
-    text: "min-w-0 overflow-hidden text-ellipsis whitespace-nowrap",
-  }, // TODO: ^ Can remove?
+    text: "overflow-hidden text-ellipsis hyphens-auto break-words",
+  },
   variants: {
     color: {
       ghost: {
@@ -31,6 +30,10 @@ const styles = tv({
       default: { button: "rounded-xl py-1 px-2" },
       large: { button: "p-3" },
     },
+    multiple: {
+      true: { text: "" },
+      false: { text: "whitespace-nowrap" },
+    },
   },
   compoundVariants: [
     {
@@ -45,6 +48,7 @@ export default function Button({
   color = "default",
   size = "default",
   type = "button",
+  multiple = false,
   icon,
   children,
   classNames,
@@ -61,7 +65,7 @@ export default function Button({
   HTMLButtonElement
 > &
   VariantProps<typeof styles>) {
-  const { button, icon: iconStyles, text } = styles({ color, size });
+  const { button, icon: iconStyles, text } = styles({ color, size, multiple });
 
   return (
     <button
