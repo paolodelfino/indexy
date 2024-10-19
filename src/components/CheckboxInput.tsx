@@ -6,17 +6,17 @@ import { FormFieldProps } from "@/utils/form";
 import React from "react";
 import { tv } from "tailwind-variants";
 
-const checkboxInput = tv({
+const styles = tv({
   slots: {
     button: "text-neutral-300",
     icon: "",
-    label: "",
+    text: "",
   },
   variants: { checked: { true: { icon: "fill-current" } } },
 });
 
 type ClassNames = {
-  [key in keyof ReturnType<typeof checkboxInput>]?: string;
+  [key in keyof ReturnType<typeof styles>]?: string;
 };
 
 export function CheckboxInput({
@@ -37,7 +37,7 @@ export function CheckboxInput({
   ({ label: string; id: string } | { label?: never; id?: never }) & {
     classNames?: ClassNames;
   }) {
-  const style = checkboxInput({ checked: value });
+  const { button, icon: iconStyles, text } = styles({ checked: value });
 
   const error = useValidationError(
     value,
@@ -46,52 +46,39 @@ export function CheckboxInput({
     formPopError,
   );
 
+  let onClick: VoidFunction, icon: React.ReactNode;
+  // TODO: Man, I have to fix this icon bullscheisse below
   if (acceptIndeterminate) {
-    const _Button = (
-      <Button
-        id={id}
-        aria-label="Change checkbox state"
-        className={style.button({ className: classNames?.button })}
-        onClick={() =>
-          setValue(value === true ? false : value === false ? undefined : true)
-        }
-        disabled={disabled}
-      >
+    onClick = () =>
+      setValue(value === true ? false : value === false ? undefined : true);
+    icon = (
+      <React.Fragment>
         {value === true && <Square className="fill-current" />}
         {value === false && <Square />}
         {value === undefined && <RemoveSquare />}
-      </Button>
-    );
-
-    return (
-      <React.Fragment>
-        {label && (
-          <div className="flex flex-row items-center gap-2">
-            {_Button}
-            <label
-              className={style.label({ className: classNames?.label })}
-              htmlFor={id}
-            >
-              {label}
-            </label>
-          </div>
-        )}
-        {!label && _Button}
-        {error && <span>{error}</span>}
       </React.Fragment>
     );
+  } else {
+    onClick = () => setValue(!value);
+    icon = <Star className={iconStyles({ className: classNames?.icon })} />;
   }
 
   return (
     <React.Fragment>
       <Button
-        aria-label="Toggle checkbox"
+        aria-label="Change checkbox state"
         color="ghost"
-        className={style.button({ className: classNames?.button })}
-        onClick={() => setValue(!value)}
+        classNames={{
+          button: button({ className: classNames?.button }),
+          icon: iconStyles({ className: classNames?.icon }),
+          text: text({ className: classNames?.text }),
+        }}
+        onClick={onClick}
         disabled={disabled}
+        icon={label && icon}
       >
-        <Star className={style.icon({ className: classNames?.icon })} />
+        {!label && icon}
+        {label}
       </Button>
       {error && <span>{error}</span>}
     </React.Fragment>

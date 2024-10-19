@@ -56,7 +56,9 @@ export function DateInput({
         <Button
           disabled={disabled}
           color="ghost"
-          className={style.clearButton({ className: classNames?.clearButton })}
+          classNames={{
+            button: style.clearButton({ className: classNames?.clearButton }),
+          }}
           onClick={() => setValue(undefined)}
         >
           Clear

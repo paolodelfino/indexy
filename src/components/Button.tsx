@@ -1,22 +1,35 @@
 import Link, { LinkProps } from "next/link";
-import { tv, VariantProps } from "tailwind-variants";
+import { ClassValue, tv, VariantProps } from "tailwind-variants";
 
 const styles = tv({
-  base: "overflow-hidden text-ellipsis hyphens-auto whitespace-nowrap break-words flex gap-2 text-start m-px w-min",
+  slots: {
+    button:
+      "overflow-hidden text-ellipsis hyphens-auto whitespace-nowrap break-words flex gap-2 text-start m-px w-min",
+    icon: "flex-shrink-0",
+    text: "min-w-0 overflow-hidden text-ellipsis whitespace-nowrap",
+  }, // TODO: ^ Can remove?
   variants: {
     color: {
-      ghost:
-        "ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0",
-      default:
-        "bg-neutral-800 ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0",
-      accent:
-        "bg-blue-500 ring-1 ring-blue-300 disabled:text-blue-200 [&:not(:disabled):active]:!bg-blue-300 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-blue-300 [&:not(:disabled):hover]:ring-0",
-      danger:
-        "bg-red-800 ring-1 ring-red-600 disabled:text-red-500 [&:not(:disabled):active]:!bg-red-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-red-600 [&:not(:disabled):hover]:ring-0",
+      ghost: {
+        button:
+          "ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0",
+      },
+      default: {
+        button:
+          "bg-neutral-800 ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0",
+      },
+      accent: {
+        button:
+          "bg-blue-500 ring-1 ring-blue-300 disabled:text-blue-200 [&:not(:disabled):active]:!bg-blue-300 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-blue-300 [&:not(:disabled):hover]:ring-0",
+      },
+      danger: {
+        button:
+          "bg-red-800 ring-1 ring-red-600 disabled:text-red-500 [&:not(:disabled):active]:!bg-red-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-red-600 [&:not(:disabled):hover]:ring-0",
+      },
     },
     size: {
-      default: "rounded-xl py-1 px-2",
-      large: "p-3",
+      default: { button: "rounded-xl py-1 px-2" },
+      large: { button: "p-3" },
     },
   },
   compoundVariants: [
@@ -29,47 +42,73 @@ const styles = tv({
 });
 
 export default function Button({
-  className,
   color = "default",
   size = "default",
-  children,
   type = "button",
+  icon,
+  children,
+  classNames,
   ...rest
 }: {
   children: React.ReactNode;
+  icon?: React.ReactNode;
+  className?: never;
+  classNames?: {
+    [key in keyof ReturnType<typeof styles>]?: ClassValue;
+  };
 } & React.DetailedHTMLProps<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
 > &
   VariantProps<typeof styles>) {
+  const { button, icon: iconStyles, text } = styles({ color, size });
+
   return (
     <button
-      className={styles({ className: className, color, size })}
+      className={button({ className: classNames?.button })}
       type={type}
       {...rest}
     >
-      {children}
+      {icon && (
+        <div className={iconStyles({ className: classNames?.icon })}>
+          {icon}
+        </div>
+      )}
+      <span className={text({ className: classNames?.text })}>{children}</span>
     </button>
   );
 }
 
 export function ButtonLink({
-  className,
   color = "default",
   size = "default",
+  icon,
   children,
+  classNames,
   ...rest
 }: {
   children: React.ReactNode;
+  icon?: React.ReactNode;
+  className?: never;
+  classNames?: {
+    [key in keyof ReturnType<typeof styles>]?: ClassValue;
+  };
 } & React.DetailedHTMLProps<
   React.AnchorHTMLAttributes<HTMLAnchorElement>,
   HTMLAnchorElement
 > &
   LinkProps &
   VariantProps<typeof styles>) {
+  const { button, icon: iconStyles, text } = styles({ color, size });
+
   return (
-    <Link className={styles({ className: className, color, size })} {...rest}>
-      {children}
+    <Link className={button({ className: classNames?.button })} {...rest}>
+      {icon && (
+        <div className={iconStyles({ className: classNames?.icon })}>
+          {icon}
+        </div>
+      )}
+      <span className={text({ className: classNames?.text })}>{children}</span>
     </Link>
   );
 }

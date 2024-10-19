@@ -64,54 +64,54 @@ export default function Toolbar({
             role="listitem"
             color="ghost"
             size="large"
-            className="py-5"
+            classNames={{ button: "py-5", text: "text-neutral-300" }}
+            icon={<Square />}
           >
-            <Square />
-            <span className="text-neutral-300">BigPaints</span>
+            BigPaints
           </ButtonLink>
           <ButtonLink
             href="/?view=inspiration"
             role="listitem"
             color="ghost"
             size="large"
-            className="py-5"
+            classNames={{ button: "py-5", text: "text-neutral-300" }}
+            icon={<InkStroke20Filled />}
           >
-            <InkStroke20Filled />
-            <span className="text-neutral-300">Inspirations</span>
+            Inspirations
           </ButtonLink>
           <Popover placement="left-start">
             <PopoverTrigger
               role="listitem"
               color="ghost"
               size="large"
-              className="py-5"
+              classNames={{ button: "py-5", text: "text-neutral-300" }}
+              icon={<Add02 />}
             >
-              <Add02 />
-              <span className="text-neutral-300">Create</span>
+              Create
             </PopoverTrigger>
             <PopoverContent
               className="z-20 flex min-w-16 max-w-[160px] flex-col"
               role="list"
             >
               <ButtonLink
-                className="w-full"
+                classNames={{ button: "w-full", text: "text-neutral-300" }}
                 href={`${isMonitor && !url.startsWith("/create") ? "/redirect?url=" : ""}/create?type=big_paint`}
                 // target="_blank"
                 role="listitem"
                 size="large"
+                icon={<Square />}
               >
-                <Square />
-                <span className="text-neutral-300">BigPaint</span>
+                BigPaint
               </ButtonLink>
               <ButtonLink
-                className="w-full"
+                classNames={{ button: "w-full", text: "text-neutral-300" }}
                 href={`${isMonitor && !url.startsWith("/create") ? "/redirect?url=" : ""}/create?type=inspiration`}
                 // target="_blank"
                 role="listitem"
                 size="large"
+                icon={<InkStroke20Filled />}
               >
-                <InkStroke20Filled />
-                <span className="text-neutral-300">Inspiration</span>
+                Inspiration
               </ButtonLink>
             </PopoverContent>
           </Popover>
@@ -121,9 +121,14 @@ export default function Toolbar({
               color="ghost"
               size="large"
               onClick={toggleEdit}
+              icon={
+                <PencilEdit01
+                  className={cn(mode === "edit" && "fill-current")}
+                />
+              }
+              classNames={{ button: "py-5", text: "text-neutral-300" }}
             >
-              <PencilEdit01 className={cn(mode === "edit" && "fill-current")} />
-              <span className="text-neutral-300">Edit</span>
+              Edit
             </Button>
           )}
           <Popover placement="left-start">
@@ -131,32 +136,32 @@ export default function Toolbar({
               role="listitem"
               color="ghost"
               size="large"
-              className="py-5"
+              classNames={{ button: "py-5", text: "text-neutral-300" }}
+              icon={<SearchSquare />}
             >
-              <SearchSquare />
-              <span className="text-neutral-300">Search</span>
+              Search
             </PopoverTrigger>
             <PopoverContent
               className="z-20 flex min-w-16 max-w-[160px] flex-col"
               role="list"
             >
               <ButtonLink
-                className="w-full"
+                classNames={{ button: "w-full", text: "text-neutral-300" }}
                 href="/search?type=big_paint"
                 role="listitem"
                 size="large"
+                icon={<Square />}
               >
-                <Square />
-                <span className="text-neutral-300">BigPaint</span>
+                BigPaint
               </ButtonLink>
               <ButtonLink
-                className="w-full"
+                classNames={{ button: "w-full", text: "text-neutral-300" }}
                 href="/search?type=inspiration"
                 role="listitem"
                 size="large"
+                icon={<InkStroke20Filled />}
               >
-                <InkStroke20Filled />
-                <span className="text-neutral-300">Inspiration</span>
+                Inspiration
               </ButtonLink>
             </PopoverContent>
           </Popover>

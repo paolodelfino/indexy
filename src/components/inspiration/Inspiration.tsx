@@ -88,7 +88,7 @@ export default function Inspiration({
           <Button
             disabled={mode === "edit"}
             aria-label="Toggle highlight"
-            className="pl-4 text-neutral-300"
+            classNames={{ button: "pl-4 text-neutral-300" }}
           >
             <Star className={cn(data.highlight && "fill-current")} />
           </Button>

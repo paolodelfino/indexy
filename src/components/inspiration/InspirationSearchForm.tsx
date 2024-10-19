@@ -118,7 +118,7 @@ export default function InspirationSearchForm() {
           disabled={isSearchPending}
           formPopError={form.popError}
           formPushError={form.pushError}
-          classNames={{ label: "w-full" }}
+          classNames={{ button: "w-full" }}
         />
         <SearchSelect
           formPushError={form.pushError}
@@ -203,7 +203,7 @@ function OrderBy({
           role="list"
         >
           <Button
-            className="w-full"
+            classNames={{ button: "w-full" }}
             disabled={disabled}
             role="listitem"
             size="large"
@@ -212,7 +212,7 @@ function OrderBy({
             date
           </Button>
           <Button
-            className="w-full"
+            classNames={{ button: "w-full" }}
             disabled={disabled}
             role="listitem"
             size="large"
@@ -221,7 +221,7 @@ function OrderBy({
             highlight
           </Button>
           <Button
-            className="w-full"
+            classNames={{ button: "w-full" }}
             disabled={disabled}
             role="listitem"
             size="large"
@@ -262,7 +262,7 @@ function OrderByDir({
           role="list"
         >
           <Button
-            className="w-full"
+            classNames={{ button: "w-full" }}
             disabled={disabled}
             role="listitem"
             size="large"
@@ -271,7 +271,7 @@ function OrderByDir({
             asc
           </Button>
           <Button
-            className="w-full"
+            classNames={{ button: "w-full" }}
             disabled={disabled}
             role="listitem"
             size="large"
@@ -330,7 +330,7 @@ function Date_({
           role="list"
         >
           <Button
-            className="w-full"
+            classNames={{ button: "w-full" }}
             disabled={disabled}
             role="listitem"
             size="large"
@@ -339,7 +339,7 @@ function Date_({
             undefined
           </Button>
           <Button
-            className="w-full"
+            classNames={{ button: "w-full" }}
             disabled={disabled}
             role="listitem"
             size="large"
@@ -348,7 +348,7 @@ function Date_({
             {">"}
           </Button>
           <Button
-            className="w-full"
+            classNames={{ button: "w-full" }}
             disabled={disabled}
             role="listitem"
             size="large"
@@ -357,7 +357,7 @@ function Date_({
             {"<"}
           </Button>
           <Button
-            className="w-full"
+            classNames={{ button: "w-full" }}
             disabled={disabled}
             role="listitem"
             size="large"
@@ -366,7 +366,7 @@ function Date_({
             {"="}
           </Button>
           <Button
-            className="w-full"
+            classNames={{ button: "w-full" }}
             disabled={disabled}
             role="listitem"
             size="large"
@@ -375,7 +375,7 @@ function Date_({
             {">="}
           </Button>
           <Button
-            className="w-full"
+            classNames={{ button: "w-full" }}
             disabled={disabled}
             role="listitem"
             size="large"
@@ -384,7 +384,7 @@ function Date_({
             {"<="}
           </Button>
           <Button
-            className="w-full"
+            classNames={{ button: "w-full" }}
             disabled={disabled}
             role="listitem"
             size="large"

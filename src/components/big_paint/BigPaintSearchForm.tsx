@@ -169,7 +169,7 @@ function OrderBy({
         >
           <Button
             disabled={disabled}
-            className="w-full"
+            classNames={{ button: "w-full" }}
             role="listitem"
             size="large"
             onClick={() => setValue("date")}
@@ -178,7 +178,7 @@ function OrderBy({
           </Button>
           <Button
             disabled={disabled}
-            className="w-full"
+            classNames={{ button: "w-full" }}
             role="listitem"
             size="large"
             onClick={() => setValue("name")}
@@ -218,7 +218,7 @@ function OrderByDir({
           role="list"
         >
           <Button
-            className="w-full"
+            classNames={{ button: "w-full" }}
             disabled={disabled}
             role="listitem"
             size="large"
@@ -227,7 +227,7 @@ function OrderByDir({
             asc
           </Button>
           <Button
-            className="w-full"
+            classNames={{ button: "w-full" }}
             disabled={disabled}
             role="listitem"
             size="large"
@@ -286,7 +286,7 @@ function Date_({
           role="list"
         >
           <Button
-            className="w-full"
+            classNames={{ button: "w-full" }}
             disabled={disabled}
             role="listitem"
             size="large"
@@ -295,7 +295,7 @@ function Date_({
             undefined
           </Button>
           <Button
-            className="w-full"
+            classNames={{ button: "w-full" }}
             disabled={disabled}
             role="listitem"
             size="large"
@@ -304,7 +304,7 @@ function Date_({
             {">"}
           </Button>
           <Button
-            className="w-full"
+            classNames={{ button: "w-full" }}
             disabled={disabled}
             role="listitem"
             size="large"
@@ -313,7 +313,7 @@ function Date_({
             {"<"}
           </Button>
           <Button
-            className="w-full"
+            classNames={{ button: "w-full" }}
             disabled={disabled}
             role="listitem"
             size="large"
@@ -322,7 +322,7 @@ function Date_({
             {"="}
           </Button>
           <Button
-            className="w-full"
+            classNames={{ button: "w-full" }}
             disabled={disabled}
             role="listitem"
             size="large"
@@ -331,7 +331,7 @@ function Date_({
             {">="}
           </Button>
           <Button
-            className="w-full"
+            classNames={{ button: "w-full" }}
             disabled={disabled}
             role="listitem"
             size="large"
@@ -340,7 +340,7 @@ function Date_({
             {"<="}
           </Button>
           <Button
-            className="w-full"
+            classNames={{ button: "w-full" }}
             disabled={disabled}
             role="listitem"
             size="large"

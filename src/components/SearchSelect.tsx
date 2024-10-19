@@ -158,7 +158,9 @@ function Title({ classNames }: ComponentProps<SearchSelectSlots>) {
         disabled={context.disabled}
         color="ghost"
         onClick={() => context.setShowResults((curr) => !curr)}
-        className={style.titleButton({ className: classNames?.titleButton })}
+        classNames={{
+          button: style.titleButton({ className: classNames?.titleButton }),
+        }}
       >
         <ArrowDown01
           className={style.titleIcon({ className: classNames?.titleIcon })}
@@ -208,7 +210,9 @@ function SelectedItem({
       role="listitem"
       title={context.selectContent(data)}
       disabled={context.disabled}
-      className={style.selectedItem({ className: classNames?.selectedItem })}
+      classNames={{
+        button: style.selectedItem({ className: classNames?.selectedItem }),
+      }}
       onClick={() =>
         context.setSelected((selected) => selected.filter((it) => it.id !== id))
       }
@@ -301,9 +305,11 @@ function SearchResultItem({
     <Button
       role="listitem"
       size="large"
-      className={style.searchResultItem({
-        className: classNames?.searchResultItem,
-      })}
+      classNames={{
+        button: style.searchResultItem({
+          className: classNames?.searchResultItem,
+        }),
+      }}
       disabled={
         context.selected.findIndex((it) => context.selectId(it) === id) !==
           -1 ||
