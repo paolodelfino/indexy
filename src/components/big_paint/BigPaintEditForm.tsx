@@ -2,7 +2,7 @@
 import { deleteBigPaintAction } from "@/actions/deleteBigPaintAction";
 import { editBigPaintAction } from "@/actions/editBigPaintAction";
 import { fetchBigPaintAction } from "@/actions/fetchBigPaintAction";
-import { searchBigPaintsAction } from "@/actions/searchBigPaintsAction";
+import { searchBigPaintAction } from "@/actions/searchBigPaintAction";
 import Button from "@/components/Button";
 import { DateInput } from "@/components/DateInput";
 import { SearchSelect } from "@/components/SearchSelect";
@@ -132,7 +132,20 @@ export default function BigPaintEditForm({ id }: { id: string }) {
         value={form.related_big_paints_ids!}
         setValue={(value) => form.set({ related_big_paints_ids: value })}
         validation={editBigPaintFormSchema.shape.related_big_paints_ids}
-        searchAction={searchBigPaintsAction}
+        searchAction={(prevState, { query }) =>
+          searchBigPaintAction({
+            name: query,
+            orderBy: "date",
+            orderByDir: "asc",
+            date: undefined,
+            related_big_paints_ids: undefined,
+          }).then((res) =>
+            res.data.map((item) => ({
+              name: item.name,
+              id: item.id,
+            })),
+          )
+        }
         title="Related BigPaints"
         selectId={(value) => value.id}
         selectContent={(value) => value.name}

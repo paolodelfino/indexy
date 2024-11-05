@@ -1,7 +1,7 @@
 "use client";
 import Button from "@/components/Button";
 import { useValidationError } from "@/hooks/useValidationError";
-import { ComponentProps } from "@/utils/component";
+import { ComponentProps } from "@/utils/tailwind-variants";
 import { dateToIsoString } from "@/utils/date";
 import { FormFieldProps } from "@/utils/form";
 import { tv } from "tailwind-variants";

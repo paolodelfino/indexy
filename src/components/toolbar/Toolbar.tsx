@@ -64,7 +64,11 @@ export default function Toolbar({
             role="listitem"
             color="ghost"
             size="large"
-            classNames={{ button: "py-5", text: "text-neutral-300" }}
+            classNames={{
+              button: "py-5",
+              text: "text-neutral-300",
+            }}
+            full={variant === "monitor"}
             icon={<Square />}
           >
             BigPaints
@@ -75,6 +79,7 @@ export default function Toolbar({
             color="ghost"
             size="large"
             classNames={{ button: "py-5", text: "text-neutral-300" }}
+            full={variant === "monitor"}
             icon={<InkStroke20Filled />}
           >
             Inspirations
@@ -85,6 +90,7 @@ export default function Toolbar({
               color="ghost"
               size="large"
               classNames={{ button: "py-5", text: "text-neutral-300" }}
+              full={variant === "monitor"}
               icon={<Add02 />}
             >
               Create
@@ -94,7 +100,8 @@ export default function Toolbar({
               role="list"
             >
               <ButtonLink
-                classNames={{ button: "w-full", text: "text-neutral-300" }}
+                classNames={{ text: "text-neutral-300" }}
+                full
                 href={`${isMonitor && !url.startsWith("/create") ? "/redirect?url=" : ""}/create?type=big_paint`}
                 // target="_blank"
                 role="listitem"
@@ -104,7 +111,8 @@ export default function Toolbar({
                 BigPaint
               </ButtonLink>
               <ButtonLink
-                classNames={{ button: "w-full", text: "text-neutral-300" }}
+                classNames={{ text: "text-neutral-300" }}
+                full
                 href={`${isMonitor && !url.startsWith("/create") ? "/redirect?url=" : ""}/create?type=inspiration`}
                 // target="_blank"
                 role="listitem"
@@ -126,6 +134,7 @@ export default function Toolbar({
                   className={cn(mode === "edit" && "fill-current")}
                 />
               }
+              full={variant === "monitor"}
               classNames={{ button: "py-5", text: "text-neutral-300" }}
             >
               Edit
@@ -138,6 +147,7 @@ export default function Toolbar({
               size="large"
               classNames={{ button: "py-5", text: "text-neutral-300" }}
               icon={<SearchSquare />}
+              full={variant === "monitor"}
             >
               Search
             </PopoverTrigger>
@@ -146,7 +156,8 @@ export default function Toolbar({
               role="list"
             >
               <ButtonLink
-                classNames={{ button: "w-full", text: "text-neutral-300" }}
+                classNames={{ text: "text-neutral-300" }}
+                full
                 href="/search?type=big_paint"
                 role="listitem"
                 size="large"
@@ -155,7 +166,8 @@ export default function Toolbar({
                 BigPaint
               </ButtonLink>
               <ButtonLink
-                classNames={{ button: "w-full", text: "text-neutral-300" }}
+                classNames={{ text: "text-neutral-300" }}
+                full
                 href="/search?type=inspiration"
                 role="listitem"
                 size="large"

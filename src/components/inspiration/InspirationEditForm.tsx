@@ -2,11 +2,12 @@
 import { deleteInspirationAction } from "@/actions/deleteInspirationAction";
 import { editInspirationAction } from "@/actions/editInspirationAction";
 import { fetchInspirationAction } from "@/actions/fetchInspirationAction";
-import { searchBigPaintsAction } from "@/actions/searchBigPaintsAction";
-import { searchInspirationsAction } from "@/actions/searchInspirationsAction";
+import { searchBigPaintAction } from "@/actions/searchBigPaintAction";
+import { searchInspirationAction } from "@/actions/searchInspirationAction";
 import Button from "@/components/Button";
 import { CheckboxInput } from "@/components/CheckboxInput";
 import { DateInput } from "@/components/DateInput";
+import { Star } from "@/components/icons";
 import { SearchSelect } from "@/components/SearchSelect";
 import { TextInput } from "@/components/TextInput";
 import { editInspirationFormSchema } from "@/schemas/editInspirationFormSchema";
@@ -139,6 +140,8 @@ export default function InspirationEditForm({ id }: { id: string }) {
             formPopError={form.popError}
             disabled={isEditActionPending || isDeleteActionPending}
             classNames={{ button: "pl-4" }}
+            checkedIcon={<Star fill="currentColor" />}
+            uncheckedIcon={<Star />}
           />
         </div>
       </div>
@@ -149,7 +152,20 @@ export default function InspirationEditForm({ id }: { id: string }) {
         value={form.related_big_paints_ids!}
         setValue={(value) => form.set({ related_big_paints_ids: value })}
         validation={editInspirationFormSchema.shape.related_big_paints_ids}
-        searchAction={searchBigPaintsAction}
+        searchAction={(prevState, { query }) =>
+          searchBigPaintAction({
+            name: query,
+            orderBy: "date",
+            orderByDir: "asc",
+            date: undefined,
+            related_big_paints_ids: undefined,
+          }).then((res) =>
+            res.data.map((item) => ({
+              name: item.name,
+              id: item.id,
+            })),
+          )
+        }
         title="Related BigPaints"
         selectId={(value) => value.id}
         selectContent={(value) => value.name}
@@ -163,7 +179,22 @@ export default function InspirationEditForm({ id }: { id: string }) {
         value={form.related_inspirations_ids!}
         setValue={(value) => form.set({ related_inspirations_ids: value })}
         validation={editInspirationFormSchema.shape.related_inspirations_ids}
-        searchAction={searchInspirationsAction}
+        searchAction={(prevState, { query }) =>
+          searchInspirationAction({
+            content: query,
+            orderBy: "date",
+            orderByDir: "asc",
+            date: undefined,
+            highlight: undefined,
+            related_big_paints_ids: undefined,
+            related_inspirations_ids: undefined,
+          }).then((res) =>
+            res.data.map((item) => ({
+              content: item.content,
+              id: item.id,
+            })),
+          )
+        }
         title="Related Inspirations"
         selectId={(value) => value.id}
         selectContent={(value) => value.content}

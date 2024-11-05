@@ -1,7 +1,6 @@
 "use client";
-import { searchBigPaintsAction } from "@/actions/searchBigPaintsAction";
+import { searchBigPaintAction } from "@/actions/searchBigPaintAction";
 import { searchInspirationAction } from "@/actions/searchInspirationAction";
-import { searchInspirationsAction } from "@/actions/searchInspirationsAction";
 import Button from "@/components/Button";
 import { CheckboxInput } from "@/components/CheckboxInput";
 import { DateInput } from "@/components/DateInput";
@@ -112,13 +111,12 @@ export default function InspirationSearchForm() {
           value={form.highlight}
           acceptIndeterminate
           label="Highlight"
-          id="search-form-highlight"
           setValue={(value) => form.set({ highlight: value })}
           validation={searchInspirationFormSchema.sourceType().shape.highlight}
           disabled={isSearchPending}
           formPopError={form.popError}
           formPushError={form.pushError}
-          classNames={{ button: "w-full" }}
+          full
         />
         <SearchSelect
           formPushError={form.pushError}
@@ -136,7 +134,20 @@ export default function InspirationSearchForm() {
             searchInspirationFormSchema.sourceType().shape
               .related_big_paints_ids
           }
-          searchAction={searchBigPaintsAction}
+          searchAction={(prevState, { query }) =>
+            searchBigPaintAction({
+              name: query,
+              orderBy: "date",
+              orderByDir: "asc",
+              date: undefined,
+              related_big_paints_ids: undefined,
+            }).then((res) =>
+              res.data.map((item) => ({
+                name: item.name,
+                id: item.id,
+              })),
+            )
+          }
           title="Related BigPaints"
           selectId={(value) => value.id}
           selectContent={(value) => value.name}
@@ -158,7 +169,22 @@ export default function InspirationSearchForm() {
             searchInspirationFormSchema.sourceType().shape
               .related_inspirations_ids
           }
-          searchAction={searchInspirationsAction}
+          searchAction={(prevState, { query }) =>
+            searchInspirationAction({
+              content: query,
+              orderBy: "date",
+              orderByDir: "asc",
+              date: undefined,
+              highlight: undefined,
+              related_big_paints_ids: undefined,
+              related_inspirations_ids: undefined,
+            }).then((res) =>
+              res.data.map((item) => ({
+                content: item.content,
+                id: item.id,
+              })),
+            )
+          }
           title="Related Inspirations"
           selectId={(value) => value.id}
           selectContent={(value) => value.content}
@@ -203,7 +229,7 @@ function OrderBy({
           role="list"
         >
           <Button
-            classNames={{ button: "w-full" }}
+            full
             disabled={disabled}
             role="listitem"
             size="large"
@@ -212,7 +238,7 @@ function OrderBy({
             date
           </Button>
           <Button
-            classNames={{ button: "w-full" }}
+            full
             disabled={disabled}
             role="listitem"
             size="large"
@@ -221,7 +247,7 @@ function OrderBy({
             highlight
           </Button>
           <Button
-            classNames={{ button: "w-full" }}
+            full
             disabled={disabled}
             role="listitem"
             size="large"
@@ -262,7 +288,7 @@ function OrderByDir({
           role="list"
         >
           <Button
-            classNames={{ button: "w-full" }}
+            full
             disabled={disabled}
             role="listitem"
             size="large"
@@ -271,7 +297,7 @@ function OrderByDir({
             asc
           </Button>
           <Button
-            classNames={{ button: "w-full" }}
+            full
             disabled={disabled}
             role="listitem"
             size="large"
@@ -330,7 +356,7 @@ function Date_({
           role="list"
         >
           <Button
-            classNames={{ button: "w-full" }}
+            full
             disabled={disabled}
             role="listitem"
             size="large"
@@ -339,7 +365,7 @@ function Date_({
             undefined
           </Button>
           <Button
-            classNames={{ button: "w-full" }}
+            full
             disabled={disabled}
             role="listitem"
             size="large"
@@ -348,7 +374,7 @@ function Date_({
             {">"}
           </Button>
           <Button
-            classNames={{ button: "w-full" }}
+            full
             disabled={disabled}
             role="listitem"
             size="large"
@@ -357,7 +383,7 @@ function Date_({
             {"<"}
           </Button>
           <Button
-            classNames={{ button: "w-full" }}
+            full
             disabled={disabled}
             role="listitem"
             size="large"
@@ -366,7 +392,7 @@ function Date_({
             {"="}
           </Button>
           <Button
-            classNames={{ button: "w-full" }}
+            full
             disabled={disabled}
             role="listitem"
             size="large"
@@ -375,7 +401,7 @@ function Date_({
             {">="}
           </Button>
           <Button
-            classNames={{ button: "w-full" }}
+            full
             disabled={disabled}
             role="listitem"
             size="large"
@@ -384,7 +410,7 @@ function Date_({
             {"<="}
           </Button>
           <Button
-            classNames={{ button: "w-full" }}
+            full
             disabled={disabled}
             role="listitem"
             size="large"

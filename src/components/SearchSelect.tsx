@@ -2,7 +2,7 @@
 import Button from "@/components/Button";
 import { ArrowDown01 } from "@/components/icons";
 import { useValidationError } from "@/hooks/useValidationError";
-import { ComponentProps } from "@/utils/component";
+import { ComponentProps } from "@/utils/tailwind-variants";
 import { FormFieldProps } from "@/utils/form";
 import React, {
   createContext,
@@ -30,7 +30,7 @@ const searchSelect = tv({
     searchResultList: "",
     searchResultEmpty: "",
     searchResultLoading: "",
-    searchResultItem: "w-full",
+    searchResultItem: "",
   },
 });
 
@@ -52,7 +52,7 @@ const SearchSelectContext = createContext<{
   blacklist?: any[];
 }>();
 
-// TODO: Support accept indeterminate
+// TODO: Support accept indeterminate (simple turn off button between show result button and/or system based on combinarions using first value provided)
 export function SearchSelect<Display, Output extends Array<any> | undefined>({
   classNames,
   value,
@@ -305,6 +305,7 @@ function SearchResultItem({
     <Button
       role="listitem"
       size="large"
+      full
       classNames={{
         button: style.searchResultItem({
           className: classNames?.searchResultItem,

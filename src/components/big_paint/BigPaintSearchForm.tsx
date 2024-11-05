@@ -1,6 +1,5 @@
 "use client";
 import { searchBigPaintAction } from "@/actions/searchBigPaintAction";
-import { searchBigPaintsAction } from "@/actions/searchBigPaintsAction";
 import BigPaintView from "@/components/big_paint/TempBigPaintView";
 import Button from "@/components/Button";
 import { DateInput } from "@/components/DateInput";
@@ -123,7 +122,20 @@ export default function BigPaintSearchForm() {
           validation={
             searchBigPaintFormSchema.sourceType().shape.related_big_paints_ids
           }
-          searchAction={searchBigPaintsAction}
+          searchAction={(prevState, { query }) =>
+            searchBigPaintAction({
+              name: query,
+              orderBy: "date",
+              orderByDir: "asc",
+              date: undefined,
+              related_big_paints_ids: undefined,
+            }).then((res) =>
+              res.data.map((item) => ({
+                name: item.name,
+                id: item.id,
+              })),
+            )
+          }
           title="Related BigPaints"
           selectId={(value) => value.id}
           selectContent={(value) => value.name}
@@ -169,7 +181,7 @@ function OrderBy({
         >
           <Button
             disabled={disabled}
-            classNames={{ button: "w-full" }}
+            full
             role="listitem"
             size="large"
             onClick={() => setValue("date")}
@@ -178,7 +190,7 @@ function OrderBy({
           </Button>
           <Button
             disabled={disabled}
-            classNames={{ button: "w-full" }}
+            full
             role="listitem"
             size="large"
             onClick={() => setValue("name")}
@@ -218,7 +230,7 @@ function OrderByDir({
           role="list"
         >
           <Button
-            classNames={{ button: "w-full" }}
+            full
             disabled={disabled}
             role="listitem"
             size="large"
@@ -227,7 +239,7 @@ function OrderByDir({
             asc
           </Button>
           <Button
-            classNames={{ button: "w-full" }}
+            full
             disabled={disabled}
             role="listitem"
             size="large"
@@ -280,13 +292,14 @@ function Date_({
       <Popover placement="bottom-start">
         <PopoverTrigger
           disabled={disabled}
+          full
         >{`Comparison (${comparison})`}</PopoverTrigger>
         <PopoverContent
           className="z-20 flex min-w-16 max-w-[160px] flex-col"
           role="list"
         >
           <Button
-            classNames={{ button: "w-full" }}
+            full
             disabled={disabled}
             role="listitem"
             size="large"
@@ -295,7 +308,7 @@ function Date_({
             undefined
           </Button>
           <Button
-            classNames={{ button: "w-full" }}
+            full
             disabled={disabled}
             role="listitem"
             size="large"
@@ -304,7 +317,7 @@ function Date_({
             {">"}
           </Button>
           <Button
-            classNames={{ button: "w-full" }}
+            full
             disabled={disabled}
             role="listitem"
             size="large"
@@ -313,7 +326,7 @@ function Date_({
             {"<"}
           </Button>
           <Button
-            classNames={{ button: "w-full" }}
+            full
             disabled={disabled}
             role="listitem"
             size="large"
@@ -322,7 +335,7 @@ function Date_({
             {"="}
           </Button>
           <Button
-            classNames={{ button: "w-full" }}
+            full
             disabled={disabled}
             role="listitem"
             size="large"
@@ -331,7 +344,7 @@ function Date_({
             {">="}
           </Button>
           <Button
-            classNames={{ button: "w-full" }}
+            full
             disabled={disabled}
             role="listitem"
             size="large"
@@ -340,7 +353,7 @@ function Date_({
             {"<="}
           </Button>
           <Button
-            classNames={{ button: "w-full" }}
+            full
             disabled={disabled}
             role="listitem"
             size="large"

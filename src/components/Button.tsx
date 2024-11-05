@@ -1,10 +1,11 @@
 import Link, { LinkProps } from "next/link";
 import { ClassValue, tv, VariantProps } from "tailwind-variants";
 
-const styles = tv({
+// TODO: Problema con il line clamp
+export const styles = tv({
   slots: {
-    button: "flex gap-2 text-start m-px w-min",
-    icon: "flex-shrink-0",
+    button: "flex gap-2 text-start m-px",
+    iconContainer: "flex-shrink-0",
     text: "overflow-hidden text-ellipsis hyphens-auto break-words",
   },
   variants: {
@@ -34,6 +35,10 @@ const styles = tv({
       true: { text: "" },
       false: { text: "whitespace-nowrap" },
     },
+    full: {
+      true: { button: "w-[calc(100%-1px)]" },
+      false: { button: "w-min" },
+    },
   },
   compoundVariants: [
     {
@@ -52,6 +57,7 @@ export default function Button({
   icon,
   children,
   classNames,
+  full = false,
   ...rest
 }: {
   children: React.ReactNode;
@@ -65,7 +71,12 @@ export default function Button({
   HTMLButtonElement
 > &
   VariantProps<typeof styles>) {
-  const { button, icon: iconStyles, text } = styles({ color, size, multiple });
+  const { button, iconContainer, text } = styles({
+    color,
+    size,
+    multiple,
+    full,
+  });
 
   return (
     <button
@@ -74,7 +85,9 @@ export default function Button({
       {...rest}
     >
       {icon && (
-        <div className={iconStyles({ className: classNames?.icon })}>
+        <div
+          className={iconContainer({ className: classNames?.iconContainer })}
+        >
           {icon}
         </div>
       )}
@@ -89,6 +102,7 @@ export function ButtonLink({
   icon,
   children,
   classNames,
+  full = false,
   ...rest
 }: {
   children: React.ReactNode;
@@ -103,12 +117,16 @@ export function ButtonLink({
 > &
   LinkProps &
   VariantProps<typeof styles>) {
-  const { button, icon: iconStyles, text } = styles({ color, size });
+  const {
+    button,
+    iconContainer: iconStyles,
+    text,
+  } = styles({ color, size, full });
 
   return (
     <Link className={button({ className: classNames?.button })} {...rest}>
       {icon && (
-        <div className={iconStyles({ className: classNames?.icon })}>
+        <div className={iconStyles({ className: classNames?.iconContainer })}>
           {icon}
         </div>
       )}

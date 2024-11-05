@@ -1,9 +1,8 @@
 "use client";
 import Button, { styles as buttonStyles } from "@/components/Button";
 import { RemoveSquare, Square } from "@/components/icons";
-import { useValidationError } from "@/hooks/useValidationError";
-import { FormFieldProps } from "@/utils/form";
-import React from "react";
+import { FormField } from "@/utils/form2";
+import React, { useEffect } from "react";
 import { ClassValue, tv, VariantProps } from "tailwind-variants";
 
 const styles = tv({
@@ -19,14 +18,19 @@ const styles = tv({
   },
 });
 
-export function CheckboxInput({
-  value,
+type Meta = boolean | undefined;
+
+type Value = boolean | undefined;
+
+export type FieldCheckbox = FormField<Value, Meta>;
+
+export default function FormCheckbox({
+  meta,
+  setMeta,
   setValue,
-  validation,
-  formPushError,
-  formPopError,
+  error,
   disabled,
-  acceptIndeterminate,
+  acceptIndeterminate = false,
   label,
   checkedIcon,
   uncheckedIcon,
@@ -35,10 +39,12 @@ export function CheckboxInput({
   color = "ghost",
   full = false,
   size = "default",
-}: (
-  | ({ acceptIndeterminate: false } & FormFieldProps<boolean>)
-  | ({ acceptIndeterminate: true } & FormFieldProps<boolean | undefined>)
-) & {
+}: {
+  meta: Meta;
+  setMeta: (meta: Meta) => void;
+  setValue: (value: Value) => void;
+  error: string | undefined;
+  disabled: boolean;
   label?: string; // TODO: ReactNode
   checkedIcon?: React.ReactNode;
   uncheckedIcon?: React.ReactNode;
@@ -46,7 +52,12 @@ export function CheckboxInput({
   classNames?: {
     [key in keyof ReturnType<typeof styles>]?: ClassValue;
   };
+  acceptIndeterminate?: boolean;
 } & Omit<VariantProps<typeof styles>, "multiple" | "checked">) {
+  useEffect(() => {
+    setValue(meta);
+  }, [meta]);
+
   const {
     button,
     iconContainer,
@@ -56,32 +67,25 @@ export function CheckboxInput({
     color,
     size,
     full,
-    checked: value,
+    checked: meta,
   });
-
-  const error = useValidationError(
-    value,
-    validation,
-    formPushError,
-    formPopError,
-  );
 
   let onClick: VoidFunction, icon: React.ReactNode;
 
   if (acceptIndeterminate)
     onClick = () =>
-      setValue(value === true ? false : value === false ? undefined : true);
-  else onClick = () => setValue(!value);
+      setMeta(meta === true ? false : meta === false ? undefined : true);
+  else onClick = () => setMeta(!meta);
 
-  if (value === true)
+  if (meta === true)
     if (checkedIcon) icon = checkedIcon;
     else
       icon = <Square className={iconStyles({ className: classNames?.icon })} />;
-  else if (value === false)
+  else if (meta === false)
     if (uncheckedIcon) icon = uncheckedIcon;
     else
       icon = <Square className={iconStyles({ className: classNames?.icon })} />;
-  else if (value === undefined)
+  else if (meta === undefined)
     if (indeterminateIcon) icon = indeterminateIcon;
     else
       icon = (
@@ -107,7 +111,8 @@ export function CheckboxInput({
         {!label && icon}
         {label}
       </Button>
-      {error && <span>{error}</span>}
+
+      {error !== undefined && <span className="italic">{error}</span>}
     </React.Fragment>
   );
 }

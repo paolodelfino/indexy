@@ -1,7 +1,7 @@
 "use client";
 import { useValidationError } from "@/hooks/useValidationError";
 import { FormFieldProps } from "@/utils/form";
-import React from "react";
+import { ReactNode } from "react";
 import TextArea from "react-textarea-autosize";
 import { tv } from "tailwind-variants";
 
@@ -14,6 +14,7 @@ const textInput = tv({
   },
 });
 
+// Simple rule for label and placeholder: if there is a label, no placeholder needed and use label if there will be times the placeholder won't be visible because there will already be content filling the space, but don't use label if it's a pretty known, deducible field by the user
 export function TextInput({
   value,
   setValue,
@@ -24,10 +25,12 @@ export function TextInput({
   multiple,
   className,
   placeholder,
+  label: _label,
 }: FormFieldProps<string | undefined> & {
   multiple?: boolean;
   className?: string;
   placeholder?: string;
+  label?: ReactNode;
 }) {
   const style = textInput({ multiple, className });
 
@@ -38,8 +41,17 @@ export function TextInput({
     formPopError,
   );
 
+  const label =
+    typeof _label === "string" ? (
+      <h3 className="pl-2 text-base leading-10">{_label}</h3>
+    ) : (
+      _label
+    );
+
   return (
-    <React.Fragment>
+    <div>
+      {label}
+
       {multiple && (
         <TextArea
           className={style}
@@ -60,7 +72,8 @@ export function TextInput({
           placeholder={placeholder}
         />
       )}
+
       {error && <span>{error}</span>}
-    </React.Fragment>
+    </div>
   );
 }
