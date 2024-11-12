@@ -9,7 +9,8 @@ import FormCheckbox from "@/components/form/FormCheckbox";
 import FormDate from "@/components/form/FormDate";
 import FormSelectSearch from "@/components/form/FormSelectSearch";
 import FormTextArea from "@/components/form/FormTextArea";
-import { Star } from "@/components/icons";
+import { InformationCircle, Star } from "@/components/icons";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import { useEditInspirationForm } from "@/stores/useEditInspirationForm";
 import useInspirationSearchQuery from "@/stores/useInspirationSearchQuery";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -132,6 +133,16 @@ export default function InspirationEditForm({ id }: { id: string }) {
           {isEditFormPending ? "Saving..." : "Save"}
         </Button>
       </div>
+      {form.error !== undefined && (
+        <Popover>
+          <PopoverTrigger color="danger">
+            <InformationCircle />
+          </PopoverTrigger>
+          <PopoverContent className="rounded border bg-neutral-700 p-4 italic">
+            {form.error}
+          </PopoverContent>
+        </Popover>
+      )}
       <div>
         <FormTextArea
           setValue={form.setValue.bind(form, "content")}

@@ -7,6 +7,8 @@ import Button from "@/components/Button";
 import FormDate from "@/components/form/FormDate";
 import FormSelectSearch from "@/components/form/FormSelectSearch";
 import FormText from "@/components/form/FormText";
+import { InformationCircle } from "@/components/icons";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import { useEditBigPaintForm } from "@/stores/useEditBigPaintForm";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -91,6 +93,16 @@ export default function BigPaintEditForm({ id }: { id: string }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-end gap-4 p-4">
+        {form.error !== undefined && (
+          <Popover>
+            <PopoverTrigger color="danger">
+              <InformationCircle />
+            </PopoverTrigger>
+            <PopoverContent className="rounded border bg-neutral-700 p-4 italic">
+              {form.error}
+            </PopoverContent>
+          </Popover>
+        )}
         <Button
           onClick={async () => {
             if (confirm("Are you sure?")) {

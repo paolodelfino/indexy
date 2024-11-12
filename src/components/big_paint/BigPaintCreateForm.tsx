@@ -2,6 +2,8 @@
 import { createBigPaintAction } from "@/actions/createBigPaintAction";
 import Button from "@/components/Button";
 import FormText from "@/components/form/FormText";
+import { InformationCircle } from "@/components/icons";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import { useCreateBigPaintForm } from "@/stores/useCreateBigPaintForm";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -48,6 +50,16 @@ export default function BigPaintCreateForm() {
           {isCreateFormPending ? "Saving..." : "Save"}
         </Button>
       </div>
+      {form.error !== undefined && (
+        <Popover>
+          <PopoverTrigger color="danger">
+            <InformationCircle />
+          </PopoverTrigger>
+          <PopoverContent className="rounded border bg-neutral-700 p-4 italic">
+            {form.error}
+          </PopoverContent>
+        </Popover>
+      )}
       <h1
         data-disabled={isCreateFormPending}
         className="py-1 pl-4 text-2xl font-medium leading-[3rem] data-[disabled=true]:opacity-50"
