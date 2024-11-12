@@ -3,7 +3,7 @@ import Button from "@/components/Button";
 import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import { cn } from "@/utils/cn";
-import { FormField } from "@/utils/form2";
+import { FormField } from "@/utils/form";
 import { useEffect } from "react";
 
 // TODO: Think of custom styling

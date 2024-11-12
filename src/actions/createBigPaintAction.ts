@@ -1,7 +1,7 @@
 "use server";
 import { db } from "@/db/db";
 import { createBigPaintFormSchema } from "@/schemas/createBigPaintFormSchema";
-import { FormValues } from "@/utils/form2";
+import { FormValues } from "@/utils/form";
 
 export async function createBigPaintAction(
   values: FormValues<typeof createBigPaintFormSchema>,

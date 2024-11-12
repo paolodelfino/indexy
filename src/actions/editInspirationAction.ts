@@ -1,7 +1,7 @@
 "use server";
 import { db } from "@/db/db";
 import { editInspirationFormSchema } from "@/schemas/editInspirationFormSchema";
-import { FormValues } from "@/utils/form2";
+import { FormValues } from "@/utils/form";
 
 export async function editInspirationAction(
   id: string,

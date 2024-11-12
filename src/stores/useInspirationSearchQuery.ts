@@ -1,6 +1,6 @@
 import { searchInspirationAction } from "@/actions/searchInspirationAction";
 import { searchInspirationFormSchema } from "@/schemas/searchInspirationFormSchema";
-import { FormValues } from "@/utils/form2";
+import { FormValues } from "@/utils/form";
 import createQuery from "@/utils/query";
 
 export default createQuery(

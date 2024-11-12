@@ -1,6 +1,6 @@
 import { FieldText } from "@/components/form/FormText";
 import { createInspirationFormSchema } from "@/schemas/createInspirationFormSchema";
-import { createForm } from "@/utils/form2";
+import { createForm } from "@/utils/form";
 
 export const useCreateInspirationForm = createForm(
   createInspirationFormSchema,

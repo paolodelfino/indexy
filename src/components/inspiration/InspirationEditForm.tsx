@@ -83,7 +83,15 @@ export default function InspirationEditForm({ id }: { id: string }) {
           ...form.fields.related_inspirations_ids.default.meta,
           selectedItems: queryData.relatedInspirations,
         },
-        date: queryData.date,
+        date: {
+          date: queryData.date,
+          time: {
+            hours: queryData.date.getHours(),
+            minutes: queryData.date.getMinutes(),
+            seconds: queryData.date.getSeconds(),
+            milliseconds: queryData.date.getMilliseconds(),
+          },
+        },
         content: queryData.content,
         highlight: queryData.highlight,
       });
@@ -134,6 +142,7 @@ export default function InspirationEditForm({ id }: { id: string }) {
         />
         <div className="flex min-h-9 items-center justify-end pr-2">
           <FormDate
+            placeholder="Date"
             setValue={form.setValue.bind(form, "date")}
             setMeta={form.setMeta.bind(form, "date")}
             meta={form.fields.date.meta!}

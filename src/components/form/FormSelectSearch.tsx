@@ -2,7 +2,7 @@
 import Button from "@/components/Button";
 import FormText from "@/components/form/FormText";
 import { ArrowDown01 } from "@/components/icons";
-import { FormField } from "@/utils/form2";
+import { FormField } from "@/utils/form";
 import React, { useActionState, useEffect } from "react";
 import { z } from "zod";
 

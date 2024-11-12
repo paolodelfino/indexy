@@ -1,7 +1,7 @@
 "use server";
 import { db } from "@/db/db";
 import { searchInspirationFormSchema } from "@/schemas/searchInspirationFormSchema";
-import { FormValues } from "@/utils/form2";
+import { FormValues } from "@/utils/form";
 import { sql } from "kysely";
 
 export async function searchInspirationAction(

@@ -4,7 +4,7 @@ import { FieldSelect, indeterminateGuard } from "@/components/form/FormSelect";
 import { FieldSelectSearch } from "@/components/form/FormSelectSearch";
 import { FieldTextArea } from "@/components/form/FormTextArea";
 import { searchInspirationFormSchema } from "@/schemas/searchInspirationFormSchema";
-import { createForm } from "@/utils/form2";
+import { createForm } from "@/utils/form";
 
 export const useSearchInspirationForm = createForm(
   searchInspirationFormSchema,

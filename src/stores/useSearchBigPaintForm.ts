@@ -3,7 +3,7 @@ import { FieldSelect, indeterminateGuard } from "@/components/form/FormSelect";
 import { FieldSelectSearch } from "@/components/form/FormSelectSearch";
 import { FieldText } from "@/components/form/FormText";
 import { searchBigPaintFormSchema } from "@/schemas/searchBigPaintFormSchema";
-import { createForm } from "@/utils/form2";
+import { createForm } from "@/utils/form";
 
 export const useSearchBigPaintForm = createForm(
   searchBigPaintFormSchema,

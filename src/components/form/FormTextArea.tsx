@@ -1,5 +1,5 @@
 "use client";
-import { FormField } from "@/utils/form2";
+import { FormField } from "@/utils/form";
 import { ReactNode, useEffect } from "react";
 import TextArea, { TextareaAutosizeProps } from "react-textarea-autosize";
 import { tv } from "tailwind-variants";

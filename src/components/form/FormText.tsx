@@ -1,5 +1,5 @@
 "use client";
-import { FormField } from "@/utils/form2";
+import { FormField } from "@/utils/form";
 import { ReactNode, useEffect } from "react";
 import { tv } from "tailwind-variants";
 

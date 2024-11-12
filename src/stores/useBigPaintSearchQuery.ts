@@ -1,6 +1,6 @@
 import { searchBigPaintAction } from "@/actions/searchBigPaintAction";
 import { searchBigPaintFormSchema } from "@/schemas/searchBigPaintFormSchema";
-import { FormValues } from "@/utils/form2";
+import { FormValues } from "@/utils/form";
 import createQuery from "@/utils/query";
 
 export default createQuery(

@@ -1,7 +1,7 @@
 "use server";
 import { db } from "@/db/db";
 import { searchBigPaintFormSchema } from "@/schemas/searchBigPaintFormSchema";
-import { FormValues } from "@/utils/form2";
+import { FormValues } from "@/utils/form";
 import { sql } from "kysely";
 
 export async function searchBigPaintAction(

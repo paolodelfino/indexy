@@ -1,7 +1,7 @@
 "use client";
 import Button, { styles as buttonStyles } from "@/components/Button";
 import { RemoveSquare, Square } from "@/components/icons";
-import { FormField } from "@/utils/form2";
+import { FormField } from "@/utils/form";
 import React, { useEffect } from "react";
 import { ClassValue, tv, VariantProps } from "tailwind-variants";
 

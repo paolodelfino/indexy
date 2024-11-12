@@ -1,7 +1,7 @@
 "use server";
 import { db } from "@/db/db";
 import { deleteInspirationFormSchema } from "@/schemas/deleteInspirationFormSchema";
-import { FormValues } from "@/utils/form2";
+import { FormValues } from "@/utils/form";
 
 export async function deleteInspirationAction(
   values: FormValues<typeof deleteInspirationFormSchema>,

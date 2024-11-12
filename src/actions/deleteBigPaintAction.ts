@@ -1,7 +1,7 @@
 "use server";
 import { db } from "@/db/db";
 import { deleteBigPaintFormSchema } from "@/schemas/deleteBigPaintFormSchema";
-import { FormValues } from "@/utils/form2";
+import { FormValues } from "@/utils/form";
 
 export async function deleteBigPaintAction(
   values: FormValues<typeof deleteBigPaintFormSchema>,

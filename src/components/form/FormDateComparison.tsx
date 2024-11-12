@@ -1,9 +1,9 @@
 "use client";
 
-import FormDate, { FieldDate } from "@/components/form/FormDate2";
+import FormDate, { FieldDate } from "@/components/form/FormDate";
 import FormSelect, { FieldSelect } from "@/components/form/FormSelect";
 import { datetime } from "@/utils/date";
-import { FormField } from "@/utils/form2";
+import { FormField } from "@/utils/form";
 import { useEffect } from "react";
 
 // TODO: Think of custom styling
