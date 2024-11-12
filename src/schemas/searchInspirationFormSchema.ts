@@ -6,16 +6,16 @@ export const searchInspirationFormSchema = z
     date: z
       .object({
         comparison: z.enum([">", "<", "=", ">=", "<="]),
-        x1: z.date(),
+        date: z.date(),
       })
       .or(
         z
           .object({
             comparison: z.literal("between"),
-            x1: z.date(),
-            x2: z.date(),
+            date: z.date(),
+            date2: z.date(),
           })
-          .refine((value) => value.x1 < value.x2, "Invalid range"),
+          .refine((value) => value.date < value.date2, "Invalid range"),
       )
       .optional(),
     content: z.string().trim().min(1).optional(),
@@ -26,6 +26,8 @@ export const searchInspirationFormSchema = z
     orderByDir: z.enum(["desc", "asc"]),
   })
   .refine(
-    (value) => Object.entries(value).length > 2, // Update accordingly with above props
+    (value) =>
+      Object.entries(value).filter((entry) => entry[1] !== undefined).length >
+      2, // Update accordingly with above props
     "A predicate must be provided",
   );

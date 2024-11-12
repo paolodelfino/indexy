@@ -1,11 +1,10 @@
 "use server";
 import { db } from "@/db/db";
 import { editInspirationFormSchema } from "@/schemas/editInspirationFormSchema";
-import { FormValues } from "@/utils/form";
+import { FormValues } from "@/utils/form2";
 
 export async function editInspirationAction(
   id: string,
-  prevState: unknown,
   values: FormValues<typeof editInspirationFormSchema>,
 ) {
   const validated = editInspirationFormSchema.parse(values);

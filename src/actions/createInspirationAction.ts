@@ -1,16 +1,11 @@
 "use server";
 import { db } from "@/db/db";
-import { z } from "zod";
-
-const schema = z.object({
-  content: z.string().trim().min(1),
-});
+import { createInspirationFormSchema } from "@/schemas/createInspirationFormSchema";
+import { FormValues } from "@/utils/form2";
 
 export async function createInspirationAction(
-  prevState: unknown,
-  formData: FormData,
+  values: FormValues<typeof createInspirationFormSchema>,
 ) {
-  const { content } = schema.parse(Object.fromEntries(formData.entries()));
-
-  await db.insertInto("inspiration").values({ content }).execute();
+  const validated = createInspirationFormSchema.parse(values);
+  await db.insertInto("inspiration").values(validated).execute();
 }

@@ -5,7 +5,7 @@ import { FormField } from "@/utils/form2";
 import React, { useEffect } from "react";
 import { ClassValue, tv, VariantProps } from "tailwind-variants";
 
-const styles = tv({
+export const styles = tv({
   extend: buttonStyles,
   slots: {
     icon: "",
@@ -18,11 +18,16 @@ const styles = tv({
   },
 });
 
-type Meta = boolean | undefined;
+type Meta<AcceptIndeterminate extends boolean> =
+  AcceptIndeterminate extends true ? boolean | undefined : boolean;
 
-type Value = boolean | undefined;
+type Value<AcceptIndeterminate extends boolean> =
+  AcceptIndeterminate extends true ? boolean | undefined : boolean;
 
-export type FieldCheckbox = FormField<Value, Meta>;
+export type FieldCheckbox<AcceptIndeterminate extends boolean> = FormField<
+  Value<AcceptIndeterminate>,
+  Meta<AcceptIndeterminate>
+>;
 
 export default function FormCheckbox({
   meta,
@@ -30,7 +35,7 @@ export default function FormCheckbox({
   setValue,
   error,
   disabled,
-  acceptIndeterminate = false,
+  acceptIndeterminate,
   label,
   checkedIcon,
   uncheckedIcon,
@@ -39,10 +44,20 @@ export default function FormCheckbox({
   color = "ghost",
   full = false,
   size = "default",
-}: {
-  meta: Meta;
-  setMeta: (meta: Meta) => void;
-  setValue: (value: Value) => void;
+}: (
+  | {
+      acceptIndeterminate: true;
+      setValue: (value: Value<true>) => void;
+      meta: Meta<true>;
+      setMeta: (meta: Meta<true>) => void;
+    }
+  | {
+      acceptIndeterminate?: false;
+      setValue: (value: Value<false>) => void;
+      meta: Meta<false>;
+      setMeta: (meta: Meta<false>) => void;
+    }
+) & {
   error: string | undefined;
   disabled: boolean;
   label?: string; // TODO: ReactNode
@@ -55,7 +70,7 @@ export default function FormCheckbox({
   acceptIndeterminate?: boolean;
 } & Omit<VariantProps<typeof styles>, "multiple" | "checked">) {
   useEffect(() => {
-    setValue(meta);
+    setValue(meta as any);
   }, [meta]);
 
   const {

@@ -4,22 +4,24 @@ import { editBigPaintAction } from "@/actions/editBigPaintAction";
 import { fetchBigPaintAction } from "@/actions/fetchBigPaintAction";
 import { searchBigPaintAction } from "@/actions/searchBigPaintAction";
 import Button from "@/components/Button";
-import { DateInput } from "@/components/DateInput";
-import { SearchSelect } from "@/components/SearchSelect";
-import { TextInput } from "@/components/TextInput";
-import { editBigPaintFormSchema } from "@/schemas/editBigPaintFormSchema";
+import FormDate from "@/components/form/FormDate";
+import FormSelectSearch from "@/components/form/FormSelectSearch";
+import FormText from "@/components/form/FormText";
 import { useEditBigPaintForm } from "@/stores/useEditBigPaintForm";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { startTransition, useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
+// TODO: History (using versioning)
 
 export default function BigPaintEditForm({ id }: { id: string }) {
-  const queryClient = useQueryClient();
+  const router = useRouter();
 
-  const form = useEditBigPaintForm();
+  const queryClient = useQueryClient();
 
   const {
     status: queryStatus,
-    data: queryData,
+    // data: queryData,
     error: queryError,
     refetch: fetch,
   } = useQuery({
@@ -28,130 +30,128 @@ export default function BigPaintEditForm({ id }: { id: string }) {
     enabled: false,
   });
 
-  const editActionBind = editBigPaintAction.bind(null, queryData?.id!);
+  const [isDeleteFormPending, setIsDeleteFormPending] = useState(false);
 
-  const [, editAction, isEditActionPending] = useActionState(
-    editActionBind,
-    void 0,
-  );
+  const [isEditFormPending, setIsEditFormPending] = useState(false);
 
-  const deleteActionBind = deleteBigPaintAction.bind(null, queryData?.id!);
+  const form = useEditBigPaintForm();
+  useEffect(() => {
+    form.setOnSubmit(async (form) => {
+      setIsEditFormPending(true);
 
-  const [, deleteAction, isDeleteActionPending] = useActionState(
-    deleteActionBind,
-    void 0,
-  );
+      await editBigPaintAction(id, form.values());
+
+      queryClient.invalidateQueries({ queryKey: ["big_paints"] });
+
+      setIsEditFormPending(false);
+    });
+  }, [form.setOnSubmit]);
 
   useEffect(() => {
+    if (id === form.meta.lastId) return;
+
     fetch().then((result) => {
       const queryData = result.data;
-      if (queryData) {
-        form.set({
-          name: queryData.name,
-          related_big_paints_ids: queryData.relatedBigPaints.map((it) => it.id),
-          date: queryData.date,
-        });
-      }
+      if (queryData === undefined) return;
+
+      form.setValues({
+        name: queryData.name,
+        related_big_paints_ids: queryData.relatedBigPaints.map((it) => it.id),
+        date: queryData.date,
+      });
+
+      form.setMetas({
+        related_big_paints_ids: {
+          ...form.fields.related_big_paints_ids.default.meta,
+          selectedItems: queryData.relatedBigPaints.map((it) => ({
+            content: it.name,
+            id: it.id,
+          })),
+        },
+        date: queryData.date,
+        name: queryData.name,
+      });
+
+      form.setFormMeta({ lastId: queryData.id });
     });
-  }, [fetch, id]);
-
-  useEffect(() => {
-    if (!isEditActionPending)
-      queryClient.invalidateQueries({ queryKey: ["big_paints"] });
-  }, [isEditActionPending]);
-
-  useEffect(() => {
-    if (!isDeleteActionPending)
-      queryClient.invalidateQueries({ queryKey: ["big_paints"] });
-  }, [isDeleteActionPending]);
+  }, [id]);
 
   if (queryStatus === "error") throw queryError;
 
   if (queryStatus === "pending") return <span>pending</span>;
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (!form.isInvalid)
-          startTransition(() => {
-            editAction(form.values());
-          });
-      }}
-      className="space-y-6"
-    >
+    <div className="space-y-6">
       <div className="flex items-center justify-end gap-4 p-4">
         <Button
-          onClick={() => {
+          onClick={async () => {
             if (confirm("Are you sure?")) {
-              startTransition(() => {
-                deleteAction();
-              });
+              setIsDeleteFormPending(true);
+
+              await deleteBigPaintAction({ id });
+
+              queryClient.invalidateQueries({ queryKey: ["big_paints"] });
+
+              setIsDeleteFormPending(false);
+
+              router.back();
             }
           }}
-          disabled={isDeleteActionPending || isEditActionPending}
+          disabled={isDeleteFormPending || isEditFormPending}
           color="danger"
         >
-          {isDeleteActionPending ? "Deleting..." : "Delete"}
+          {isDeleteFormPending ? "Deleting..." : "Delete"}
         </Button>
         <Button
           type="submit"
           color="accent"
-          disabled={
-            isEditActionPending || isDeleteActionPending || form.isInvalid
-          }
+          disabled={isEditFormPending || isDeleteFormPending || form.isInvalid}
+          onClick={form.submit}
         >
-          {isEditActionPending ? "Saving..." : "Save"}
+          {isEditFormPending ? "Saving..." : "Save"}
         </Button>
       </div>
       <div>
-        <TextInput
-          value={form.name!}
-          setValue={(value) => form.set({ name: value })}
-          validation={editBigPaintFormSchema.shape.name}
-          formPushError={form.pushError}
-          formPopError={form.popError}
-          disabled={isEditActionPending || isDeleteActionPending}
+        <FormText
+          setValue={form.setValue.bind(form, "name")}
+          setMeta={form.setMeta.bind(form, "name")}
+          meta={form.fields.name.meta}
+          error={form.fields.name.error}
+          disabled={isEditFormPending || isDeleteFormPending}
         />
         <div className="flex min-h-9 items-center justify-end pr-2">
-          <DateInput
-            value={form.date!}
-            setValue={(value) => form.set({ date: value })}
-            validation={editBigPaintFormSchema.shape.date}
-            formPushError={form.pushError}
-            formPopError={form.popError}
-            disabled={isEditActionPending || isDeleteActionPending}
+          <FormDate
+            setValue={form.setValue.bind(form, "date")}
+            setMeta={form.setMeta.bind(form, "date")}
+            meta={form.fields.date.meta!}
+            error={form.fields.date.error}
+            disabled={isEditFormPending || isDeleteFormPending}
           />
         </div>
+        <FormSelectSearch
+          title="Related BigPaints"
+          setValue={form.setValue.bind(form, "related_big_paints_ids")}
+          setMeta={form.setMeta.bind(form, "related_big_paints_ids")}
+          meta={form.fields.related_big_paints_ids.meta}
+          error={form.fields.related_big_paints_ids.error}
+          disabled={isEditFormPending || isDeleteFormPending}
+          search={(_, { query }) =>
+            searchBigPaintAction({
+              name: query,
+              orderBy: "date",
+              orderByDir: "asc",
+              date: undefined,
+              related_big_paints_ids: undefined,
+            }).then((res) =>
+              res.data.map((item) => ({
+                content: item.name,
+                id: item.id,
+              })),
+            )
+          }
+          blacklist={[id]}
+        />
       </div>
-      <SearchSelect
-        formPushError={form.pushError}
-        formPopError={form.popError}
-        defaultValue={queryData.relatedBigPaints}
-        value={form.related_big_paints_ids!}
-        setValue={(value) => form.set({ related_big_paints_ids: value })}
-        validation={editBigPaintFormSchema.shape.related_big_paints_ids}
-        searchAction={(prevState, { query }) =>
-          searchBigPaintAction({
-            name: query,
-            orderBy: "date",
-            orderByDir: "asc",
-            date: undefined,
-            related_big_paints_ids: undefined,
-          }).then((res) =>
-            res.data.map((item) => ({
-              name: item.name,
-              id: item.id,
-            })),
-          )
-        }
-        title="Related BigPaints"
-        selectId={(value) => value.id}
-        selectContent={(value) => value.name}
-        disabled={isEditActionPending || isDeleteActionPending}
-        blacklist={[{ name: "", id }]}
-      />
-    </form>
+    </div>
   );
 }

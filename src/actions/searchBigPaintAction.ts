@@ -1,11 +1,10 @@
 "use server";
 import { db } from "@/db/db";
 import { searchBigPaintFormSchema } from "@/schemas/searchBigPaintFormSchema";
-import { FormValues } from "@/utils/form";
+import { FormValues } from "@/utils/form2";
 import { sql } from "kysely";
 
 export async function searchBigPaintAction(
-  // prevState: unknown,
   values: FormValues<typeof searchBigPaintFormSchema>,
 ) {
   const {
@@ -22,8 +21,8 @@ export async function searchBigPaintAction(
 
   if (date !== undefined)
     if (date.comparison === "between")
-      q = q.where("date", ">=", date.x1).where("date", "<=", date.x2);
-    else q = q.where("date", date.comparison, date.x1);
+      q = q.where("date", ">=", date.date).where("date", "<=", date.date2);
+    else q = q.where("date", date.comparison, date.date);
 
   if (related_big_paints_ids !== undefined)
     q = q.where(

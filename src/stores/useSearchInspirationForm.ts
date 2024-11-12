@@ -1,16 +1,195 @@
+import { FieldCheckbox } from "@/components/form/FormCheckbox";
+import { FieldDateComparison } from "@/components/form/FormDateComparison";
+import { FieldSelect, indeterminateGuard } from "@/components/form/FormSelect";
+import { FieldSelectSearch } from "@/components/form/FormSelectSearch";
+import { FieldTextArea } from "@/components/form/FormTextArea";
 import { searchInspirationFormSchema } from "@/schemas/searchInspirationFormSchema";
-import { createForm, FormValues } from "@/utils/form";
+import { createForm } from "@/utils/form2";
 
-const emptyValues: FormValues<typeof searchInspirationFormSchema> = {
-  date: undefined,
-  content: undefined,
-  highlight: undefined,
-  related_big_paints_ids: undefined,
-  related_inspirations_ids: undefined,
-  orderBy: "date",
-  orderByDir: "asc",
-  // offset: 0,
-  // limit: 20,
-};
-
-export const useSearchInspirationForm = createForm(emptyValues);
+export const useSearchInspirationForm = createForm(
+  searchInspirationFormSchema,
+  {
+    date: {
+      meta: {
+        comparison: {
+          meta: {
+            items: [
+              { content: "=", id: "=" },
+              { content: "<=", id: "<=" },
+              { content: ">=", id: ">=" },
+              { content: "<", id: "<" },
+              { content: ">", id: ">" },
+              { content: "Between", id: "between" },
+            ],
+            selectedItem: indeterminateGuard,
+          },
+          value: undefined,
+          default: {
+            meta: {
+              items: [
+                { content: "=", id: "=" },
+                { content: "<=", id: "<=" },
+                { content: ">=", id: ">=" },
+                { content: "<", id: "<" },
+                { content: ">", id: ">" },
+                { content: "Between", id: "between" },
+              ],
+              selectedItem: indeterminateGuard,
+            },
+            value: undefined,
+          },
+          error: undefined,
+        },
+        date: undefined,
+        date2: undefined,
+      },
+      value: undefined,
+      default: {
+        meta: {
+          comparison: {
+            meta: {
+              items: [
+                { content: "=", id: "=" },
+                { content: "<=", id: "<=" },
+                { content: ">=", id: ">=" },
+                { content: "<", id: "<" },
+                { content: ">", id: ">" },
+                { content: "Between", id: "between" },
+              ],
+              selectedItem: indeterminateGuard,
+            },
+            value: undefined,
+            default: {
+              meta: {
+                items: [
+                  { content: "=", id: "=" },
+                  { content: "<=", id: "<=" },
+                  { content: ">=", id: ">=" },
+                  { content: "<", id: "<" },
+                  { content: ">", id: ">" },
+                  { content: "Between", id: "between" },
+                ],
+                selectedItem: indeterminateGuard,
+              },
+              value: undefined,
+            },
+            error: undefined,
+          },
+          date: undefined,
+          date2: undefined,
+        },
+        value: undefined,
+      },
+      error: undefined,
+    } satisfies FieldDateComparison as FieldDateComparison,
+    orderBy: {
+      meta: {
+        items: [
+          { content: "Date", id: "date" },
+          { content: "Content", id: "content" },
+          { content: "Highlight", id: "highlight" },
+        ],
+        selectedItem: { content: "Date", id: "date" },
+      },
+      value: "date",
+      default: {
+        meta: {
+          items: [
+            { content: "Date", id: "date" },
+            { content: "Content", id: "content" },
+            { content: "Highlight", id: "highlight" },
+          ],
+          selectedItem: { content: "Date", id: "date" },
+        },
+        value: "date",
+      },
+      error: undefined,
+    } satisfies FieldSelect<false> as FieldSelect<false>,
+    orderByDir: {
+      meta: {
+        items: [
+          { content: "Desc", id: "desc" },
+          { content: "Asc", id: "asc" },
+        ],
+        selectedItem: { content: "Asc", id: "asc" },
+      },
+      value: "asc",
+      default: {
+        meta: {
+          items: [
+            { content: "Desc", id: "desc" },
+            { content: "Asc", id: "asc" },
+          ],
+          selectedItem: { content: "Asc", id: "asc" },
+        },
+        value: "asc",
+      },
+      error: undefined,
+    } satisfies FieldSelect<false> as FieldSelect<false>,
+    related_big_paints_ids: {
+      meta: {
+        selectedItems: [],
+        showSearch: false,
+        searchResult: [],
+        searchQueryMeta: "",
+        searchQueryValue: "",
+        searchQueryError: undefined,
+      },
+      value: undefined,
+      default: {
+        meta: {
+          selectedItems: [],
+          showSearch: false,
+          searchResult: [],
+          searchQueryMeta: "",
+          searchQueryValue: "",
+          searchQueryError: undefined,
+        },
+        value: undefined,
+      },
+      error: undefined,
+    } satisfies FieldSelectSearch<true> as FieldSelectSearch<true>,
+    content: {
+      meta: "",
+      value: undefined,
+      default: {
+        meta: "",
+        value: undefined,
+      },
+      error: undefined,
+    } satisfies FieldTextArea<true> as FieldTextArea<true>,
+    highlight: {
+      meta: undefined,
+      value: undefined,
+      default: {
+        meta: undefined,
+        value: undefined,
+      },
+      error: undefined,
+    } satisfies FieldCheckbox<true> as FieldCheckbox<true>,
+    related_inspirations_ids: {
+      meta: {
+        selectedItems: [],
+        showSearch: false,
+        searchResult: [],
+        searchQueryMeta: "",
+        searchQueryValue: "",
+        searchQueryError: undefined,
+      },
+      value: undefined,
+      default: {
+        meta: {
+          selectedItems: [],
+          showSearch: false,
+          searchResult: [],
+          searchQueryMeta: "",
+          searchQueryValue: "",
+          searchQueryError: undefined,
+        },
+        value: undefined,
+      },
+      error: undefined,
+    } satisfies FieldSelectSearch<true> as FieldSelectSearch<true>,
+  },
+  {},
+);

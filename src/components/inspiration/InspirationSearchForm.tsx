@@ -2,444 +2,215 @@
 import { searchBigPaintAction } from "@/actions/searchBigPaintAction";
 import { searchInspirationAction } from "@/actions/searchInspirationAction";
 import Button from "@/components/Button";
-import { CheckboxInput } from "@/components/CheckboxInput";
-import { DateInput } from "@/components/DateInput";
+import FormCheckbox from "@/components/form/FormCheckbox";
+import FormDateComparison from "@/components/form/FormDateComparison";
+import FormSelect from "@/components/form/FormSelect";
+import FormSelectSearch from "@/components/form/FormSelectSearch";
+import FormTextArea from "@/components/form/FormTextArea";
+import { Cloud, InformationCircle } from "@/components/icons";
 import InspirationView from "@/components/inspiration/TempInspirationView";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
-import { SearchSelect } from "@/components/SearchSelect";
-import { TextInput } from "@/components/TextInput";
-import { useValidationError } from "@/hooks/useValidationError";
-import { searchInspirationFormSchema } from "@/schemas/searchInspirationFormSchema";
+import useInspirationSearchQuery from "@/stores/useInspirationSearchQuery";
 import { useSearchInspirationForm } from "@/stores/useSearchInspirationForm";
-import { FormFieldProps, FormValues } from "@/utils/form";
-import { useQuery } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
-import { z } from "zod";
+import { useEffect } from "react";
 
-// TODO: Possibilità di andare avanti e indietro
+// TODO: History
+// TODO: Infinite query (or pagination or both)
+// TODO: Merge with View
+// TODO: Open to result endpoint
+// TODO: Scatta una ricerca se reimpostati i valori del form con una ricerca cached associata
+// TODO: Scattano un sacco di ricerche all'improvviso (forse quando chrome rientra in focus)
+
 export default function InspirationSearchForm() {
   const form = useSearchInspirationForm();
 
-  const [fetchedAtLeastOnce, setFetchedAtLeastOnce] = useState(false);
-
-  const {
-    isError,
-    error: queryError,
-    data: queryData,
-    isFetching: isSearchPending,
-    refetch: fetch,
-  } = useQuery({
-    queryKey: ["inspirations", "search"],
-    queryFn: ({ meta }) =>
-      searchInspirationAction(
-        meta!.payload as FormValues<typeof searchInspirationFormSchema>,
-      ),
-    enabled: !form.isInvalid && fetchedAtLeastOnce,
-    meta: { payload: form.values() },
-  });
+  const query = useInspirationSearchQuery();
 
   useEffect(() => {
-    if (!fetchedAtLeastOnce && queryData !== undefined)
-      setFetchedAtLeastOnce(true);
-  }, [queryData]);
+    query.active();
+    return () => query.inactive();
+  }, []);
 
-  if (isError) throw queryError;
+  useEffect(() => {
+    form.setOnSubmit((form) =>
+      query.fetch(form.values() as any /* TODO: Type problem */),
+    );
+  }, [form.setOnSubmit]);
 
   return (
-    <>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          if (!form.isInvalid) fetch();
-        }}
-        className="space-y-6"
+    <div className="space-y-6">
+      <div className="flex items-center justify-end gap-2 p-4">
+        {form.error !== undefined && (
+          <Popover>
+            <PopoverTrigger color="danger">
+              <InformationCircle />
+            </PopoverTrigger>
+            <PopoverContent className="rounded border bg-neutral-700 p-4 italic">
+              {form.error}
+            </PopoverContent>
+          </Popover>
+        )}
+
+        <Button
+          title="Clear"
+          disabled={query.isFetching}
+          color="ghost"
+          onClick={form.reset}
+        >
+          <Cloud />
+        </Button>
+
+        <Button
+          color="accent"
+          disabled={query.isFetching || form.isInvalid}
+          onClick={form.submit}
+        >
+          {query.isFetching ? "Searching..." : "Search"}
+        </Button>
+      </div>
+
+      <h1
+        data-disabled={query.isFetching}
+        className="py-1 pl-4 text-2xl font-medium leading-[3rem] data-[disabled=true]:opacity-50"
       >
-        <div className="flex flex-wrap items-center justify-end gap-2 px-1 py-px">
-          <OrderBy
-            value={form.orderBy}
-            setValue={(value) => form.set({ orderBy: value })}
-            validation={searchInspirationFormSchema.sourceType().shape.orderBy}
-            disabled={isSearchPending}
-            formPopError={form.popError}
-            formPushError={form.pushError}
+        Search Inspiration
+      </h1>
+
+      <div>
+        <h2
+          aria-disabled={query.isFetching}
+          className="py-1 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
+        >
+          Order
+        </h2>
+
+        <div className="flex gap-2">
+          <FormSelect
+            placeholder="Order By"
+            meta={form.fields.orderBy.meta}
+            setValue={form.setValue.bind(form, "orderBy")}
+            setMeta={form.setMeta.bind(form, "orderBy")}
+            disabled={query.isFetching}
+            error={form.fields.orderBy.error}
           />
-          <OrderByDir
-            value={form.orderByDir}
-            setValue={(value) => form.set({ orderByDir: value })}
-            validation={
-              searchInspirationFormSchema.sourceType().shape.orderByDir
-            }
-            disabled={isSearchPending}
-            formPopError={form.popError}
-            formPushError={form.pushError}
+
+          <FormSelect
+            placeholder="Order By Dir"
+            meta={form.fields.orderByDir.meta}
+            setValue={form.setValue.bind(form, "orderByDir")}
+            setMeta={form.setMeta.bind(form, "orderByDir")}
+            disabled={query.isFetching}
+            error={form.fields.orderByDir.error}
           />
-          <Button
-            type="submit"
-            color="accent"
-            disabled={isSearchPending || form.isInvalid}
-          >
-            {isSearchPending ? "Searching..." : "Search"}
-          </Button>
         </div>
-        <TextInput
-          value={form.content}
-          setValue={(value) =>
-            form.set({
-              content: (value?.length || 0) > 0 ? value : undefined,
-            })
-          }
-          validation={searchInspirationFormSchema.sourceType().shape.content}
-          formPushError={form.pushError}
-          formPopError={form.popError}
-          disabled={isSearchPending}
-          placeholder="Content"
-        />
-        <Date_
-          value={form.date}
-          setValue={(value) =>
-            form.set({
-              date: value,
-            })
-          }
-          validation={searchInspirationFormSchema.sourceType().shape.date}
-          formPushError={form.pushError}
-          formPopError={form.popError}
-          disabled={isSearchPending}
-        />
-        <CheckboxInput
-          value={form.highlight}
+      </div>
+
+      <FormTextArea
+        label="Content"
+        meta={form.fields.content.meta}
+        setValue={form.setValue.bind(form, "content")}
+        setMeta={form.setMeta.bind(form, "content")}
+        disabled={query.isFetching}
+        error={form.fields.content.error}
+        acceptIndeterminate
+      />
+
+      <div>
+        <h2
+          aria-disabled={query.isFetching}
+          className="py-1 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
+        >
+          Date
+        </h2>
+
+        <FormDateComparison
+          title="Date"
+          meta={form.fields.date.meta}
+          setValue={form.setValue.bind(form, "date")}
+          setMeta={form.setMeta.bind(form, "date")}
+          disabled={query.isFetching}
+          error={form.fields.date.error}
           acceptIndeterminate
+        />
+      </div>
+
+      <div>
+        <h2
+          aria-disabled={query.isFetching}
+          className="py-1 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
+        >
+          Highlight
+        </h2>
+
+        <FormCheckbox
           label="Highlight"
-          setValue={(value) => form.set({ highlight: value })}
-          validation={searchInspirationFormSchema.sourceType().shape.highlight}
-          disabled={isSearchPending}
-          formPopError={form.popError}
-          formPushError={form.pushError}
-          full
+          meta={form.fields.highlight.meta}
+          setValue={form.setValue.bind(form, "highlight")}
+          setMeta={form.setMeta.bind(form, "highlight")}
+          disabled={query.isFetching}
+          error={form.fields.highlight.error}
+          acceptIndeterminate
         />
-        <SearchSelect
-          formPushError={form.pushError}
-          formPopError={form.popError}
-          value={form.related_big_paints_ids}
-          defaultValue={[]}
-          setValue={(value) => {
-            const newValue = (value?.length || 0) > 0 ? value : undefined;
-            if (newValue !== form.related_big_paints_ids)
-              form.set({
-                related_big_paints_ids: newValue,
-              });
-          }}
-          validation={
-            searchInspirationFormSchema.sourceType().shape
-              .related_big_paints_ids
-          }
-          searchAction={(prevState, { query }) =>
-            searchBigPaintAction({
-              name: query,
-              orderBy: "date",
-              orderByDir: "asc",
-              date: undefined,
-              related_big_paints_ids: undefined,
-            }).then((res) =>
-              res.data.map((item) => ({
-                name: item.name,
-                id: item.id,
-              })),
-            )
-          }
-          title="Related BigPaints"
-          selectId={(value) => value.id}
-          selectContent={(value) => value.name}
-          disabled={isSearchPending}
-        />
-        <SearchSelect
-          formPushError={form.pushError}
-          formPopError={form.popError}
-          value={form.related_inspirations_ids}
-          defaultValue={[]}
-          setValue={(value) => {
-            const newValue = (value?.length || 0) > 0 ? value : undefined;
-            if (newValue !== form.related_inspirations_ids)
-              form.set({
-                related_inspirations_ids: newValue,
-              });
-          }}
-          validation={
-            searchInspirationFormSchema.sourceType().shape
-              .related_inspirations_ids
-          }
-          searchAction={(prevState, { query }) =>
-            searchInspirationAction({
-              content: query,
-              orderBy: "date",
-              orderByDir: "asc",
-              date: undefined,
-              highlight: undefined,
-              related_big_paints_ids: undefined,
-              related_inspirations_ids: undefined,
-            }).then((res) =>
-              res.data.map((item) => ({
-                content: item.content,
-                id: item.id,
-              })),
-            )
-          }
-          title="Related Inspirations"
-          selectId={(value) => value.id}
-          selectContent={(value) => value.content}
-          disabled={isSearchPending}
-        />
-      </form>
-      {queryData?.data && (
+      </div>
+
+      <FormSelectSearch
+        title="Related BigPaints"
+        meta={form.fields.related_big_paints_ids.meta}
+        setValue={form.setValue.bind(form, "related_big_paints_ids")}
+        setMeta={form.setMeta.bind(form, "related_big_paints_ids")}
+        disabled={query.isFetching}
+        error={form.fields.related_big_paints_ids.error}
+        acceptIndeterminate
+        search={(prevState, { query }) =>
+          searchBigPaintAction({
+            name: query,
+            orderBy: "date",
+            orderByDir: "asc",
+            date: undefined,
+            related_big_paints_ids: undefined,
+          }).then((res) =>
+            res.data.map((item) => ({
+              content: item.name,
+              id: item.id,
+            })),
+          )
+        }
+      />
+
+      <FormSelectSearch
+        title="Related Inspirations"
+        meta={form.fields.related_inspirations_ids.meta}
+        setValue={form.setValue.bind(form, "related_inspirations_ids")}
+        setMeta={form.setMeta.bind(form, "related_inspirations_ids")}
+        disabled={query.isFetching}
+        error={form.fields.related_inspirations_ids.error}
+        acceptIndeterminate
+        search={(prevState, { query }) =>
+          searchInspirationAction({
+            content: query,
+            orderBy: "date",
+            orderByDir: "asc",
+            date: undefined,
+            related_inspirations_ids: undefined,
+            related_big_paints_ids: undefined,
+            highlight: undefined,
+          }).then((res) =>
+            res.data.map((item) => ({
+              content: item.content,
+              id: item.id,
+            })),
+          )
+        }
+      />
+
+      {query.data !== undefined && (
         <div>
           <h2 className="p-4 text-lg font-medium">
-            Result ({queryData.data.length})
+            Result ({query.data.data.length})
           </h2>
-          <InspirationView data={queryData.data} />
+          <InspirationView data={query.data.data} />
         </div>
       )}
-    </>
-  );
-}
-
-function OrderBy({
-  disabled,
-  formPopError,
-  formPushError,
-  setValue,
-  validation,
-  value,
-}: FormFieldProps<"date" | "highlight" | "content">) {
-  const error = useValidationError(
-    value,
-    validation,
-    formPushError,
-    formPopError,
-  );
-
-  return (
-    <React.Fragment>
-      <Popover placement="bottom-start">
-        <PopoverTrigger
-          disabled={disabled}
-        >{`Order by (${value})`}</PopoverTrigger>
-        <PopoverContent
-          className="z-20 flex min-w-16 max-w-[160px] flex-col"
-          role="list"
-        >
-          <Button
-            full
-            disabled={disabled}
-            role="listitem"
-            size="large"
-            onClick={() => setValue("date")}
-          >
-            date
-          </Button>
-          <Button
-            full
-            disabled={disabled}
-            role="listitem"
-            size="large"
-            onClick={() => setValue("highlight")}
-          >
-            highlight
-          </Button>
-          <Button
-            full
-            disabled={disabled}
-            role="listitem"
-            size="large"
-            onClick={() => setValue("content")}
-          >
-            content
-          </Button>
-        </PopoverContent>
-      </Popover>
-      {error && <span>{error}</span>}
-    </React.Fragment>
-  );
-}
-
-function OrderByDir({
-  disabled,
-  formPopError,
-  formPushError,
-  setValue,
-  validation,
-  value,
-}: FormFieldProps<"desc" | "asc">) {
-  const error = useValidationError(
-    value,
-    validation,
-    formPushError,
-    formPopError,
-  );
-
-  return (
-    <React.Fragment>
-      <Popover placement="bottom-start">
-        <PopoverTrigger
-          disabled={disabled}
-        >{`Order by dir (${value})`}</PopoverTrigger>
-        <PopoverContent
-          className="z-20 flex min-w-16 max-w-[160px] flex-col"
-          role="list"
-        >
-          <Button
-            full
-            disabled={disabled}
-            role="listitem"
-            size="large"
-            onClick={() => setValue("asc")}
-          >
-            asc
-          </Button>
-          <Button
-            full
-            disabled={disabled}
-            role="listitem"
-            size="large"
-            onClick={() => setValue("desc")}
-          >
-            desc
-          </Button>
-        </PopoverContent>
-      </Popover>
-      {error && <span>{error}</span>}
-    </React.Fragment>
-  );
-}
-
-function Date_({
-  value,
-  disabled,
-  formPopError,
-  formPushError,
-  setValue,
-  validation,
-}: FormFieldProps<FormValues<typeof searchInspirationFormSchema>["date"]>) {
-  const error = useValidationError(
-    value,
-    validation,
-    formPushError,
-    formPopError,
-  );
-
-  const [comparison, setComparison] =
-    useState<
-      NonNullable<
-        FormValues<typeof searchInspirationFormSchema>["date"]
-      >["comparison"]
-    >();
-
-  const [x1, setX1] = useState<Date | undefined>();
-
-  const [x2, setX2] = useState<Date>(new Date());
-
-  useEffect(() => {
-    if (comparison !== undefined && x1 !== undefined)
-      setValue({ comparison, x1, x2 });
-    else if (value !== undefined) setValue(undefined);
-  }, [comparison, x1, x2]);
-
-  return (
-    <div className="flex flex-col gap-2">
-      <h2 className="text-lg font-medium">Date</h2>
-      <Popover placement="bottom-start">
-        <PopoverTrigger
-          disabled={disabled}
-        >{`Comparison (${comparison})`}</PopoverTrigger>
-        <PopoverContent
-          className="z-20 flex min-w-16 max-w-[160px] flex-col"
-          role="list"
-        >
-          <Button
-            full
-            disabled={disabled}
-            role="listitem"
-            size="large"
-            onClick={() => setComparison(undefined)}
-          >
-            undefined
-          </Button>
-          <Button
-            full
-            disabled={disabled}
-            role="listitem"
-            size="large"
-            onClick={() => setComparison(">")}
-          >
-            {">"}
-          </Button>
-          <Button
-            full
-            disabled={disabled}
-            role="listitem"
-            size="large"
-            onClick={() => setComparison("<")}
-          >
-            {"<"}
-          </Button>
-          <Button
-            full
-            disabled={disabled}
-            role="listitem"
-            size="large"
-            onClick={() => setComparison("=")}
-          >
-            {"="}
-          </Button>
-          <Button
-            full
-            disabled={disabled}
-            role="listitem"
-            size="large"
-            onClick={() => setComparison(">=")}
-          >
-            {">="}
-          </Button>
-          <Button
-            full
-            disabled={disabled}
-            role="listitem"
-            size="large"
-            onClick={() => setComparison("<=")}
-          >
-            {"<="}
-          </Button>
-          <Button
-            full
-            disabled={disabled}
-            role="listitem"
-            size="large"
-            onClick={() => setComparison("between")}
-          >
-            {"between"}
-          </Button>
-        </PopoverContent>
-      </Popover>
-      <DateInput
-        acceptIndeterminate
-        disabled={disabled}
-        formPopError={formPopError}
-        formPushError={formPushError}
-        setValue={(value) => setX1(value)}
-        validation={z.date().optional()}
-        value={x1}
-      />
-      {comparison === "between" && (
-        <DateInput
-          disabled={disabled}
-          formPopError={formPopError}
-          formPushError={formPushError}
-          setValue={(value) => setX2(value)}
-          validation={z.date()}
-          value={x2}
-        />
-      )}
-      {error !== undefined && <span>{error}</span>}
     </div>
   );
 }

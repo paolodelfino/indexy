@@ -1,11 +1,10 @@
 "use server";
 import { db } from "@/db/db";
 import { editBigPaintFormSchema } from "@/schemas/editBigPaintFormSchema";
-import { FormValues } from "@/utils/form";
+import { FormValues } from "@/utils/form2";
 
 export async function editBigPaintAction(
   id: string,
-  prevState: unknown,
   values: FormValues<typeof editBigPaintFormSchema>,
 ) {
   const validated = editBigPaintFormSchema.parse(values);

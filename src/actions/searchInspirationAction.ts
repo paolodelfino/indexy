@@ -1,11 +1,10 @@
 "use server";
 import { db } from "@/db/db";
 import { searchInspirationFormSchema } from "@/schemas/searchInspirationFormSchema";
-import { FormValues } from "@/utils/form";
+import { FormValues } from "@/utils/form2";
 import { sql } from "kysely";
 
 export async function searchInspirationAction(
-  // prevState: unknown,
   values: FormValues<typeof searchInspirationFormSchema>,
 ) {
   const {
@@ -24,8 +23,8 @@ export async function searchInspirationAction(
 
   if (date !== undefined)
     if (date.comparison === "between")
-      q = q.where("date", ">=", date.x1).where("date", "<=", date.x2);
-    else q = q.where("date", date.comparison, date.x1);
+      q = q.where("date", ">=", date.date).where("date", "<=", date.date2);
+    else q = q.where("date", date.comparison, date.date);
 
   if (highlight !== undefined) q = q.where("highlight", "=", highlight);
 

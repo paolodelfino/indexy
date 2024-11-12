@@ -1,6 +1,8 @@
 "use client";
 import { useMediaQuery } from "@mantine/hooks";
 
+// TODO: Take more space
+
 export default function RightPanel({
   children,
 }: {

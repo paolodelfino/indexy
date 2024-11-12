@@ -1,12 +1,57 @@
+import { FieldDate } from "@/components/form/FormDate";
+import { FieldSelectSearch } from "@/components/form/FormSelectSearch";
+import { FieldText } from "@/components/form/FormText";
 import { editBigPaintFormSchema } from "@/schemas/editBigPaintFormSchema";
-import { createForm, FormValues } from "@/utils/form";
+import { createForm } from "@/utils/form2";
 
 // TODO: Probably has to be component-scoped context
 
-const emptyValues: FormValues<typeof editBigPaintFormSchema> = {
-  name: undefined,
-  date: undefined,
-  related_big_paints_ids: undefined,
-};
-
-export const useEditBigPaintForm = createForm(emptyValues);
+export const useEditBigPaintForm = createForm(
+  editBigPaintFormSchema,
+  {
+    date: {
+      meta: undefined,
+      value: undefined,
+      default: {
+        meta: undefined,
+        value: undefined,
+      },
+      error: undefined,
+    } satisfies FieldDate<true>,
+    related_big_paints_ids: {
+      meta: {
+        selectedItems: [],
+        showSearch: false,
+        searchResult: [],
+        searchQueryMeta: "",
+        searchQueryValue: "",
+        searchQueryError: undefined,
+      },
+      value: undefined,
+      default: {
+        meta: {
+          selectedItems: [],
+          showSearch: false,
+          searchResult: [],
+          searchQueryMeta: "",
+          searchQueryValue: "",
+          searchQueryError: undefined,
+        },
+        value: undefined,
+      },
+      error: undefined,
+    } satisfies FieldSelectSearch<true>,
+    name: {
+      meta: "",
+      value: undefined,
+      default: {
+        meta: "",
+        value: undefined,
+      },
+      error: undefined,
+    } satisfies FieldText<true>,
+  },
+  {
+    lastId: undefined satisfies string | undefined as string | undefined,
+  },
+);

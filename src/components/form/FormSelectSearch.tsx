@@ -1,6 +1,6 @@
 "use client";
 import Button from "@/components/Button";
-import FormTextInput from "@/components/form/FormTextInput";
+import FormText from "@/components/form/FormText";
 import { ArrowDown01 } from "@/components/icons";
 import { FormField } from "@/utils/form2";
 import React, { useActionState, useEffect } from "react";
@@ -22,28 +22,23 @@ type Meta = {
   searchQueryError: string | undefined;
 };
 
-type Value = string[] | undefined;
+type Value<AcceptIndeterminate extends boolean> =
+  AcceptIndeterminate extends true ? string[] | undefined : string[];
 
-export type FieldSelectSearch = FormField<Value, Meta>;
+export type FieldSelectSearch<AcceptIndeterminate extends boolean> = FormField<
+  Value<AcceptIndeterminate>,
+  Meta
+>;
 
 function validate(meta: Meta, searchQueryValue: Meta["searchQueryValue"]) {
   const schema = z.string().trim().min(1);
   const error = schema.safeParse(searchQueryValue).error?.flatten()
     .formErrors[0];
 
-  let newMeta = { ...meta };
+  let newMeta = { ...meta }; // TODO: Is this necessary? (maybe react compiler)
 
   newMeta.searchQueryError = error;
   if (error === undefined) newMeta.searchQueryValue = searchQueryValue;
-
-  console.log(
-    "searchQueryValue",
-    searchQueryValue,
-    "searchQueryError",
-    newMeta.searchQueryError,
-    "searchQueryMeta",
-    newMeta.searchQueryMeta,
-  );
 
   return newMeta;
 }
@@ -54,29 +49,36 @@ export default function FormSelectSearch({
   setValue,
   error,
   disabled,
-  acceptIndeterminate = false,
+  acceptIndeterminate,
   title,
   search,
   blacklist, // TODO: Exclude from search database query
-}: {
+}: (
+  | {
+      acceptIndeterminate: true;
+      setValue: (value: Value<true>) => void;
+    }
+  | {
+      acceptIndeterminate?: false;
+      setValue: (value: Value<false>) => void;
+    }
+) & {
   meta: Meta;
   setMeta: (meta: Meta) => void;
-  setValue: (value: Value) => void;
   error: string | undefined;
   disabled: boolean;
-  acceptIndeterminate?: boolean;
   title: string; // TODO: Make React.ReactNode
-  blacklist?: Item[];
+  blacklist?: string[];
   search: (prevState: unknown, payload: { query: string }) => Promise<Item[]>;
 }) {
   useEffect(() => {
-    setValue(
-      acceptIndeterminate
-        ? meta.selectedItems.length > 0
+    if (acceptIndeterminate)
+      setValue(
+        meta.selectedItems.length > 0
           ? meta.selectedItems.map((it) => it.id)
-          : undefined
-        : meta.selectedItems.map((it) => it.id),
-    );
+          : undefined,
+      );
+    else setValue(meta.selectedItems.map((it) => it.id));
   }, [meta.selectedItems]);
 
   const [searchResult, searchAction, isSearching] = useActionState(
@@ -143,13 +145,14 @@ function Title({
         {data}
       </h2>
       <Button
+        aria-label="Toggle search"
         disabled={disabled}
         color="ghost"
         onClick={() =>
           setMeta({
             ...meta,
             showSearch: !meta.showSearch,
-          } satisfies Meta)
+          })
         }
         classNames={{
           button: "group-hover:opacity-100 opacity-0 transition-opacity",
@@ -213,8 +216,9 @@ function SelectedItem({
         setMeta({
           ...meta,
           selectedItems: meta.selectedItems.filter((it) => it.id !== data.id),
-        } satisfies Meta)
+        })
       }
+      classNames={{ button: "max-w-32" }}
     >
       {data.content}
     </Button>
@@ -235,7 +239,7 @@ function SearchBar({
   search: (payload: { query: string }) => void;
 }) {
   return (
-    <FormTextInput
+    <FormText
       meta={meta.searchQueryMeta}
       setMeta={(searchQueryMeta) => setMeta({ ...meta, searchQueryMeta })}
       setValue={(searchQueryValue) => {
@@ -266,7 +270,7 @@ function SearchResult({
 }: {
   meta: Meta;
   setMeta: (meta: Meta) => void;
-  blacklist?: Item[];
+  blacklist?: string[];
   isSearching: boolean;
   disabled: boolean;
 }) {
@@ -301,7 +305,7 @@ function SearchResultItem({
   setMeta: (meta: Meta) => void;
   data: Item;
   disabled: boolean;
-  blacklist?: Item[];
+  blacklist?: string[];
 }) {
   return (
     <Button
@@ -312,14 +316,14 @@ function SearchResultItem({
       disabled={
         meta.selectedItems.findIndex((it) => it.id === data.id) !== -1 ||
         (blacklist !== undefined &&
-          blacklist.findIndex((it) => data.id === it.id) !== -1) ||
+          blacklist.findIndex((itemId) => data.id === itemId) !== -1) ||
         disabled
       }
       onClick={() =>
         setMeta({
           ...meta,
           selectedItems: [...meta.selectedItems, data],
-        } satisfies Meta)
+        })
       }
     >
       {data.content}

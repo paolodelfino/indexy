@@ -5,24 +5,25 @@ import { fetchInspirationAction } from "@/actions/fetchInspirationAction";
 import { searchBigPaintAction } from "@/actions/searchBigPaintAction";
 import { searchInspirationAction } from "@/actions/searchInspirationAction";
 import Button from "@/components/Button";
-import { CheckboxInput } from "@/components/CheckboxInput";
-import { DateInput } from "@/components/DateInput";
+import FormCheckbox from "@/components/form/FormCheckbox";
+import FormDate from "@/components/form/FormDate";
+import FormSelectSearch from "@/components/form/FormSelectSearch";
+import FormTextArea from "@/components/form/FormTextArea";
 import { Star } from "@/components/icons";
-import { SearchSelect } from "@/components/SearchSelect";
-import { TextInput } from "@/components/TextInput";
-import { editInspirationFormSchema } from "@/schemas/editInspirationFormSchema";
 import { useEditInspirationForm } from "@/stores/useEditInspirationForm";
+import useInspirationSearchQuery from "@/stores/useInspirationSearchQuery";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { startTransition, useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function InspirationEditForm({ id }: { id: string }) {
-  const queryClient = useQueryClient();
+  const router = useRouter();
 
-  const form = useEditInspirationForm();
+  const queryClient = useQueryClient();
 
   const {
     status: queryStatus,
-    data: queryData,
+    // data: queryData,
     error: queryError,
     refetch: fetch,
   } = useQuery({
@@ -31,128 +32,134 @@ export default function InspirationEditForm({ id }: { id: string }) {
     enabled: false,
   });
 
-  const editActionBind = editInspirationAction.bind(null, queryData?.id!);
+  const [isDeleteFormPending, setIsDeleteFormPending] = useState(false);
 
-  const [, editAction, isEditActionPending] = useActionState(
-    editActionBind,
-    void 0,
+  const [isEditFormPending, setIsEditFormPending] = useState(false);
+
+  const invalidateInspirationSearchQuery = useInspirationSearchQuery(
+    (state) => state.invalidate,
   );
 
-  const deleteActionBind = deleteInspirationAction.bind(null, queryData?.id!);
+  const form = useEditInspirationForm();
+  useEffect(() => {
+    form.setOnSubmit(async (form) => {
+      setIsEditFormPending(true);
 
-  const [, deleteAction, isDeleteActionPending] = useActionState(
-    deleteActionBind,
-    void 0,
-  );
+      await editInspirationAction(id, form.values());
+
+      queryClient.invalidateQueries({ queryKey: ["inspirations"] });
+      invalidateInspirationSearchQuery();
+
+      setIsEditFormPending(false);
+    });
+  }, [form.setOnSubmit]);
 
   useEffect(() => {
+    if (id === form.meta.lastId) return;
+
     fetch().then((result) => {
       const queryData = result.data;
-      if (queryData) {
-        form.set({
-          content: queryData.content,
-          related_big_paints_ids: queryData.relatedBigPaints.map((it) => it.id),
-          related_inspirations_ids: queryData.relatedInspirations.map(
-            (it) => it.id,
-          ),
-          date: queryData.date,
-          highlight: queryData.highlight,
-        });
-      }
+      if (queryData === undefined) return;
+
+      form.setValues({
+        content: queryData.content,
+        related_big_paints_ids: queryData.relatedBigPaints.map((it) => it.id),
+        related_inspirations_ids: queryData.relatedInspirations.map(
+          (it) => it.id,
+        ),
+        date: queryData.date,
+        highlight: queryData.highlight,
+      });
+
+      form.setMetas({
+        related_big_paints_ids: {
+          ...form.fields.related_big_paints_ids.default.meta,
+          selectedItems: queryData.relatedBigPaints.map((it) => ({
+            content: it.name,
+            id: it.id,
+          })),
+        },
+        related_inspirations_ids: {
+          ...form.fields.related_inspirations_ids.default.meta,
+          selectedItems: queryData.relatedInspirations,
+        },
+        date: queryData.date,
+        content: queryData.content,
+        highlight: queryData.highlight,
+      });
+
+      form.setFormMeta({ lastId: queryData.id });
     });
-  }, [fetch, id]);
-
-  useEffect(() => {
-    if (!isEditActionPending)
-      queryClient.invalidateQueries({ queryKey: ["inspirations"] });
-  }, [isEditActionPending]);
-
-  useEffect(() => {
-    if (!isDeleteActionPending)
-      queryClient.invalidateQueries({ queryKey: ["inspirations"] });
-  }, [isDeleteActionPending]);
+  }, [id]);
 
   if (queryStatus === "error") throw queryError;
 
   if (queryStatus === "pending") return <span>pending</span>;
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (!form.isInvalid)
-          startTransition(() => {
-            editAction(form.values());
-          });
-      }}
-      className="space-y-6"
-    >
+    <div className="space-y-6">
       <div className="flex items-center justify-end gap-4 p-4">
         <Button
-          onClick={() => {
+          onClick={async () => {
             if (confirm("Are you sure?")) {
-              startTransition(() => {
-                deleteAction();
-              });
+              setIsDeleteFormPending(true);
+
+              await deleteInspirationAction({ id });
+
+              setIsDeleteFormPending(false);
+
+              router.back();
             }
           }}
-          disabled={isDeleteActionPending || isEditActionPending}
+          disabled={isDeleteFormPending || isEditFormPending}
           color="danger"
         >
-          {isDeleteActionPending ? "Deleting..." : "Delete"}
+          {isDeleteFormPending ? "Deleting..." : "Delete"}
         </Button>
         <Button
-          type="submit"
           color="accent"
-          disabled={
-            isEditActionPending || isDeleteActionPending || form.isInvalid
-          }
+          disabled={isEditFormPending || isDeleteFormPending || form.isInvalid}
+          onClick={form.submit}
         >
-          {isEditActionPending ? "Saving..." : "Save"}
+          {isEditFormPending ? "Saving..." : "Save"}
         </Button>
       </div>
       <div>
-        <TextInput
-          multiple
-          value={form.content!}
-          setValue={(value) => form.set({ content: value })}
-          validation={editInspirationFormSchema.shape.content}
-          formPushError={form.pushError}
-          formPopError={form.popError}
-          disabled={isEditActionPending || isDeleteActionPending}
+        <FormTextArea
+          setValue={form.setValue.bind(form, "content")}
+          setMeta={form.setMeta.bind(form, "content")}
+          meta={form.fields.content.meta}
+          error={form.fields.content.error}
+          disabled={isEditFormPending || isDeleteFormPending}
         />
         <div className="flex min-h-9 items-center justify-end pr-2">
-          <DateInput
-            value={form.date!}
-            setValue={(value) => form.set({ date: value })}
-            validation={editInspirationFormSchema.shape.date}
-            formPushError={form.pushError}
-            formPopError={form.popError}
-            disabled={isEditActionPending || isDeleteActionPending}
+          <FormDate
+            setValue={form.setValue.bind(form, "date")}
+            setMeta={form.setMeta.bind(form, "date")}
+            meta={form.fields.date.meta!}
+            error={form.fields.date.error}
+            disabled={isEditFormPending || isDeleteFormPending}
           />
-          <CheckboxInput
-            value={form.highlight!}
-            acceptIndeterminate={false}
-            setValue={(value) => form.set({ highlight: value })}
-            validation={editInspirationFormSchema.shape.highlight}
-            formPushError={form.pushError}
-            formPopError={form.popError}
-            disabled={isEditActionPending || isDeleteActionPending}
+          <FormCheckbox
+            setValue={form.setValue.bind(form, "highlight")}
+            setMeta={form.setMeta.bind(form, "highlight")}
+            meta={form.fields.highlight.meta!}
+            error={form.fields.highlight.error}
+            disabled={isEditFormPending || isDeleteFormPending}
             classNames={{ button: "pl-4" }}
             checkedIcon={<Star fill="currentColor" />}
             uncheckedIcon={<Star />}
           />
         </div>
       </div>
-      <SearchSelect
-        formPushError={form.pushError}
-        formPopError={form.popError}
-        defaultValue={queryData.relatedBigPaints}
-        value={form.related_big_paints_ids!}
-        setValue={(value) => form.set({ related_big_paints_ids: value })}
-        validation={editInspirationFormSchema.shape.related_big_paints_ids}
-        searchAction={(prevState, { query }) =>
+      <FormSelectSearch
+        title="Related BigPaints"
+        setValue={form.setValue.bind(form, "related_big_paints_ids")}
+        setMeta={form.setMeta.bind(form, "related_big_paints_ids")}
+        meta={form.fields.related_big_paints_ids.meta}
+        error={form.fields.related_big_paints_ids.error}
+        disabled={isEditFormPending || isDeleteFormPending}
+        search={(_, { query }) =>
           searchBigPaintAction({
             name: query,
             orderBy: "date",
@@ -161,25 +168,21 @@ export default function InspirationEditForm({ id }: { id: string }) {
             related_big_paints_ids: undefined,
           }).then((res) =>
             res.data.map((item) => ({
-              name: item.name,
+              content: item.name,
               id: item.id,
             })),
           )
         }
-        title="Related BigPaints"
-        selectId={(value) => value.id}
-        selectContent={(value) => value.name}
-        disabled={isEditActionPending || isDeleteActionPending}
-        blacklist={[{ name: "", id }]}
+        blacklist={[id]}
       />
-      <SearchSelect
-        formPushError={form.pushError}
-        formPopError={form.popError}
-        defaultValue={queryData.relatedInspirations}
-        value={form.related_inspirations_ids!}
-        setValue={(value) => form.set({ related_inspirations_ids: value })}
-        validation={editInspirationFormSchema.shape.related_inspirations_ids}
-        searchAction={(prevState, { query }) =>
+      <FormSelectSearch
+        title="Related Inspirations"
+        setValue={form.setValue.bind(form, "related_inspirations_ids")}
+        setMeta={form.setMeta.bind(form, "related_inspirations_ids")}
+        meta={form.fields.related_inspirations_ids.meta}
+        error={form.fields.related_inspirations_ids.error}
+        disabled={isEditFormPending || isDeleteFormPending}
+        search={(_, { query }) =>
           searchInspirationAction({
             content: query,
             orderBy: "date",
@@ -195,12 +198,8 @@ export default function InspirationEditForm({ id }: { id: string }) {
             })),
           )
         }
-        title="Related Inspirations"
-        selectId={(value) => value.id}
-        selectContent={(value) => value.content}
-        disabled={isEditActionPending || isDeleteActionPending}
-        blacklist={[{ content: "", id }]}
+        blacklist={[id]}
       />
-    </form>
+    </div>
   );
 }
