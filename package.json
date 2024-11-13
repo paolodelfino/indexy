@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "db:migrate": "bun run src/db/migrate.ts",
-    "db:codegen": "kysely-codegen --url 'env(POSTGRES_URL_NO_SSL)'"
+    "db:codegen": "kysely-codegen --url 'env(POSTGRES_URL_NO_SSL)'",
+    "ts": "tsc --noEmit"
   },
   "dependencies": {
     "@floating-ui/react": "^0.26.23",

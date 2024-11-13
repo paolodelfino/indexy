@@ -23,15 +23,25 @@ export type FormState<T extends FormFields, FormMeta> = {
   reset: () => void;
   setValue: <Key extends keyof T, Value extends T[Key]["value"]>(
     key: Key,
-    value: Value,
+    value: Value extends object ? Partial<Value> : Value,
   ) => void;
-  setValues: (values: { [key in keyof T]: T[key]["value"] }) => void;
+  setValues: (values: {
+    [key in keyof T]?: T[key]["value"] extends object
+      ? Partial<T[key]["value"]>
+      : T[key]["value"];
+  }) => void;
   setMeta: <Key extends keyof T, Value extends T[Key]["meta"]>(
     key: Key,
-    value: Value,
+    value: Value extends object ? Partial<Value> : Value,
   ) => void;
-  setMetas: (metas: { [key in keyof T]: T[key]["meta"] }) => void;
-  setFormMeta: (value: FormMeta) => void;
+  setMetas: (metas: {
+    [key in keyof T]?: T[key]["meta"] extends object
+      ? Partial<T[key]["meta"]>
+      : T[key]["meta"];
+  }) => void;
+  setFormMeta: (
+    value: FormMeta extends object ? Partial<FormMeta> : FormMeta,
+  ) => void;
   setOnSubmit: (callback: (form: FormState<T, FormMeta>) => void) => void;
   submit: () => void;
 };
@@ -126,7 +136,10 @@ export function createForm<T extends FormFields, FormMeta>(
       },
       setValue(key, value) {
         set((state) => {
-          state.fields[key].value = value;
+          state.fields[key].value =
+            typeof state.fields[key].value === "object"
+              ? { ...state.fields[key].value, ...value }
+              : value;
 
           const [fields, isInvalid, formError] = validate(
             state.fields,
@@ -138,7 +151,14 @@ export function createForm<T extends FormFields, FormMeta>(
       },
       setValues(values) {
         set((state) => {
-          for (const key in values) state.fields[key].value = values[key];
+          for (const key in values)
+            state.fields[key].value =
+              typeof state.fields[key].value === "object"
+                ? {
+                    ...state.fields[key].value,
+                    ...values[key],
+                  }
+                : values[key];
 
           const [fields, isInvalid, formError] = validate(
             state.fields,
@@ -150,19 +170,32 @@ export function createForm<T extends FormFields, FormMeta>(
       },
       setMeta(key, value) {
         set((state) => {
-          state.fields[key].meta = value;
+          state.fields[key].meta =
+            typeof state.fields[key].meta === "object"
+              ? { ...state.fields[key].meta, ...value }
+              : value;
+
           return { fields: state.fields };
         });
       },
       setMetas(metas) {
         set((state) => {
-          for (const key in metas) state.fields[key].meta = metas[key];
+          for (const key in metas)
+            state.fields[key].meta =
+              typeof state.fields[key].meta === "object"
+                ? { ...state.fields[key].meta, ...metas[key] }
+                : metas[key];
 
           return { fields: state.fields };
         });
       },
       setFormMeta(value) {
-        set({ meta: value });
+        set((state) => ({
+          meta:
+            typeof state.meta === "object"
+              ? { ...state.meta, ...value }
+              : (value as FormMeta),
+        }));
       },
       setOnSubmit(callback) {
         set({ onSubmit: callback });
@@ -184,8 +217,6 @@ export function createForm<T extends FormFields, FormMeta>(
     return state;
   });
 }
-
-
 
 // export function useCreateLocalForm<T extends FormFields, FormMeta>(
 //   schema: FormSchema,
