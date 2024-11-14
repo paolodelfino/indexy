@@ -21,7 +21,7 @@ type Value =
   | undefined;
 
 type Meta = {
-  comparison: FieldSelect<true>;
+  comparison: FieldSelect;
   date: FieldDate | undefined;
   date2: FieldDate | undefined;
 };
@@ -95,29 +95,28 @@ export default function FormDateComparison({
   }, [meta.comparison.value]);
 
   useEffect(() => {
-    const comparison =
-      meta.comparison.value === undefined
-        ? undefined
-        : (meta.comparison.value as NonNullable<Value>["comparison"]);
+    const comparison = meta.comparison.value as
+      | NonNullable<Value>["comparison"]
+      | undefined;
 
     const date =
       meta.date !== undefined &&
       meta.date.meta.date !== undefined &&
       meta.date.meta.time !== undefined
         ? datetime(meta.date.meta.date, meta.date.meta.time)
-        : undefined!;
+        : undefined;
 
     const date2 =
       meta.date2 !== undefined &&
       meta.date2.meta.date !== undefined &&
       meta.date2.meta.time !== undefined
         ? datetime(meta.date2.meta.date, meta.date2.meta.time)
-        : undefined!;
+        : undefined;
 
     setValue(
       acceptIndeterminate && comparison === undefined
         ? undefined
-        : { comparison: comparison!, date, date2 },
+        : { comparison: comparison!, date: date!, date2: date2! },
     );
   }, [meta]);
 
@@ -137,7 +136,6 @@ export default function FormDateComparison({
             },
           })
         }
-        // @ts-expect-error TODO: Remove
         setValue={(value) =>
           setMeta({
             ...meta,

@@ -18,16 +18,11 @@ export const styles = tv({
   },
 });
 
-type Meta<AcceptIndeterminate extends boolean> =
-  AcceptIndeterminate extends true ? boolean | undefined : boolean;
+type Meta = boolean | undefined;
 
-type Value<AcceptIndeterminate extends boolean> =
-  AcceptIndeterminate extends true ? boolean | undefined : boolean;
+type Value = boolean | undefined;
 
-export type FieldCheckbox<AcceptIndeterminate extends boolean> = FormField<
-  Value<AcceptIndeterminate>,
-  Meta<AcceptIndeterminate>
->;
+export type FieldCheckbox = FormField<Value, Meta>;
 
 export default function FormCheckbox({
   meta,
@@ -44,20 +39,11 @@ export default function FormCheckbox({
   color = "ghost",
   full = false,
   size = "default",
-}: (
-  | {
-      acceptIndeterminate: true;
-      setValue: (value: Value<true>) => void;
-      meta: Meta<true>;
-      setMeta: (meta: Meta<true>) => void;
-    }
-  | {
-      acceptIndeterminate?: false;
-      setValue: (value: Value<false>) => void;
-      meta: Meta<false>;
-      setMeta: (meta: Meta<false>) => void;
-    }
-) & {
+}: {
+  acceptIndeterminate?: boolean;
+  meta: Meta;
+  setMeta: (meta: Meta) => void;
+  setValue: (value: Value) => void;
   error: string | undefined;
   disabled: boolean;
   label?: string; // TODO: ReactNode
@@ -67,10 +53,9 @@ export default function FormCheckbox({
   classNames?: {
     [key in keyof ReturnType<typeof styles>]?: ClassValue;
   };
-  acceptIndeterminate?: boolean;
 } & Omit<VariantProps<typeof styles>, "multiple" | "checked">) {
   useEffect(() => {
-    setValue(meta as any);
+    setValue(meta);
   }, [meta]);
 
   const {

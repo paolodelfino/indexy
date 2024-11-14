@@ -18,13 +18,9 @@ type Meta = {
   selectedItem: Item;
 };
 
-type Value<AcceptIndeterminate extends boolean> =
-  AcceptIndeterminate extends true ? string | undefined : string;
+type Value = string | undefined;
 
-export type FieldSelect<AcceptIndeterminate extends boolean> = FormField<
-  Value<AcceptIndeterminate>,
-  Meta
->;
+export type FieldSelect = FormField<Value, Meta>;
 
 export const indeterminateGuard: Item = { content: "", id: "" };
 
@@ -43,16 +39,9 @@ export default function FormSelect({
   disabled,
   acceptIndeterminate,
   placeholder,
-}: (
-  | {
-      acceptIndeterminate: true;
-      setValue: (value: Value<true>) => void;
-    }
-  | {
-      acceptIndeterminate?: false;
-      setValue: (value: Value<false>) => void;
-    }
-) & {
+}: {
+  acceptIndeterminate?: boolean;
+  setValue: (value: Value) => void;
   meta: Meta;
   setMeta: (meta: Meta) => void;
   error: string | undefined;
@@ -60,13 +49,11 @@ export default function FormSelect({
   placeholder: string;
 }) {
   useEffect(() => {
-    if (acceptIndeterminate)
-      setValue(
-        isIndeterminateGuard(meta.selectedItem)
-          ? undefined
-          : meta.selectedItem.id,
-      );
-    else setValue(meta.selectedItem.id);
+    setValue(
+      acceptIndeterminate && isIndeterminateGuard(meta.selectedItem)
+        ? undefined
+        : meta.selectedItem.id,
+    );
   }, [meta.selectedItem]);
 
   useEffect(() => {

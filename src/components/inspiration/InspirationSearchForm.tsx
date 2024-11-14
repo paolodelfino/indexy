@@ -8,11 +8,12 @@ import FormSelect from "@/components/form/FormSelect";
 import FormSelectSearch from "@/components/form/FormSelectSearch";
 import FormTextArea from "@/components/form/FormTextArea";
 import { Cloud, InformationCircle } from "@/components/icons";
-import InspirationView from "@/components/inspiration/TempInspirationView";
+import Inspiration from "@/components/inspiration/Inspiration";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useInspirationSearchQuery from "@/stores/useInspirationSearchQuery";
 import { useSearchInspirationForm } from "@/stores/useSearchInspirationForm";
 import { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 
 // TODO: History
 // TODO: Infinite query (or pagination or both)
@@ -31,10 +32,19 @@ export default function InspirationSearchForm() {
     return () => query.inactive();
   }, []);
 
+  const { ref, inView } = useInView();
+
   useEffect(() => {
-    form.setOnSubmit((form) =>
-      query.fetch(form.values() as any /* TODO: Type problem */),
-    );
+    if (inView) query.fetch(query.lastArgs![0]);
+  }, [inView]);
+
+  useEffect(() => {
+    // TODO: Vedi se questo problema del cambio route si è risolto ora che non uso più quello schifo di query management
+    form.setOnSubmit((form) => {
+      query.reset();
+      query.active();
+      query.fetch(form.values());
+    });
   }, [form.setOnSubmit]);
 
   return (
@@ -162,7 +172,7 @@ export default function InspirationSearchForm() {
         error={form.fields.related_big_paints_ids.error}
         acceptIndeterminate
         search={(prevState, { query }) =>
-          searchBigPaintAction({
+          searchBigPaintAction(null, null, {
             name: query,
             orderBy: "date",
             orderByDir: "asc",
@@ -186,7 +196,7 @@ export default function InspirationSearchForm() {
         error={form.fields.related_inspirations_ids.error}
         acceptIndeterminate
         search={(prevState, { query }) =>
-          searchInspirationAction({
+          searchInspirationAction(null, null, {
             content: query,
             orderBy: "date",
             orderByDir: "asc",
@@ -205,10 +215,24 @@ export default function InspirationSearchForm() {
 
       {query.data !== undefined && (
         <div>
-          <h2 className="p-4 text-lg font-medium">
-            Result ({query.data.data.length})
-          </h2>
-          <InspirationView data={query.data.data} />
+          <h2 className="p-4 text-lg font-medium">Result ({query.total})</h2>
+          <ul>
+            {query.data.map((it, i) => {
+              return (
+                <Inspiration
+                  ref={
+                    query.nextOffset !== undefined &&
+                    i === query.data!.length - 1
+                      ? ref
+                      : undefined
+                  }
+                  key={it.id}
+                  data={it}
+                />
+              );
+            })}
+            {query.isFetching && "loading..."}
+          </ul>
         </div>
       )}
     </div>

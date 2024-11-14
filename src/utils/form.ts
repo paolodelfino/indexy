@@ -1,3 +1,4 @@
+import { isObject, PartialIfObject } from "@/utils/object";
 import { z, ZodType } from "zod";
 import { create } from "zustand";
 
@@ -12,37 +13,33 @@ export type FormFields = { [key: string]: FormField<any, any> };
 
 export type FormSchema = ZodType;
 
-export type FormState<T extends FormFields, FormMeta> = {
+export type FormState<T extends FormFields, FormMeta, U extends FormSchema> = {
   fields: T;
-  schema: FormSchema;
+  schema: U;
   meta: FormMeta;
   isInvalid: boolean;
   error: string | undefined;
-  onSubmit?: (form: FormState<T, FormMeta>) => void;
-  values: () => { [key in keyof T]: T[key]["value"] };
+  onSubmit?: (form: FormState<T, FormMeta, U>) => void;
+  values: () => FormValues<U>;
   reset: () => void;
   setValue: <Key extends keyof T, Value extends T[Key]["value"]>(
     key: Key,
-    value: Value extends object ? Partial<Value> : Value,
+    value: PartialIfObject<Value>,
   ) => void;
   setValues: (values: {
-    [key in keyof T]?: T[key]["value"] extends object
-      ? Partial<T[key]["value"]>
-      : T[key]["value"];
+    [key in keyof T]?: PartialIfObject<T[key]["value"]>;
   }) => void;
   setMeta: <Key extends keyof T, Value extends T[Key]["meta"]>(
     key: Key,
-    value: Value extends object ? Partial<Value> : Value,
+    value: PartialIfObject<Value>,
   ) => void;
   setMetas: (metas: {
-    [key in keyof T]?: T[key]["meta"] extends object
-      ? Partial<T[key]["meta"]>
-      : T[key]["meta"];
+    [key in keyof T]?: PartialIfObject<T[key]["meta"]>;
   }) => void;
   setFormMeta: (
     value: FormMeta extends object ? Partial<FormMeta> : FormMeta,
   ) => void;
-  setOnSubmit: (callback: (form: FormState<T, FormMeta>) => void) => void;
+  setOnSubmit: (callback: (form: FormState<T, FormMeta, U>) => void) => void;
   submit: () => void;
 };
 
@@ -50,16 +47,18 @@ export type FormValues<T extends ZodType> = {
   [key in NonNullable<keyof z.infer<T>>]: z.infer<T>[key];
 };
 
-export type FormHook<T extends FormFields, FormMeta> = ReturnType<
-  typeof createForm<T, FormMeta>
->;
+export type FormHook<
+  T extends FormFields,
+  FormMeta,
+  U extends FormSchema,
+> = ReturnType<typeof createForm<T, FormMeta, U>>;
 
-export function createForm<T extends FormFields, FormMeta>(
-  schema: FormSchema,
-  fields: T,
-  meta: FormMeta,
-) {
-  return create<FormState<T, FormMeta>>((set, get, api) => {
+export function createForm<
+  T extends FormFields,
+  FormMeta,
+  U extends FormSchema,
+>(schema: U, fields: T, meta: FormMeta) {
+  return create<FormState<T, FormMeta, U>>((set, get, api) => {
     function values(fields: T) {
       return Object.entries(fields).reduce(
         (acc, [key, value]) => {
@@ -113,7 +112,7 @@ export function createForm<T extends FormFields, FormMeta>(
       ];
     }
 
-    const state: FormState<T, FormMeta> = {
+    const state: FormState<T, FormMeta, U> = {
       fields,
       schema: schema,
       meta,
@@ -136,10 +135,9 @@ export function createForm<T extends FormFields, FormMeta>(
       },
       setValue(key, value) {
         set((state) => {
-          state.fields[key].value =
-            typeof state.fields[key].value === "object"
-              ? { ...state.fields[key].value, ...value }
-              : value;
+          state.fields[key].value = isObject(value)
+            ? { ...state.fields[key].value, ...value }
+            : value;
 
           const [fields, isInvalid, formError] = validate(
             state.fields,
@@ -152,13 +150,12 @@ export function createForm<T extends FormFields, FormMeta>(
       setValues(values) {
         set((state) => {
           for (const key in values)
-            state.fields[key].value =
-              typeof state.fields[key].value === "object"
-                ? {
-                    ...state.fields[key].value,
-                    ...values[key],
-                  }
-                : values[key];
+            state.fields[key].value = isObject(values[key])
+              ? {
+                  ...state.fields[key].value,
+                  ...values[key],
+                }
+              : values[key];
 
           const [fields, isInvalid, formError] = validate(
             state.fields,
@@ -170,10 +167,9 @@ export function createForm<T extends FormFields, FormMeta>(
       },
       setMeta(key, value) {
         set((state) => {
-          state.fields[key].meta =
-            typeof state.fields[key].meta === "object"
-              ? { ...state.fields[key].meta, ...value }
-              : value;
+          state.fields[key].meta = isObject(value)
+            ? { ...state.fields[key].meta, ...value }
+            : value;
 
           return { fields: state.fields };
         });
@@ -181,20 +177,18 @@ export function createForm<T extends FormFields, FormMeta>(
       setMetas(metas) {
         set((state) => {
           for (const key in metas)
-            state.fields[key].meta =
-              typeof state.fields[key].meta === "object"
-                ? { ...state.fields[key].meta, ...metas[key] }
-                : metas[key];
+            state.fields[key].meta = isObject(metas[key])
+              ? { ...state.fields[key].meta, ...metas[key] }
+              : metas[key];
 
           return { fields: state.fields };
         });
       },
       setFormMeta(value) {
         set((state) => ({
-          meta:
-            typeof state.meta === "object"
-              ? { ...state.meta, ...value }
-              : (value as FormMeta),
+          meta: isObject(value)
+            ? { ...state.meta, ...value }
+            : (value as FormMeta),
         }));
       },
       setOnSubmit(callback) {

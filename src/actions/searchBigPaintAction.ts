@@ -3,19 +3,17 @@ import { db } from "@/db/db";
 import { searchBigPaintFormSchema } from "@/schemas/searchBigPaintFormSchema";
 import { FormValues } from "@/utils/form";
 import { sql } from "kysely";
+import { z } from "zod";
 
 export async function searchBigPaintAction(
+  _offset: number | null, // TODO: Remove optional
+  _limit: number | null, // TODO: Remove optional
   values: FormValues<typeof searchBigPaintFormSchema>,
 ) {
-  const {
-    name,
-    date,
-    related_big_paints_ids,
-    orderBy,
-    orderByDir,
-    // limit,
-    // offset,
-  } = searchBigPaintFormSchema.parse(values);
+  const offset = z.number().int().gte(0).nullable().parse(_offset); // TODO: Remove optional
+  const limit = z.number().int().gte(0).nullable().parse(_limit); // TODO: Remove optional
+  const { name, date, related_big_paints_ids, orderBy, orderByDir } =
+    searchBigPaintFormSchema.parse(values);
 
   let q = db.selectFrom("big_paint");
 
@@ -33,17 +31,19 @@ export async function searchBigPaintAction(
 
   if (name !== undefined) q = q.where("name", "~", name);
 
-  const result = await q
-    .orderBy(orderBy, orderByDir)
-    .select(["id", "name", "date"])
-    .execute();
-
-  // const previousOffset = offset - limit >= 0 ? offset - limit : null;
-  // const nextOffset = result.length < limit ? null : offset + result.length;
-
   return {
-    data: result,
-    // previousOffset,
-    // nextOffset,
+    data: await q
+      .orderBy(orderBy, orderByDir)
+      .select(["id", "name", "date"])
+      .$if(offset !== null, (qb) => qb.offset(offset!)) // TODO: Remove optional
+      .$if(limit !== null, (qb) => qb.limit(limit!)) // TODO: Remove optional
+      .execute(),
+    total: Number(
+      (
+        await q
+          .select((eb) => eb.fn.countAll().as("total"))
+          .executeTakeFirstOrThrow()
+      ).total,
+    ),
   };
 }

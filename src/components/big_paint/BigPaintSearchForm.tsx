@@ -1,6 +1,6 @@
 "use client";
 import { searchBigPaintAction } from "@/actions/searchBigPaintAction";
-import BigPaintView from "@/components/big_paint/TempBigPaintView";
+import BigPaint from "@/components/big_paint/BigPaint";
 import Button from "@/components/Button";
 import FormDateComparison from "@/components/form/FormDateComparison";
 import FormSelect from "@/components/form/FormSelect";
@@ -11,6 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useBigPaintSearchQuery from "@/stores/useBigPaintSearchQuery";
 import { useSearchBigPaintForm } from "@/stores/useSearchBigPaintForm";
 import { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 
 // TODO: History
 // TODO: Infinite query (or pagination or both)
@@ -29,11 +30,15 @@ export default function BigPaintSearchForm() {
     return () => query.inactive();
   }, []);
 
+  const { ref, inView } = useInView();
+
   useEffect(() => {
     // TODO: Vedi se questo problema del cambio route si è risolto ora che non uso più quello schifo di query management
-    form.setOnSubmit((form) =>
-      query.fetch(form.values() as any /* TODO: Type problem */),
-    );
+    form.setOnSubmit((form) => {
+      query.reset();
+      query.active();
+      query.fetch(form.values());
+    });
   }, [form.setOnSubmit]);
 
   return (
@@ -142,7 +147,7 @@ export default function BigPaintSearchForm() {
         error={form.fields.related_big_paints_ids.error}
         acceptIndeterminate
         search={(prevState, { query }) =>
-          searchBigPaintAction({
+          searchBigPaintAction(null, null, {
             name: query,
             orderBy: "date",
             orderByDir: "asc",
@@ -159,10 +164,24 @@ export default function BigPaintSearchForm() {
 
       {query.data !== undefined && (
         <div>
-          <h2 className="p-4 text-lg font-medium">
-            Result ({query.data.data.length})
-          </h2>
-          <BigPaintView data={query.data.data} />
+          <h2 className="p-4 text-lg font-medium">Result ({query.total})</h2>
+          <ul>
+            {query.data.map((it, i) => {
+              return (
+                <BigPaint
+                  ref={
+                    query.nextOffset !== undefined &&
+                    i === query.data!.length - 1
+                      ? ref
+                      : undefined
+                  }
+                  key={it.id}
+                  data={it}
+                />
+              );
+            })}
+            {query.isFetching && "loading..."}
+          </ul>
         </div>
       )}
     </div>

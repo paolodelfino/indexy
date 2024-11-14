@@ -46,7 +46,7 @@ export const useEditBigPaintForm = createForm(
         value: undefined,
       },
       error: undefined,
-    } satisfies FieldSelectSearch<true> as FieldSelectSearch<true>,
+    } satisfies FieldSelectSearch as FieldSelectSearch,
     name: {
       meta: "",
       value: undefined,
@@ -55,7 +55,7 @@ export const useEditBigPaintForm = createForm(
         value: undefined,
       },
       error: undefined,
-    } satisfies FieldText<true> as FieldText<true>,
+    } satisfies FieldText as FieldText,
   },
   {
     lastId: undefined satisfies string | undefined as string | undefined,

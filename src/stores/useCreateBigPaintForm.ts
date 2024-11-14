@@ -13,7 +13,7 @@ export const useCreateBigPaintForm = createForm(
         value: "",
       },
       error: undefined,
-    } satisfies FieldText<false> as FieldText<false>,
+    } satisfies FieldText as FieldText,
   },
   {},
 );

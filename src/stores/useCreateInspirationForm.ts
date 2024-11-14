@@ -13,7 +13,7 @@ export const useCreateInspirationForm = createForm(
         value: "",
       },
       error: undefined,
-    } satisfies FieldText<false> as FieldText<false>,
+    } satisfies FieldText as FieldText,
   },
   {},
 );

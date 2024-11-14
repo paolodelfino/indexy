@@ -10,13 +10,9 @@ export const styles = tv({
 
 type Meta = string;
 
-type Value<AcceptIndeterminate extends boolean> =
-  AcceptIndeterminate extends true ? string | undefined : string;
+type Value = string | undefined;
 
-export type FieldText<AcceptIndeterminate extends boolean> = FormField<
-  Value<AcceptIndeterminate>,
-  Meta
->;
+export type FieldText = FormField<Value, Meta>;
 
 /**
  * Simple rule for label and placeholder: if there is a label, no placeholder needed and use label if there will be times the placeholder won't be visible because there will already be content filling the space, but don't use label if it's a pretty known, deducible field by the user
@@ -31,27 +27,20 @@ export default function FormText({
   placeholder,
   label: _label,
   ...rest
-}: (
-  | {
-      acceptIndeterminate: true;
-      setValue: (value: Value<true>) => void;
-    }
-  | {
-      acceptIndeterminate?: false;
-      setValue: (value: Value<false>) => void;
-    }
-) & {
+}: {
+  acceptIndeterminate?: boolean;
   meta: Meta;
   setMeta: (meta: Meta) => void;
+  setValue: (value: Value) => void;
   error: string | undefined;
   disabled: boolean;
   className?: string;
   placeholder?: string;
   label?: ReactNode;
 } & React.DetailedHTMLProps<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    HTMLInputElement
-  >) {
+  React.InputHTMLAttributes<HTMLInputElement>,
+  HTMLInputElement
+>) {
   const style = styles({ className });
 
   const label =
@@ -67,8 +56,7 @@ export default function FormText({
     );
 
   useEffect(() => {
-    if (acceptIndeterminate) setValue(meta.length <= 0 ? undefined : meta);
-    else setValue(meta);
+    setValue(acceptIndeterminate && meta.length <= 0 ? undefined : meta);
   }, [meta]);
 
   return (

@@ -62,16 +62,6 @@ export default function InspirationEditForm({ id }: { id: string }) {
       const queryData = result.data;
       if (queryData === undefined) return;
 
-      form.setValues({
-        content: queryData.content,
-        related_big_paints_ids: queryData.relatedBigPaints.map((it) => it.id),
-        related_inspirations_ids: queryData.relatedInspirations.map(
-          (it) => it.id,
-        ),
-        date: queryData.date,
-        highlight: queryData.highlight,
-      });
-
       form.setMetas({
         related_big_paints_ids: {
           ...form.fields.related_big_paints_ids.default.meta,
@@ -114,6 +104,8 @@ export default function InspirationEditForm({ id }: { id: string }) {
               setIsDeleteFormPending(true);
 
               await deleteInspirationAction({ id });
+
+              invalidateInspirationSearchQuery();
 
               setIsDeleteFormPending(false);
 
@@ -180,7 +172,7 @@ export default function InspirationEditForm({ id }: { id: string }) {
         error={form.fields.related_big_paints_ids.error}
         disabled={isEditFormPending || isDeleteFormPending}
         search={(_, { query }) =>
-          searchBigPaintAction({
+          searchBigPaintAction(null, null, {
             name: query,
             orderBy: "date",
             orderByDir: "asc",
@@ -203,7 +195,7 @@ export default function InspirationEditForm({ id }: { id: string }) {
         error={form.fields.related_inspirations_ids.error}
         disabled={isEditFormPending || isDeleteFormPending}
         search={(_, { query }) =>
-          searchInspirationAction({
+          searchInspirationAction(null, null, {
             content: query,
             orderBy: "date",
             orderByDir: "asc",

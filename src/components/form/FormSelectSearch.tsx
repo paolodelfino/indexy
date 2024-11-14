@@ -22,13 +22,9 @@ type Meta = {
   searchQueryError: string | undefined;
 };
 
-type Value<AcceptIndeterminate extends boolean> =
-  AcceptIndeterminate extends true ? string[] | undefined : string[];
+type Value = string[] | undefined;
 
-export type FieldSelectSearch<AcceptIndeterminate extends boolean> = FormField<
-  Value<AcceptIndeterminate>,
-  Meta
->;
+export type FieldSelectSearch = FormField<Value, Meta>;
 
 function validate(meta: Meta, searchQueryValue: Meta["searchQueryValue"]) {
   const schema = z.string().trim().min(1);
@@ -53,16 +49,9 @@ export default function FormSelectSearch({
   title,
   search,
   blacklist, // TODO: Exclude from search database query
-}: (
-  | {
-      acceptIndeterminate: true;
-      setValue: (value: Value<true>) => void;
-    }
-  | {
-      acceptIndeterminate?: false;
-      setValue: (value: Value<false>) => void;
-    }
-) & {
+}: {
+  acceptIndeterminate?: boolean;
+  setValue: (value: Value) => void;
   meta: Meta;
   setMeta: (meta: Meta) => void;
   error: string | undefined;
@@ -72,13 +61,11 @@ export default function FormSelectSearch({
   search: (prevState: unknown, payload: { query: string }) => Promise<Item[]>;
 }) {
   useEffect(() => {
-    if (acceptIndeterminate)
-      setValue(
-        meta.selectedItems.length > 0
-          ? meta.selectedItems.map((it) => it.id)
-          : undefined,
-      );
-    else setValue(meta.selectedItems.map((it) => it.id));
+    setValue(
+      acceptIndeterminate && meta.selectedItems.length <= 0
+        ? undefined
+        : meta.selectedItems.map((it) => it.id),
+    );
   }, [meta.selectedItems]);
 
   const [searchResult, searchAction, isSearching] = useActionState(

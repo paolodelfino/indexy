@@ -56,12 +56,6 @@ export default function BigPaintEditForm({ id }: { id: string }) {
       const queryData = result.data;
       if (queryData === undefined) return;
 
-      form.setValues({
-        name: queryData.name,
-        related_big_paints_ids: queryData.relatedBigPaints.map((it) => it.id),
-        date: queryData.date,
-      });
-
       form.setMetas({
         related_big_paints_ids: {
           ...form.fields.related_big_paints_ids.default.meta,
@@ -157,7 +151,7 @@ export default function BigPaintEditForm({ id }: { id: string }) {
           error={form.fields.related_big_paints_ids.error}
           disabled={isEditFormPending || isDeleteFormPending}
           search={(_, { query }) =>
-            searchBigPaintAction({
+            searchBigPaintAction(null, null, {
               name: query,
               orderBy: "date",
               orderByDir: "asc",

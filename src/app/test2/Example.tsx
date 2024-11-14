@@ -1,13 +1,13 @@
 "use client";
 
+import { useTestQuery } from "@/app/test/Example";
 import Button, { ButtonLink } from "@/components/Button";
-import useTestQuery from "@/stores/useTestQuery";
 import ReactJson from "react-json-view";
 
 export default function Example() {
   const { data, isPending, fetch, invalidate } = useTestQuery((state) => ({
     data: state.data,
-    isPending: state.isPending,
+    isPending: state.isFetching,
     fetch: state.fetch,
     invalidate: state.invalidate,
   }));
@@ -18,7 +18,9 @@ export default function Example() {
     <div>
       {!isPending && <ReactJson name={false} theme="monokai" src={data} />}
 
-      <Button onClick={fetch.bind(null, data)}>fetch</Button>
+      <Button disabled={isPending} onClick={fetch}>
+        {isPending ? "fetching" : "fetch"}
+      </Button>
       <Button onClick={invalidate}>invalidate</Button>
       <ButtonLink href="/test">goto page1</ButtonLink>
     </div>

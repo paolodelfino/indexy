@@ -47,7 +47,7 @@ export const useEditInspirationForm = createForm(
         value: undefined,
       },
       error: undefined,
-    } satisfies FieldSelectSearch<true> as FieldSelectSearch<true>,
+    } satisfies FieldSelectSearch as FieldSelectSearch,
     content: {
       meta: "",
       value: undefined,
@@ -56,7 +56,7 @@ export const useEditInspirationForm = createForm(
         value: undefined,
       },
       error: undefined,
-    } satisfies FieldTextArea<true> as FieldTextArea<true>,
+    } satisfies FieldTextArea as FieldTextArea,
     highlight: {
       meta: undefined,
       value: undefined,
@@ -65,7 +65,7 @@ export const useEditInspirationForm = createForm(
         value: undefined,
       },
       error: undefined,
-    } satisfies FieldCheckbox<true> as FieldCheckbox<true>,
+    } satisfies FieldCheckbox as FieldCheckbox,
     related_inspirations_ids: {
       meta: {
         selectedItems: [],
@@ -88,7 +88,7 @@ export const useEditInspirationForm = createForm(
         value: undefined,
       },
       error: undefined,
-    } satisfies FieldSelectSearch<true> as FieldSelectSearch<true>,
+    } satisfies FieldSelectSearch as FieldSelectSearch,
   },
   {
     lastId: undefined satisfies string | undefined as string | undefined,

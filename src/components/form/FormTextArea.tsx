@@ -11,13 +11,9 @@ export const styles = tv({
 
 type Meta = string;
 
-type Value<AcceptIndeterminate extends boolean> =
-  AcceptIndeterminate extends true ? string | undefined : string;
+type Value = string | undefined;
 
-export type FieldTextArea<AcceptIndeterminate extends boolean> = FormField<
-  Value<AcceptIndeterminate>,
-  Meta
->;
+export type FieldTextArea = FormField<Value, Meta>;
 
 /**
  * Simple rule for label and placeholder: if there is a label, no placeholder needed and use label if there will be times the placeholder won't be visible because there will already be content filling the space, but don't use label if it's a pretty known, deducible field by the user
@@ -32,16 +28,9 @@ export default function FormTextArea({
   placeholder,
   label: _label,
   ...rest
-}: (
-  | {
-      acceptIndeterminate: true;
-      setValue: (value: Value<true>) => void;
-    }
-  | {
-      acceptIndeterminate?: false;
-      setValue: (value: Value<false>) => void;
-    }
-) & {
+}: {
+  acceptIndeterminate?: boolean;
+  setValue: (value: Value) => void;
   meta: Meta;
   setMeta: (meta: Meta) => void;
   error: string | undefined;
@@ -65,8 +54,7 @@ export default function FormTextArea({
     );
 
   useEffect(() => {
-    if (acceptIndeterminate) setValue(meta.length <= 0 ? undefined : meta);
-    else setValue(meta);
+    setValue(acceptIndeterminate && meta.length <= 0 ? undefined : meta);
   }, [meta]);
 
   return (

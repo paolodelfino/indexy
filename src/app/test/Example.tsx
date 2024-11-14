@@ -1,16 +1,25 @@
 "use client";
 
 import Button, { ButtonLink } from "@/components/Button";
-import useTestQuery from "@/stores/useTestQuery";
+import { createInfiniteQuery } from "@/utils/query";
 import { useEffect } from "react";
 import ReactJson from "react-json-view";
+
+const db = Array.from({ length: 50 }, () =>
+  Math.random().toString(36).substring(2, 10),
+);
+
+export const useTestQuery = createInfiniteQuery(3, async (offset, limit) => {
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+  return db.slice(offset, offset + limit);
+});
 
 export default function Example() {
   const q = useTestQuery();
 
   useEffect(() => {
     if (!q.isActive) q.active();
-    if (q.data === undefined) q.fetch({ foo: 0 });
+    if (q.data === undefined) q.fetch();
 
     return () => q.inactive();
   }, []);
@@ -19,11 +28,20 @@ export default function Example() {
 
   return (
     <div>
-      {!q.isPending && (
+      {!q.isFetching && (
         <ReactJson src={q.data} name={false} theme={"monokai"} />
       )}
-      <Button disabled={q.isPending} onClick={q.fetch.bind(null, q.data)}>
-        {q.isPending ? "fetching" : "fetch"}
+      <Button disabled={q.isFetching} onClick={q.fetch}>
+        {q.isFetching ? "fetching" : "fetch"}
+      </Button>
+      <Button
+        onClick={() => {
+          q.reset();
+          q.active();
+          q.fetch();
+        }}
+      >
+        reset
       </Button>
       <InvalidateExample />
       <DataExample />

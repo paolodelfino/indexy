@@ -103,7 +103,7 @@ export const useSearchBigPaintForm = createForm(
         value: "date",
       },
       error: undefined,
-    } satisfies FieldSelect<false> as FieldSelect<false>,
+    } satisfies FieldSelect as FieldSelect,
     orderByDir: {
       meta: {
         items: [
@@ -124,7 +124,7 @@ export const useSearchBigPaintForm = createForm(
         value: "asc",
       },
       error: undefined,
-    } satisfies FieldSelect<false> as FieldSelect<false>,
+    } satisfies FieldSelect as FieldSelect,
     related_big_paints_ids: {
       meta: {
         selectedItems: [],
@@ -147,7 +147,7 @@ export const useSearchBigPaintForm = createForm(
         value: undefined,
       },
       error: undefined,
-    } satisfies FieldSelectSearch<true> as FieldSelectSearch<true>,
+    } satisfies FieldSelectSearch as FieldSelectSearch,
     name: {
       meta: "",
       value: undefined,
@@ -156,7 +156,7 @@ export const useSearchBigPaintForm = createForm(
         value: undefined,
       },
       error: undefined,
-    } satisfies FieldText<true> as FieldText<true>,
+    } satisfies FieldText as FieldText,
   },
   {},
 );
