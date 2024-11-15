@@ -12,8 +12,7 @@ import Inspiration from "@/components/inspiration/Inspiration";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useInspirationSearchQuery from "@/stores/useInspirationSearchQuery";
 import { useSearchInspirationForm } from "@/stores/useSearchInspirationForm";
-import { useEffect } from "react";
-import { useInView } from "react-intersection-observer";
+import { useEffect, useId, useRef } from "react";
 
 // TODO: History
 // TODO: Infinite query (or pagination or both)
@@ -24,7 +23,8 @@ import { useInView } from "react-intersection-observer";
 
 export default function InspirationSearchForm() {
   const form = useSearchInspirationForm();
-
+  const observer = useRef<IntersectionObserver>(null);
+  const id = useId();
   const query = useInspirationSearchQuery();
 
   useEffect(() => {
@@ -32,11 +32,28 @@ export default function InspirationSearchForm() {
     return () => query.inactive();
   }, []);
 
-  const { ref, inView } = useInView();
-
   useEffect(() => {
-    if (inView) query.fetch(query.lastArgs![0]);
-  }, [inView]);
+    if (query.nextOffset !== undefined && query.data !== undefined) {
+      observer.current = new IntersectionObserver((entries, observer) => {
+        if (entries[0].isIntersecting) {
+          query.fetch(query.lastArgs![0]);
+
+          observer.disconnect();
+        }
+      });
+
+      observer.current.observe(
+        document.getElementById(
+          `${id}_${query.data[query.data.length - 1].id}`,
+        )!,
+      );
+    }
+
+    return () => {
+      observer.current?.disconnect();
+      observer.current = null;
+    };
+  }, [query.nextOffset]);
 
   useEffect(() => {
     // TODO: Vedi se questo problema del cambio route si è risolto ora che non uso più quello schifo di query management
@@ -219,16 +236,7 @@ export default function InspirationSearchForm() {
           <ul>
             {query.data.map((it, i) => {
               return (
-                <Inspiration
-                  ref={
-                    query.nextOffset !== undefined &&
-                    i === query.data!.length - 1
-                      ? ref
-                      : undefined
-                  }
-                  key={it.id}
-                  data={it}
-                />
+                <Inspiration key={it.id} data={it} id={`${id}_${it.id}`} />
               );
             })}
             {query.isFetching && "loading..."}
