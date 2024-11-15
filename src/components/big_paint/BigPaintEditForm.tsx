@@ -9,17 +9,22 @@ import FormSelectSearch from "@/components/form/FormSelectSearch";
 import FormText from "@/components/form/FormText";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
+import useBigPaintSearchQuery from "@/stores/useBigPaintSearchQuery";
+import useBigPaintViewQuery from "@/stores/useBigPaintViewQuery";
 import { useEditBigPaintForm } from "@/stores/useEditBigPaintForm";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 // TODO: History (using versioning)
-
 export default function BigPaintEditForm({ id }: { id: string }) {
   const router = useRouter();
 
-  const queryClient = useQueryClient();
+  const invalidateBigPaintViewQuery = useBigPaintViewQuery(
+    (state) => state.invalidate,
+  );
+  const invalidateBigPaintSearchQuery = useBigPaintSearchQuery(
+    (state) => state.invalidate,
+  );
 
   const {
     status: queryStatus,
@@ -43,7 +48,8 @@ export default function BigPaintEditForm({ id }: { id: string }) {
 
       await editBigPaintAction(id, form.values());
 
-      queryClient.invalidateQueries({ queryKey: ["big_paints"] });
+      invalidateBigPaintViewQuery();
+      invalidateBigPaintSearchQuery();
 
       setIsEditFormPending(false);
     });

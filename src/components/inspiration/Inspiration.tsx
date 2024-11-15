@@ -10,10 +10,10 @@ import { useEffect, useState } from "react";
 
 export default function Inspiration({
   data,
-  ref,
+  id,
 }: {
   data: { id: string; date: Date; content: string; highlight: boolean };
-  ref?: (node?: Element | null) => void;
+  id: string;
 }) {
   // TODO: Date doesn't update
   const dateTimeFormat = new Intl.DateTimeFormat(undefined, {
@@ -46,7 +46,7 @@ export default function Inspiration({
 
   return (
     <li
-      ref={ref}
+      id={id}
       onClick={() => {
         if (mode === "edit") {
           const endpoint = `/edit/${data.id}?type=inspiration`;

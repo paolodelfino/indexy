@@ -1,77 +1,69 @@
 "use client";
-import { fetchInspirationsAction } from "@/actions/fetchInspirationsAction";
 import Inspiration from "@/components/inspiration/Inspiration";
 import { useApp } from "@/stores/useApp";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { Fragment, useEffect } from "react";
-import { useInView } from "react-intersection-observer";
+import useInspirationQuery from "@/stores/useInspirationViewQuery";
+import { useEffect, useId, useRef } from "react";
 
 // TODO: Combine with the temporary version
 export default function InspirationView() {
-  const { ref, inView } = useInView();
-
-  const {
-    status,
-    data,
-    error,
-    isFetchingNextPage: isFetchingNext,
-    fetchNextPage: fetchNext,
-    hasNextPage: hasNext,
-  } = useInfiniteQuery({
-    queryKey: ["inspirations"],
-    queryFn: ({ pageParam: offset }) => fetchInspirationsAction(offset, 20),
-    initialPageParam: 0,
-    getPreviousPageParam: (firstData) => firstData?.previousOffset,
-    getNextPageParam: (lastData) => lastData?.nextOffset,
-    refetchInterval: 1000,
-  });
+  const query = useInspirationQuery();
+  const observer = useRef<IntersectionObserver>(null);
+  const id = useId();
 
   useEffect(() => {
-    if (inView) fetchNext();
-  }, [inView]);
+    query.active();
+
+    if (query.data === undefined) query.fetch();
+
+    if (observer.current === null)
+      observer.current = new IntersectionObserver((entries, observer) => {
+        if (entries[0].isIntersecting) {
+          query.fetch();
+
+          observer.disconnect();
+        }
+      });
+
+    return () => {
+      query.inactive();
+      observer.current?.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (query.nextOffset !== undefined && query.data !== undefined) {
+      observer.current!.observe(
+        document.getElementById(
+          `${id}_${query.data[query.data.length - 1].id}`,
+        )!,
+      );
+    }
+  }, [query.nextOffset]);
 
   const makeEditAvailable = useApp((state) => state.makeEditAvailable);
 
   useEffect(() => {
-    if (status === "success" && data && data.pages.length > 0)
+    if (query.data !== undefined && query.data.length > 0)
       makeEditAvailable(true);
     else makeEditAvailable(false);
 
     return () => {
       makeEditAvailable(false);
     };
-  }, [data]);
+  }, [query.data?.length]);
 
-  if (status === "error") throw error;
+  if (query.data === undefined) return <span>loading no cache</span>;
 
-  if (status === "pending") return <span>loading no cache</span>;
-
-  if (data.pages.length <= 0) return <span>empty</span>;
+  if (query.data.length <= 0) return <span>empty</span>;
 
   return (
     <>
       <ul>
-        {data.pages.map((page, pageIndex) => (
-          <Fragment
-            key={`${pageIndex}-${page.previousOffset}-${page.nextOffset}-${page.data.length}`}
-          >
-            {page.data.map((it, itemIndex) => {
-              const isLastEntry =
-                pageIndex === data.pages.length - 1 &&
-                itemIndex === page.data.length - 1;
-
-              return (
-                <Inspiration
-                  key={it.id}
-                  ref={hasNext && isLastEntry ? ref : undefined}
-                  data={it}
-                />
-              );
-            })}
-          </Fragment>
-        ))}
+        {query.data.map((it) => {
+          return <Inspiration key={it.id} data={it} id={`${id}_${it.id}`} />;
+        })}
       </ul>
-      {isFetchingNext && <span>loading next</span>}
+      {query.isFetching && <span>loading next</span>}
     </>
   );
 }

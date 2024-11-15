@@ -5,14 +5,20 @@ import FormText from "@/components/form/FormText";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import { useCreateInspirationForm } from "@/stores/useCreateInspirationForm";
-import { useQueryClient } from "@tanstack/react-query";
+import useInspirationSearchQuery from "@/stores/useInspirationSearchQuery";
+import useInspirationViewQuery from "@/stores/useInspirationViewQuery";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function InspirationCreateForm() {
   const router = useRouter();
 
-  const queryClient = useQueryClient();
+  const invalidateInspirationViewQuery = useInspirationViewQuery(
+    (state) => state.invalidate,
+  );
+  const invalidateInspirationSearchQuery = useInspirationSearchQuery(
+    (state) => state.invalidate,
+  );
 
   const [isCreateFormPending, setIsCreateFormPending] = useState(false);
 
@@ -23,7 +29,8 @@ export default function InspirationCreateForm() {
 
       await createInspirationAction(form.values());
 
-      queryClient.invalidateQueries({ queryKey: ["big_paints"] });
+      invalidateInspirationViewQuery();
+      invalidateInspirationSearchQuery();
 
       form.reset();
 

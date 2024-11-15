@@ -13,7 +13,6 @@ import { InformationCircle, Star } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import { useEditInspirationForm } from "@/stores/useEditInspirationForm";
 import useInspirationSearchQuery from "@/stores/useInspirationSearchQuery";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
