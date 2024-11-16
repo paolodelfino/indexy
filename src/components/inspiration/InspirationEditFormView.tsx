@@ -56,30 +56,34 @@ export default function ({
   }, [form.setOnSubmit, data]);
 
   useEffect(() => {
-    form.setMetas({
-      related_big_paints_ids: {
-        ...form.fields.related_big_paints_ids.default.meta,
-        selectedItems: data.relatedBigPaints.map((it) => ({
-          content: it.name,
-          id: it.id,
-        })),
-      },
-      related_inspirations_ids: {
-        ...form.fields.related_inspirations_ids.default.meta,
-        selectedItems: data.relatedInspirations,
-      },
-      date: {
-        date: data.date,
-        time: {
-          hours: data.date.getHours(),
-          minutes: data.date.getMinutes(),
-          seconds: data.date.getSeconds(),
-          milliseconds: data.date.getMilliseconds(),
+    if (data.id !== form.meta.lastId) {
+      form.setMetas({
+        related_big_paints_ids: {
+          ...form.fields.related_big_paints_ids.default.meta,
+          selectedItems: data.relatedBigPaints.map((it) => ({
+            content: it.name,
+            id: it.id,
+          })),
         },
-      },
-      content: data.content,
-      highlight: data.highlight,
-    });
+        related_inspirations_ids: {
+          ...form.fields.related_inspirations_ids.default.meta,
+          selectedItems: data.relatedInspirations,
+        },
+        date: {
+          date: data.date,
+          time: {
+            hours: data.date.getHours(),
+            minutes: data.date.getMinutes(),
+            seconds: data.date.getSeconds(),
+            milliseconds: data.date.getMilliseconds(),
+          },
+        },
+        content: data.content,
+        highlight: data.highlight,
+      });
+
+      form.setFormMeta({ lastId: data.id });
+    }
   }, [data]);
 
   return (

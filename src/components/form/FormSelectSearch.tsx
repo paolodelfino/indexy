@@ -26,6 +26,35 @@ type Value = string[] | undefined;
 
 export type FieldSelectSearch = FormField<Value, Meta>;
 
+// We use undefined as the guard value assuming that undefined is equivalent to indeterminate state and nothing else for any field
+export function fieldSelectSearch(meta?: Partial<Meta>): FieldSelectSearch {
+  return {
+    meta: {
+      selectedItems: [],
+      showSearch: false,
+      searchResult: [],
+      searchQueryMeta: "",
+      searchQueryValue: "",
+      searchQueryError: undefined,
+      ...meta,
+    },
+    value: undefined,
+    default: {
+      meta: {
+        selectedItems: [],
+        showSearch: false,
+        searchResult: [],
+        searchQueryMeta: "",
+        searchQueryValue: "",
+        searchQueryError: undefined,
+        ...meta,
+      },
+      value: undefined,
+    },
+    error: undefined,
+  };
+}
+
 function validate(meta: Meta, searchQueryValue: Meta["searchQueryValue"]) {
   const schema = z.string().trim().min(1);
   const error = schema.safeParse(searchQueryValue).error?.flatten()

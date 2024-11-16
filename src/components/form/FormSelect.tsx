@@ -31,6 +31,28 @@ function isIndeterminateGuard(item: Item): boolean {
   );
 }
 
+// We use undefined as the guard value assuming that undefined is equivalent to indeterminate state and nothing else for any field
+export function fieldSelect(
+  meta: Partial<Omit<Meta, "items">> & Pick<Meta, "items">,
+): FieldSelect {
+  if (meta.items.length <= 0) throw new Error("No items to select");
+  return {
+    meta: {
+      selectedItem: indeterminateGuard,
+      ...meta,
+    },
+    value: undefined,
+    default: {
+      meta: {
+        selectedItem: indeterminateGuard,
+        ...meta,
+      },
+      value: undefined,
+    },
+    error: undefined,
+  };
+}
+
 export default function FormSelect({
   meta,
   setMeta,

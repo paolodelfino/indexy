@@ -1,7 +1,7 @@
 "use client";
 import { createInspirationAction } from "@/actions/createInspirationAction";
 import Button from "@/components/Button";
-import FormText from "@/components/form/FormText";
+import FormTextArea from "@/components/form/FormTextArea";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import { useCreateInspirationForm } from "@/stores/useCreateInspirationForm";
@@ -73,7 +73,7 @@ export default function InspirationCreateForm() {
       >
         Create Inspiration
       </h1>
-      <FormText
+      <FormTextArea
         meta={form.fields.content.meta}
         setMeta={form.setMeta.bind(form, "content")}
         setValue={form.setValue.bind(form, "content")}

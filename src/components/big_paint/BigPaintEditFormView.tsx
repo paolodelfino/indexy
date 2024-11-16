@@ -52,25 +52,31 @@ export default function ({
   }, [form.setOnSubmit, data]);
 
   useEffect(() => {
-    form.setMetas({
-      related_big_paints_ids: {
-        ...form.fields.related_big_paints_ids.default.meta,
-        selectedItems: data.relatedBigPaints.map((it) => ({
-          content: it.name,
-          id: it.id,
-        })),
-      },
-      date: {
-        date: data.date,
-        time: {
-          hours: data.date.getHours(),
-          minutes: data.date.getMinutes(),
-          seconds: data.date.getSeconds(),
-          milliseconds: data.date.getMilliseconds(),
+    // TODO: Based on this condition, if client-side re-routing here leads to server side refetch, then we should maybe use query.
+    // Also take into account the scenario in which the entry, when you re-route, it's deleted
+    if (data.id !== form.meta.lastId) {
+      form.setMetas({
+        related_big_paints_ids: {
+          ...form.fields.related_big_paints_ids.default.meta,
+          selectedItems: data.relatedBigPaints.map((it) => ({
+            content: it.name,
+            id: it.id,
+          })),
         },
-      },
-      name: data.name,
-    });
+        date: {
+          date: data.date,
+          time: {
+            hours: data.date.getHours(),
+            minutes: data.date.getMinutes(),
+            seconds: data.date.getSeconds(),
+            milliseconds: data.date.getMilliseconds(),
+          },
+        },
+        name: data.name,
+      });
+
+      form.setFormMeta({ lastId: data.id });
+    }
   }, [data]);
 
   return (
@@ -140,6 +146,7 @@ export default function ({
           meta={form.fields.related_big_paints_ids.meta}
           error={form.fields.related_big_paints_ids.error}
           disabled={isEditFormPending || isDeleteFormPending}
+          // TODO: Maybe use query to handle invalidations
           search={(_, { query }) =>
             searchBigPaintAction(null, null, {
               name: query,

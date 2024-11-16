@@ -15,6 +15,19 @@ type Value = string | undefined;
 
 export type FieldTextArea = FormField<Value, Meta>;
 
+// We use undefined as the guard value assuming that undefined is equivalent to indeterminate state and nothing else for any field
+export function fieldTextArea(meta?: Meta): FieldTextArea {
+  return {
+    meta: meta === undefined ? "" : meta,
+    value: undefined,
+    default: {
+      meta: meta === undefined ? "" : meta,
+      value: undefined,
+    },
+    error: undefined,
+  };
+}
+
 /**
  * Simple rule for label and placeholder: if there is a label, no placeholder needed and use label if there will be times the placeholder won't be visible because there will already be content filling the space, but don't use label if it's a pretty known, deducible field by the user
  */

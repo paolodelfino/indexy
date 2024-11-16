@@ -22,6 +22,27 @@ type Value = Date | undefined;
 
 export type FieldDate = FormField<Value, Meta>;
 
+// We use undefined as the guard value assuming that undefined is equivalent to indeterminate state and nothing else for any field
+export function fieldDate(meta?: Partial<Meta>): FieldDate {
+  return {
+    meta: {
+      date: undefined,
+      time: undefined,
+      ...meta,
+    },
+    value: undefined,
+    default: {
+      meta: {
+        date: undefined,
+        time: undefined,
+        ...meta,
+      },
+      value: undefined,
+    },
+    error: undefined,
+  };
+}
+
 export default function FormDate({
   meta,
   setMeta,

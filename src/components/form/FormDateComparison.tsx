@@ -1,7 +1,10 @@
 "use client";
 
-import FormDate, { FieldDate } from "@/components/form/FormDate";
-import FormSelect, { FieldSelect } from "@/components/form/FormSelect";
+import FormDate, { fieldDate, FieldDate } from "@/components/form/FormDate";
+import FormSelect, {
+  fieldSelect,
+  FieldSelect,
+} from "@/components/form/FormSelect";
 import { datetime } from "@/utils/date";
 import { FormField } from "@/utils/form";
 import { useEffect } from "react";
@@ -27,6 +30,38 @@ type Meta = {
 };
 
 export type FieldDateComparison = FormField<Value, Meta>;
+
+// We use undefined as the guard value assuming that undefined is equivalent to indeterminate state and nothing else for any field
+export function fieldDateComparison(value?: {
+  comparison?: Omit<Parameters<typeof fieldSelect>[0], "items">;
+  date?: Parameters<typeof fieldDate>[0];
+  date2?: Parameters<typeof fieldDate>[0];
+}): FieldDateComparison {
+  const comparison: FieldSelect = fieldSelect({
+    items: [
+      { content: "=", id: "=" },
+      { content: "<=", id: "<=" },
+      { content: ">=", id: ">=" },
+      { content: "<", id: "<" },
+      { content: ">", id: ">" },
+      { content: "Between", id: "between" },
+    ],
+    ...value?.comparison,
+  });
+  const date: FieldDate | undefined =
+    value?.date === undefined ? undefined : fieldDate(value.date);
+  const date2: FieldDate | undefined =
+    value?.date2 === undefined ? undefined : fieldDate(value.date2);
+  return {
+    value: undefined,
+    error: undefined,
+    default: {
+      value: undefined,
+      meta: { comparison, date, date2 },
+    },
+    meta: { comparison, date, date2 },
+  };
+}
 
 export default function FormDateComparison({
   disabled,

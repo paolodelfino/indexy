@@ -24,6 +24,19 @@ type Value = boolean | undefined;
 
 export type FieldCheckbox = FormField<Value, Meta>;
 
+// We use undefined as the guard value assuming that undefined is equivalent to indeterminate state and nothing else for any field
+export function fieldCheckbox(meta?: Meta): FieldCheckbox {
+  return {
+    meta: meta,
+    value: undefined,
+    default: {
+      meta: meta,
+      value: undefined,
+    },
+    error: undefined,
+  };
+}
+
 export default function FormCheckbox({
   meta,
   setMeta,
