@@ -90,7 +90,5 @@ export const useEditInspirationForm = createForm(
       error: undefined,
     } satisfies FieldSelectSearch as FieldSelectSearch,
   },
-  {
-    lastId: undefined satisfies string | undefined as string | undefined,
-  },
+  {},
 );

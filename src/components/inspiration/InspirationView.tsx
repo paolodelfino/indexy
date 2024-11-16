@@ -15,7 +15,11 @@ export default function InspirationView() {
 
     if (query.data === undefined) query.fetch();
 
-    if (observer.current === null)
+    return () => query.inactive();
+  }, []);
+
+  useEffect(() => {
+    if (query.nextOffset !== undefined && query.data !== undefined) {
       observer.current = new IntersectionObserver((entries, observer) => {
         if (entries[0].isIntersecting) {
           query.fetch();
@@ -24,20 +28,17 @@ export default function InspirationView() {
         }
       });
 
-    return () => {
-      query.inactive();
-      observer.current?.disconnect();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (query.nextOffset !== undefined && query.data !== undefined) {
       observer.current!.observe(
         document.getElementById(
           `${id}_${query.data[query.data.length - 1].id}`,
         )!,
       );
     }
+
+    return () => {
+      observer.current?.disconnect();
+      observer.current = null;
+    };
   }, [query.nextOffset]);
 
   const makeEditAvailable = useApp((state) => state.makeEditAvailable);

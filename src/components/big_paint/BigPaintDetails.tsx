@@ -3,13 +3,9 @@ import { Kysely } from "kysely";
 import { DB } from "kysely-codegen/dist/db";
 import { notFound } from "next/navigation";
 
-export default async function BigPaintDetails({
-  id,
-  db,
-}: {
-  id: string;
-  db: Kysely<DB>;
-}) {
+export default async function ({ id, db }: { id: string; db: Kysely<DB> }) {
+  // TODO: Can we combine those operations?
+
   const bigPaint = await db
     .selectFrom("big_paint")
     .where("id", "=", id)

@@ -4,7 +4,7 @@ import EditPage from "@/app/edit/[id]/page";
 import { getDynamicParams, normalizeSearchParams } from "@/utils/url";
 import { notFound } from "next/navigation";
 
-export default async function _Page({
+export default async function ({
   searchParams: _searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };

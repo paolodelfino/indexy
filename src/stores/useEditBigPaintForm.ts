@@ -57,7 +57,5 @@ export const useEditBigPaintForm = createForm(
       error: undefined,
     } satisfies FieldText as FieldText,
   },
-  {
-    lastId: undefined satisfies string | undefined as string | undefined,
-  },
+  {},
 );
