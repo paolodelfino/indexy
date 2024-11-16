@@ -53,7 +53,7 @@ export default function ({
 
       setIsEditFormPending(false);
     });
-  }, [form.setOnSubmit]);
+  }, [form.setOnSubmit, data]);
 
   useEffect(() => {
     form.setMetas({

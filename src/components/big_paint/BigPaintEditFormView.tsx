@@ -25,8 +25,6 @@ export default function ({
     relatedBigPaints: { id: string; name: string }[];
   };
 }) {
-  "use client";
-
   const router = useRouter();
 
   const invalidateBigPaintViewQuery = useBigPaintViewQuery(
@@ -51,7 +49,7 @@ export default function ({
 
       setIsEditFormPending(false);
     });
-  }, [form.setOnSubmit]);
+  }, [form.setOnSubmit, data]);
 
   useEffect(() => {
     form.setMetas({
