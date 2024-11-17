@@ -11,7 +11,7 @@ export default function ({
   id,
 }: {
   data: { id: string; date: Date; name: string };
-  id: string;
+  id?: string;
 }) {
   // TODO: date doesnt't get updated
   const dateTimeFormat = new Intl.DateTimeFormat(undefined, {

@@ -1,4 +1,4 @@
-import InspirationView from "@/components/inspiration/TempInspirationView";
+import Inspiration from "@/components/inspiration/Inspiration";
 import { Kysely } from "kysely";
 import { DB } from "kysely-codegen/dist/db";
 import { notFound } from "next/navigation";
@@ -67,7 +67,14 @@ export default async function InspirationDetails({
       </div>
       <div className="space-y-6 px-3 py-5 7xl:px-0">
         <h2 className="text-lg font-medium">Related Inspirations</h2>
-        <InspirationView data={inspirations} />
+        {inspirations.length <= 0 && <p>empty</p>}
+        {inspirations.length > 0 && (
+          <ul>
+            {inspirations.map((it, i) => {
+              return <Inspiration key={it.id} data={it} />;
+            })}
+          </ul>
+        )}
       </div>
     </>
   );

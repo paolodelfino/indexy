@@ -1,44 +1,21 @@
 "use client";
+
 import Inspiration from "@/components/inspiration/Inspiration";
+import useInfiniteQuery from "@/hooks/useInfiniteQuery";
 import useInspirationQuery from "@/stores/useInspirationViewQuery";
-import { useEffect, useId, useRef } from "react";
 
-// TODO: Combine with the temporary version
-export default function InspirationView() {
+export default function () {
   const query = useInspirationQuery();
-  const observer = useRef<IntersectionObserver>(null);
-  const id = useId();
 
-  useEffect(() => {
-    query.active();
-
-    if (query.data === undefined) query.fetch();
-
-    return () => query.inactive();
-  }, []);
-
-  useEffect(() => {
-    if (query.nextOffset !== undefined && query.data !== undefined) {
-      observer.current = new IntersectionObserver((entries, observer) => {
-        if (entries[0].isIntersecting) {
-          query.fetch();
-
-          observer.disconnect();
-        }
-      });
-
-      observer.current!.observe(
-        document.getElementById(
-          `${id}_${query.data[query.data.length - 1].id}`,
-        )!,
-      );
-    }
-
-    return () => {
-      observer.current?.disconnect();
-      observer.current = null;
-    };
-  }, [query.nextOffset]);
+  const id = useInfiniteQuery({
+    active: query.active,
+    inactive: query.inactive,
+    callback: query.fetch,
+    fetchIfNoData: true,
+    hasData: query.data !== undefined,
+    lastId: query.data?.[query.data.length - 1].id,
+    nextOffset: query.nextOffset,
+  });
 
   if (query.data === undefined) return <span>loading no cache</span>;
 

@@ -1,9 +1,9 @@
-import BigPaintView from "@/components/big_paint/TempBigPaintView";
+import BigPaint from "@/components/big_paint/BigPaint";
 import { Kysely } from "kysely";
 import { DB } from "kysely-codegen/dist/db";
 import { notFound } from "next/navigation";
 
-export default async function ({ id, db }: { id: string; db: Kysely<DB> }) {
+export default async function ({ id, db }: { id: string; db: Kysely<DB> }) { // TODO: After we remove right panel bullscheisse, we can remove this injection
   // TODO: Can we combine those operations?
 
   const bigPaint = await db
@@ -30,7 +30,14 @@ export default async function ({ id, db }: { id: string; db: Kysely<DB> }) {
   return (
     <div className="space-y-6 px-3 py-5 7xl:px-0">
       <h2 className="text-lg font-medium">Related BigPaints</h2>
-      <BigPaintView data={bigPaints} />
+      {bigPaints.length <= 0 && <p>empty</p>}
+      {bigPaints.length > 0 && (
+        <ul>
+          {bigPaints.map((it, i) => {
+            return <BigPaint key={it.id} data={it} />;
+          })}
+        </ul>
+      )}
     </div>
   );
 }

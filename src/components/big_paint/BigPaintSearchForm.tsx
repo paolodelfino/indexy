@@ -8,50 +8,24 @@ import FormSelectSearch from "@/components/form/FormSelectSearch";
 import FormText from "@/components/form/FormText";
 import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
+import useInfiniteQuery from "@/hooks/useInfiniteQuery";
 import useBigPaintSearchQuery from "@/stores/useBigPaintSearchQuery";
 import { useSearchBigPaintForm } from "@/stores/useSearchBigPaintForm";
-import { useEffect, useId, useRef } from "react";
-
-// TODO: History
-// TODO: Infinite query (or pagination or both)
-// TODO: Merge with View
-// TODO: Open to result endpoint
-// TODO: Scatta una ricerca se reimpostati i valori del form con una ricerca cached associata
-// TODO: Scattano un sacco di ricerche all'improvviso (forse quando chrome rientra in focus)
+import { useEffect } from "react";
 
 export default function BigPaintSearchForm() {
   const form = useSearchBigPaintForm();
-  const observer = useRef<IntersectionObserver>(null);
-  const id = useId();
   const query = useBigPaintSearchQuery();
 
-  useEffect(() => {
-    query.active();
-    return () => query.inactive();
-  }, []);
-
-  useEffect(() => {
-    if (query.nextOffset !== undefined && query.data !== undefined) {
-      observer.current = new IntersectionObserver((entries, observer) => {
-        if (entries[0].isIntersecting) {
-          query.fetch(query.lastArgs![0]);
-
-          observer.disconnect();
-        }
-      });
-
-      observer.current!.observe(
-        document.getElementById(
-          `${id}_${query.data[query.data.length - 1].id}`,
-        )!,
-      );
-    }
-
-    return () => {
-      observer.current?.disconnect();
-      observer.current = null;
-    };
-  }, [query.nextOffset]);
+  const id = useInfiniteQuery({
+    nextOffset: query.nextOffset,
+    hasData: query.data !== undefined,
+    lastId: query.data?.[query.data.length - 1].id,
+    callback: () => query.fetch(query.lastArgs![0]),
+    fetchIfNoData: false,
+    active: query.active,
+    inactive: query.inactive,
+  });
 
   useEffect(() => {
     // TODO: Vedi se questo problema del cambio route si è risolto ora che non uso più quello schifo di query management
