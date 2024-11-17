@@ -59,7 +59,7 @@ export default function FormText({
   const label =
     typeof _label === "string" ? (
       <h2
-        aria-disabled={rest.disabled}
+        data-disabled={rest.disabled}
         className="py-1 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
       >
         {_label}

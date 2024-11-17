@@ -12,19 +12,19 @@ export const styles = tv({
     color: {
       ghost: {
         button:
-          "ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0",
+          "ring-neutral-600 data-[disabled=true]:text-neutral-500 disabled:text-neutral-500 [&:not([data-disabled=true]):active]:!bg-neutral-700 [&:not(:disabled):active]:!bg-neutral-700 [&:not([data-disabled=true]):active]:!ring-1 [&:not(:disabled):active]:!ring-1 [&:not([data-disabled=true]):hover]:bg-neutral-600 [&:not(:disabled):hover]:bg-neutral-600 [&:not([data-disabled=true]):hover]:ring-0 [&:not(:disabled):hover]:ring-0",
       },
       default: {
         button:
-          "bg-neutral-800 ring-1 ring-neutral-600 disabled:text-neutral-500 [&:not(:disabled):active]:!bg-neutral-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-neutral-600 [&:not(:disabled):hover]:ring-0",
+          "bg-neutral-800 ring-1 ring-neutral-600 data-[disabled=true]:text-neutral-500 disabled:text-neutral-500 [&:not([data-disabled=true]):active]:!bg-neutral-700 [&:not(:disabled):active]:!bg-neutral-700 [&:not([data-disabled=true]):active]:!ring-1 [&:not(:disabled):active]:!ring-1 [&:not([data-disabled=true]):hover]:bg-neutral-600 [&:not(:disabled):hover]:bg-neutral-600 [&:not([data-disabled=true]):hover]:ring-0 [&:not(:disabled):hover]:ring-0",
       },
       accent: {
         button:
-          "bg-blue-500 ring-1 ring-blue-300 disabled:text-blue-200 [&:not(:disabled):active]:!bg-blue-300 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-blue-300 [&:not(:disabled):hover]:ring-0",
+          "bg-blue-500 ring-1 ring-blue-300 data-[disabled=true]:text-blue-200 disabled:text-blue-200 [&:not([data-disabled=true]):active]:!bg-blue-300 [&:not(:disabled):active]:!bg-blue-300 [&:not([data-disabled=true]):active]:!ring-1 [&:not(:disabled):active]:!ring-1 [&:not([data-disabled=true]):hover]:bg-blue-300 [&:not(:disabled):hover]:bg-blue-300 [&:not([data-disabled=true]):hover]:ring-0 [&:not(:disabled):hover]:ring-0",
       },
       danger: {
         button:
-          "bg-red-800 ring-1 ring-red-600 disabled:text-red-500 [&:not(:disabled):active]:!bg-red-700 [&:not(:disabled):active]:!ring-1 [&:not(:disabled):hover]:bg-red-600 [&:not(:disabled):hover]:ring-0",
+          "bg-red-800 ring-1 ring-red-600 data-[disabled=true]:text-red-500 disabled:text-red-500 [&:not([data-disabled=true]):active]:!bg-red-700 [&:not(:disabled):active]:!bg-red-700 [&:not([data-disabled=true]):active]:!ring-1 [&:not(:disabled):active]:!ring-1 [&:not([data-disabled=true]):hover]:bg-red-600 [&:not(:disabled):hover]:bg-red-600 [&:not([data-disabled=true]):hover]:ring-0 [&:not(:disabled):hover]:ring-0",
       },
     },
     size: {

@@ -103,7 +103,7 @@ export default function BigPaintSearchForm() {
 
       <div>
         <h2
-          aria-disabled={query.isFetching}
+          data-disabled={query.isFetching}
           className="py-1 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
         >
           Order
@@ -142,7 +142,7 @@ export default function BigPaintSearchForm() {
 
       <div>
         <h2
-          aria-disabled={query.isFetching}
+          data-disabled={query.isFetching}
           className="py-1 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
         >
           Date

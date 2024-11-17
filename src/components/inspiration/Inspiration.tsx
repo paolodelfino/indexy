@@ -74,7 +74,7 @@ export default function Inspiration({
                 ? "#"
                 : `${isMonitor && url !== `/${data.id}?type=inspiration` ? "/redirect?url=" : ""}${`/${data.id}?type=inspiration`}`
             }
-            aria-disabled={mode === "edit" || isItsPage}
+            data-disabled={mode === "edit" || isItsPage}
             className={cn(
               "block size-9 border border-white/20 text-center text-neutral-300",
               (mode === "edit" || isItsPage) && "pointer-events-none",
