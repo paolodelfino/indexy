@@ -75,7 +75,7 @@ export default function FormDateComparison({
   acceptIndeterminate?: boolean;
   setValue: (value: Value) => void;
   meta: Meta;
-  setMeta: (meta: Meta) => void;
+  setMeta: (meta: Partial<Meta>) => void;
   error: string | undefined;
   disabled: boolean;
   title: string; // TODO: Make React.ReactNode
@@ -85,30 +85,13 @@ export default function FormDateComparison({
 
     if (comparison === undefined) {
       setMeta({
-        ...meta,
         date: undefined,
         date2: undefined,
       });
     } else {
       setMeta({
-        ...meta,
-        date: {
-          meta: {
-            date: undefined,
-            time: undefined,
-          },
-          value: undefined,
-          default: {
-            meta: {
-              date: undefined,
-              time: undefined,
-            },
-            value: undefined,
-          },
-          error: undefined,
-        },
-        date2:
-          comparison === "between"
+        date:
+          meta.date === undefined
             ? {
                 meta: {
                   date: undefined,
@@ -124,6 +107,26 @@ export default function FormDateComparison({
                 },
                 error: undefined,
               }
+            : meta.date,
+        date2:
+          comparison === "between"
+            ? meta.date2 === undefined
+              ? {
+                  meta: {
+                    date: undefined,
+                    time: undefined,
+                  },
+                  value: undefined,
+                  default: {
+                    meta: {
+                      date: undefined,
+                      time: undefined,
+                    },
+                    value: undefined,
+                  },
+                  error: undefined,
+                }
+              : meta.date2
             : undefined,
       });
     }
@@ -167,7 +170,7 @@ export default function FormDateComparison({
             ...meta,
             comparison: {
               ...meta.comparison,
-              meta: value,
+              meta: { ...meta.comparison.meta, ...value },
             },
           })
         }
@@ -189,20 +192,17 @@ export default function FormDateComparison({
           meta={meta.date.meta}
           setMeta={(value) =>
             setMeta({
-              ...meta,
-              // @ts-expect-error TODO: Remove
               date: {
-                ...meta.date,
-                meta: value,
+                ...meta.date!,
+                meta: { ...meta.date!.meta, ...value },
               },
             })
           }
           setValue={(value) =>
             setMeta({
               ...meta,
-              // @ts-expect-error TODO: Remove
               date: {
-                ...meta.date,
+                ...meta.date!,
                 value,
               },
             })
@@ -218,20 +218,17 @@ export default function FormDateComparison({
           meta={meta.date2.meta}
           setMeta={(value) =>
             setMeta({
-              ...meta,
-              // @ts-expect-error TODO: Remove
               date2: {
-                ...meta.date2,
-                meta: value,
+                ...meta.date2!,
+                meta: { ...meta.date2!.meta, ...value },
               },
             })
           }
           setValue={(value) =>
             setMeta({
               ...meta,
-              // @ts-expect-error TODO: Remove
               date2: {
-                ...meta.date2,
+                ...meta.date2!,
                 value,
               },
             })

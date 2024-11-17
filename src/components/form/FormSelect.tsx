@@ -65,7 +65,7 @@ export default function FormSelect({
   acceptIndeterminate?: boolean;
   setValue: (value: Value) => void;
   meta: Meta;
-  setMeta: (meta: Meta) => void;
+  setMeta: (meta: Partial<Meta>) => void;
   error: string | undefined;
   disabled: boolean;
   placeholder: string;
@@ -123,7 +123,6 @@ export default function FormSelect({
             color="ghost"
             onClick={() =>
               setMeta({
-                ...meta,
                 selectedItem: indeterminateGuard,
               })
             }
@@ -141,32 +140,24 @@ function List({
   disabled,
 }: {
   meta: Meta;
-  setMeta: (meta: Meta) => void;
+  setMeta: (meta: Partial<Meta>) => void;
   disabled: boolean;
 }) {
   return (
     <ul className="flex w-full flex-col">
       {meta.items.map((it) => (
-        <ListItem
-          key={it.id}
-          data={it}
-          meta={meta}
-          setMeta={setMeta}
-          disabled={disabled}
-        />
+        <ListItem key={it.id} data={it} setMeta={setMeta} disabled={disabled} />
       ))}
     </ul>
   );
 }
 
 function ListItem({
-  meta,
   setMeta,
   data,
   disabled,
 }: {
-  meta: Meta;
-  setMeta: (meta: Meta) => void;
+  setMeta: (meta: Partial<Meta>) => void;
   disabled: boolean;
   data: Item;
 }) {
@@ -178,7 +169,6 @@ function ListItem({
       disabled={disabled}
       onClick={() =>
         setMeta({
-          ...meta,
           selectedItem: data,
         })
       }

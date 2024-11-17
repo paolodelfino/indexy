@@ -12,7 +12,7 @@ export const useSearchBigPaintForm = createForm(
     orderBy: fieldSelect({
       items: [
         { content: "Date", id: "date" },
-        { content: "Name", id: "Name" },
+        { content: "Name", id: "name" },
       ],
       selectedItem: { content: "Date", id: "date" },
     }),

@@ -55,7 +55,7 @@ export default function FormDate({
   acceptIndeterminate?: boolean;
   setValue: (value: Value) => void;
   meta: Meta;
-  setMeta: (meta: Meta) => void;
+  setMeta: (meta: Partial<Meta>) => void;
   error: string | undefined;
   disabled: boolean;
   placeholder: string;
@@ -85,11 +85,11 @@ export default function FormDate({
         <PopoverContent className="w-full max-w-md rounded-lg border bg-neutral-700 p-4">
           <Calendar
             defaultValue={meta.date}
-            onChange={(date) => setMeta({ ...meta, date })}
+            onChange={(date) => setMeta({ date })}
           />
           <TimePicker
             defaultValue={meta.time}
-            onChange={(time) => setMeta({ ...meta, time })}
+            onChange={(time) => setMeta({ time })}
           />
         </PopoverContent>
       </Popover>

@@ -55,17 +55,17 @@ export function fieldSelectSearch(meta?: Partial<Meta>): FieldSelectSearch {
   };
 }
 
-function validate(meta: Meta, searchQueryValue: Meta["searchQueryValue"]) {
+function validate(searchQueryValue: Meta["searchQueryValue"]): Partial<Meta> {
   const schema = z.string().trim().min(1);
   const error = schema.safeParse(searchQueryValue).error?.flatten()
     .formErrors[0];
 
-  let newMeta = { ...meta }; // TODO: Is this necessary? (maybe react compiler)
+  const meta: Partial<Meta> = {};
 
-  newMeta.searchQueryError = error;
-  if (error === undefined) newMeta.searchQueryValue = searchQueryValue;
+  meta.searchQueryError = error;
+  if (error === undefined) meta.searchQueryValue = searchQueryValue;
 
-  return newMeta;
+  return meta;
 }
 
 export default function FormSelectSearch({
@@ -82,7 +82,7 @@ export default function FormSelectSearch({
   acceptIndeterminate?: boolean;
   setValue: (value: Value) => void;
   meta: Meta;
-  setMeta: (meta: Meta) => void;
+  setMeta: (meta: Partial<Meta>) => void;
   error: string | undefined;
   disabled: boolean;
   title: string; // TODO: Make React.ReactNode
@@ -105,9 +105,8 @@ export default function FormSelectSearch({
   useEffect(() => {
     if (searchResult !== undefined)
       setMeta({
-        ...meta,
         searchResult,
-      } satisfies Meta);
+      });
   }, [searchResult]);
 
   return (
@@ -148,7 +147,7 @@ function Title({
   disabled,
 }: {
   meta: Meta;
-  setMeta: (meta: Meta) => void;
+  setMeta: (meta: Partial<Meta>) => void;
   data: string;
   disabled: boolean;
 }) {
@@ -166,7 +165,6 @@ function Title({
         color="ghost"
         onClick={() =>
           setMeta({
-            ...meta,
             showSearch: !meta.showSearch,
           })
         }
@@ -194,7 +192,7 @@ function SelectedList({
   disabled,
 }: {
   meta: Meta;
-  setMeta: (meta: Meta) => void;
+  setMeta: (meta: Partial<Meta>) => void;
   disabled: boolean;
 }) {
   if (meta.selectedItems.length > 0)
@@ -220,7 +218,7 @@ function SelectedItem({
   disabled,
 }: {
   meta: Meta;
-  setMeta: (meta: Meta) => void;
+  setMeta: (meta: Partial<Meta>) => void;
   data: Item;
   disabled: boolean;
 }) {
@@ -230,7 +228,6 @@ function SelectedItem({
       disabled={disabled}
       onClick={() =>
         setMeta({
-          ...meta,
           selectedItems: meta.selectedItems.filter((it) => it.id !== data.id),
         })
       }
@@ -249,7 +246,7 @@ function SearchBar({
   disabled,
 }: {
   meta: Meta;
-  setMeta: (meta: Meta) => void;
+  setMeta: (meta: Partial<Meta>) => void;
   isSearching: boolean;
   disabled: boolean;
   search: (payload: { query: string }) => void;
@@ -257,9 +254,9 @@ function SearchBar({
   return (
     <FormText
       meta={meta.searchQueryMeta}
-      setMeta={(searchQueryMeta) => setMeta({ ...meta, searchQueryMeta })}
+      setMeta={(searchQueryMeta) => setMeta({ searchQueryMeta })}
       setValue={(searchQueryValue) => {
-        setMeta(validate(meta, searchQueryValue!));
+        setMeta(validate(searchQueryValue!));
       }}
       className={'mt-5 data-[is-result="true"]:!rounded-b-none'}
       data-is-result={
@@ -285,7 +282,7 @@ function SearchResult({
   disabled,
 }: {
   meta: Meta;
-  setMeta: (meta: Meta) => void;
+  setMeta: (meta: Partial<Meta>) => void;
   blacklist?: string[];
   isSearching: boolean;
   disabled: boolean;
@@ -318,7 +315,7 @@ function SearchResultItem({
   blacklist,
 }: {
   meta: Meta;
-  setMeta: (meta: Meta) => void;
+  setMeta: (meta: Partial<Meta>) => void;
   data: Item;
   disabled: boolean;
   blacklist?: string[];
@@ -337,7 +334,6 @@ function SearchResultItem({
       }
       onClick={() =>
         setMeta({
-          ...meta,
           selectedItems: [...meta.selectedItems, data],
         })
       }
