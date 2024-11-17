@@ -53,7 +53,8 @@ export default function ({
 
   useEffect(() => {
     // TODO: Based on this condition, if client-side re-routing here leads to server side refetch, then we should maybe use query.
-    // Also take into account the scenario in which the entry, when you re-route, it's deleted
+    // Also take into account the scenario in which the entry, when you re-route, it's deleted. Furthermore more, I see some data transferring in the network tab
+    // when client-side routing even and/or at least to the same (cached) entry.
     if (data.id !== form.meta.lastId) {
       form.setMetas({
         related_big_paints_ids: {

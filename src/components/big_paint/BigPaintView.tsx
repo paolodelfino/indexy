@@ -1,6 +1,5 @@
 "use client";
 import BigPaint from "@/components/big_paint/BigPaint";
-import { useApp } from "@/stores/useApp";
 import useBigPaintViewQuery from "@/stores/useBigPaintViewQuery";
 import { useEffect, useId, useRef } from "react";
 
@@ -39,18 +38,6 @@ export default function BigPaintView(/* {id}: {id:string} */) {
       observer.current = null;
     };
   }, [query.nextOffset]);
-
-  const makeEditAvailable = useApp((state) => state.makeEditAvailable);
-
-  useEffect(() => {
-    if (query.data !== undefined && query.data.length > 0)
-      makeEditAvailable(true);
-    else makeEditAvailable(false);
-
-    return () => {
-      makeEditAvailable(false);
-    };
-  }, [query.data?.length]);
 
   if (query.data === undefined) return <span>loading no cache</span>;
 

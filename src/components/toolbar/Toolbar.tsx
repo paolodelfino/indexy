@@ -1,16 +1,14 @@
 "use client";
-import Button, { ButtonLink } from "@/components/Button";
+import { ButtonLink } from "@/components/Button";
 import {
   Add02,
   InkStroke20Filled,
-  PencilEdit01,
   SearchSquare,
   Square,
 } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
-import { useApp } from "@/stores/useApp";
 import { cn } from "@/utils/cn";
-import { useHotkeys, useMediaQuery } from "@mantine/hooks";
+import { useMediaQuery } from "@mantine/hooks";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -19,20 +17,6 @@ export default function Toolbar({
 }: {
   variant: "monitor" | "mobile";
 }) {
-  const [mode, changeMode, isEditAvailable] = useApp((state) => [
-    state.mode,
-    state.changeMode,
-    state.isEditAvailable,
-  ]);
-
-  const toggleEdit = () => {
-    if (!isEditAvailable) return;
-
-    changeMode((curr) => (curr === "edit" ? "idle" : "edit"));
-  };
-
-  useHotkeys([["mod+shift+x", toggleEdit]]);
-
   const isMonitor = useMediaQuery("(min-width: 1600px)", false);
 
   const pathname = usePathname();
@@ -123,23 +107,6 @@ export default function Toolbar({
               </ButtonLink>
             </PopoverContent>
           </Popover>
-          {isEditAvailable && (
-            <Button
-              role="listitem"
-              color="ghost"
-              size="large"
-              onClick={toggleEdit}
-              icon={
-                <PencilEdit01
-                  className={cn(mode === "edit" && "fill-current")}
-                />
-              }
-              full={variant === "monitor"}
-              classNames={{ button: "py-5", text: "text-neutral-300" }}
-            >
-              Edit
-            </Button>
-          )}
           <Popover placement="left-start">
             <PopoverTrigger
               role="listitem"

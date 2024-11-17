@@ -1,12 +1,12 @@
 "use client";
-import { useApp } from "@/stores/useApp";
+import { ButtonLink } from "@/components/Button";
+import { PencilEdit01 } from "@/components/icons";
 import { cn } from "@/utils/cn";
 import { useMediaQuery } from "@mantine/hooks";
-import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function BigPaint({
+export default function ({
   data,
   id,
 }: {
@@ -27,8 +27,6 @@ export default function BigPaint({
   const pathname = usePathname();
   const isItsPage = pathname.endsWith(`/${data.id}`);
 
-  const router = useRouter();
-
   const isMonitor = useMediaQuery("(min-width: 1600px)", false);
 
   const searchParams = useSearchParams();
@@ -38,46 +36,34 @@ export default function BigPaint({
     const search = searchParams.toString();
     const url = `${pathname}${search ? `?${search}` : ""}`;
     setUrl(url);
+    // console.log(decodeURI(url));
   }, [pathname, searchParams]);
 
-  const [mode, changeMode] = useApp((state) => [state.mode, state.changeMode]);
-
   return (
-    <li
-      id={id}
-      onClick={() => {
-        if (mode === "edit") {
-          const endpoint = `/edit/${data.id}?type=big_paint`;
-          router.push(
-            `${isMonitor && url !== endpoint ? "/redirect?url=" : ""}${endpoint}`,
-          );
-          // window.open(`/edit/${data.id}?type=big_paint`, "_blank");
-          changeMode("idle");
-        }
-      }}
-      className={cn(
-        mode === "edit" &&
-          "hover:relative hover:cursor-pointer hover:before:absolute hover:before:left-0 hover:before:top-0 hover:before:h-full hover:before:w-full hover:before:bg-blue-500/20 hover:before:ring hover:before:ring-inset",
-        isItsPage && "border border-blue-500",
-      )}
-    >
+    <li id={id} className={cn(isItsPage && "border border-blue-500")}>
       <p className="hyphens-auto break-words bg-neutral-700 p-4">{data.name}</p>
       <div className="flex items-center justify-between pr-2">
-        <div>
-          <Link
-            href={
-              mode === "edit" || isItsPage
-                ? "#"
-                : `${isMonitor && url !== `/${data.id}?type=big_paint` ? "/redirect?url=" : ""}${`/${data.id}?type=big_paint`}`
-            }
-            aria-disabled={mode === "edit" || isItsPage}
-            className={cn(
-              "block size-9 border border-white/20 text-center text-neutral-300",
-              (mode === "edit" || isItsPage) && "pointer-events-none",
-            )}
+        <div className="flex">
+          <ButtonLink
+            color="ghost"
+            href={`${isMonitor && url !== `/${data.id}?type=big_paint` ? "/redirect?url=" : ""}${`/${data.id}?type=big_paint`}`}
+            data-disabled={isItsPage}
+            classNames={{
+              button: cn(
+                "text-neutral-300 size-9 justify-center items-center",
+                isItsPage && "pointer-events-none",
+              ),
+            }}
           >
             ...
-          </Link>
+          </ButtonLink>
+          <ButtonLink
+            color="ghost"
+            href={`${isMonitor && url !== `/edit/${data.id}?type=big_paint` ? "/redirect?url=" : ""}${`/edit/${data.id}?type=big_paint`}`}
+            classNames={{ button: "size-9 justify-center items-center" }}
+          >
+            <PencilEdit01 className="text-neutral-300" />
+          </ButtonLink>
         </div>
         <div className="flex">
           <span className="text-neutral-500">{date}</span>
