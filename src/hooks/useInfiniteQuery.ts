@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useId, useRef } from "react";
 
 // TODO: Mi sa che se fai form.reset() e hai fetchIfNoData a true, potrebbe partire un fetch indesiderato (perché lo vuoi fare tu, però in effetti dovrebbe essere la stessa cosa)
-export default function ({
+export default function yseInfiniteQuery({
   hasData,
   nextOffset,
   callback,

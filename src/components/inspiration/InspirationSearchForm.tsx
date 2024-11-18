@@ -13,6 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useInspirationSearchQuery from "@/stores/useInspirationSearchQuery";
 import { useSearchInspirationForm } from "@/stores/useSearchInspirationForm";
 import { useEffect, useId, useRef } from "react";
+import { VList } from "virtua";
 
 // TODO: History
 // TODO: Infinite query (or pagination or both)
@@ -233,14 +234,16 @@ export default function InspirationSearchForm() {
       {query.data !== undefined && (
         <div>
           <h2 className="p-4 text-lg font-medium">Result ({query.total})</h2>
-          <ul>
-            {query.data.map((it, i) => {
-              return (
-                <Inspiration key={it.id} data={it} id={`${id}_${it.id}`} />
-              );
-            })}
-            {query.isFetching && "loading..."}
-          </ul>
+          <div className="h-[80vh]">
+            <VList keepMounted={[query.data.length - 1, query.data.length - 2]}>
+              {query.data.map((it, i) => {
+                return (
+                  <Inspiration key={it.id} data={it} id={`${id}_${it.id}`} />
+                );
+              })}
+              {query.isFetching ? "loading..." : ""}
+            </VList>
+          </div>
         </div>
       )}
     </div>

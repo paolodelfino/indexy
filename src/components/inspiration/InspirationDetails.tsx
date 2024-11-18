@@ -2,6 +2,7 @@ import Inspiration from "@/components/inspiration/Inspiration";
 import { Kysely } from "kysely";
 import { DB } from "kysely-codegen/dist/db";
 import { notFound } from "next/navigation";
+import { VList } from "virtua";
 
 export default async function InspirationDetails({
   id,
@@ -69,11 +70,15 @@ export default async function InspirationDetails({
         <h2 className="text-lg font-medium">Related Inspirations</h2>
         {inspirations.length <= 0 && <p>empty</p>}
         {inspirations.length > 0 && (
-          <ul>
-            {inspirations.map((it, i) => {
-              return <Inspiration key={it.id} data={it} />;
-            })}
-          </ul>
+          <div className="h-[80vh]">
+            <VList
+              keepMounted={[inspirations.length - 1]}
+            >
+              {inspirations.map((it, i) => {
+                return <Inspiration key={it.id} data={it} />;
+              })}
+            </VList>
+          </div>
         )}
       </div>
     </>

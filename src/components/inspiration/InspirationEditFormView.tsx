@@ -17,7 +17,7 @@ import useInspirationViewQuery from "@/stores/useInspirationViewQuery";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function ({
+export default function InspirationEditFormView({
   data,
 }: {
   data: {

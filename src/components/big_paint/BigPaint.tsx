@@ -6,7 +6,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function ({
+export default function BigPaint({
   data,
   id,
 }: {
@@ -40,7 +40,7 @@ export default function ({
   }, [pathname, searchParams]);
 
   return (
-    <li id={id} className={cn(isItsPage && "border border-blue-500")}>
+    <div id={id} className={cn(isItsPage && "border border-blue-500")}>
       <p className="hyphens-auto break-words bg-neutral-700 p-4">{data.name}</p>
       <div className="flex items-center justify-between pr-2">
         <div className="flex">
@@ -69,6 +69,6 @@ export default function ({
           <span className="text-neutral-500">{date}</span>
         </div>
       </div>
-    </li>
+    </div>
   );
 }

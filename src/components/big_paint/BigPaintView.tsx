@@ -3,8 +3,9 @@
 import BigPaint from "@/components/big_paint/BigPaint";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
 import useBigPaintViewQuery from "@/stores/useBigPaintViewQuery";
+import { VList } from "virtua";
 
-export default function () {
+export default function BigPaintView() {
   const query = useBigPaintViewQuery();
 
   const id = useInfiniteQuery({
@@ -22,13 +23,13 @@ export default function () {
   if (query.data.length <= 0) return <span>empty</span>;
 
   return (
-    <>
-      <ul>
+    <div className="h-[80vh]">
+      <VList keepMounted={[query.data.length - 1, query.data.length - 2]}>
         {query.data.map((it) => {
           return <BigPaint key={it.id} data={it} id={`${id}_${it.id}`} />;
         })}
-      </ul>
-      {query.isFetching && <span>loading next</span>}
-    </>
+        {query.isFetching ? <span>loading next</span> : ""}
+      </VList>
+    </div>
   );
 }

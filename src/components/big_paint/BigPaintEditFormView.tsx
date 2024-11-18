@@ -15,7 +15,7 @@ import { useEditBigPaintForm } from "@/stores/useEditBigPaintForm";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function ({
+export default function BigPaintEditFormView({
   data,
 }: {
   data: {

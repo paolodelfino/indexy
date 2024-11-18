@@ -2,8 +2,10 @@ import BigPaint from "@/components/big_paint/BigPaint";
 import { Kysely } from "kysely";
 import { DB } from "kysely-codegen/dist/db";
 import { notFound } from "next/navigation";
+import { VList } from "virtua";
 
-export default async function ({ id, db }: { id: string; db: Kysely<DB> }) { // TODO: After we remove right panel bullscheisse, we can remove this injection
+export default async function ({ id, db }: { id: string; db: Kysely<DB> }) {
+  // TODO: After we remove right panel bullscheisse, we can remove this injection
   // TODO: Can we combine those operations?
 
   const bigPaint = await db
@@ -32,11 +34,13 @@ export default async function ({ id, db }: { id: string; db: Kysely<DB> }) { // 
       <h2 className="text-lg font-medium">Related BigPaints</h2>
       {bigPaints.length <= 0 && <p>empty</p>}
       {bigPaints.length > 0 && (
-        <ul>
-          {bigPaints.map((it, i) => {
-            return <BigPaint key={it.id} data={it} />;
-          })}
-        </ul>
+        <div className="h-[80vh]">
+          <VList keepMounted={[bigPaints.length - 1]}>
+            {bigPaints.map((it, i) => {
+              return <BigPaint key={it.id} data={it} />;
+            })}
+          </VList>
+        </div>
       )}
     </div>
   );

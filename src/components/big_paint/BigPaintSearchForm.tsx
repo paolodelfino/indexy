@@ -12,6 +12,7 @@ import useInfiniteQuery from "@/hooks/useInfiniteQuery";
 import useBigPaintSearchQuery from "@/stores/useBigPaintSearchQuery";
 import { useSearchBigPaintForm } from "@/stores/useSearchBigPaintForm";
 import { useEffect } from "react";
+import { VList } from "virtua";
 
 export default function BigPaintSearchForm() {
   const form = useSearchBigPaintForm();
@@ -160,12 +161,14 @@ export default function BigPaintSearchForm() {
       {query.data !== undefined && (
         <div>
           <h2 className="p-4 text-lg font-medium">Result ({query.total})</h2>
-          <ul>
-            {query.data.map((it, i) => {
-              return <BigPaint key={it.id} data={it} id={`${id}_${it.id}`} />;
-            })}
-            {query.isFetching && "loading..."}
-          </ul>
+          <div className="h-[80vh]">
+            <VList keepMounted={[query.data.length - 1, query.data.length - 2]}>
+              {query.data.map((it, i) => {
+                return <BigPaint key={it.id} data={it} id={`${id}_${it.id}`} />;
+              })}
+              {query.isFetching ? "loading..." : ""}
+            </VList>
+          </div>
         </div>
       )}
     </div>
