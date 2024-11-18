@@ -1,12 +1,5 @@
-import { db } from "@/db/db";
-import dynamic from "next/dynamic";
-
-const BigPaintDetails = dynamic(
-  () => import("@/components/big_paint/BigPaintDetails"),
-);
-const InspirationDetails = dynamic(
-  () => import("@/components/inspiration/InspirationDetails"),
-);
+import BigPaintDetails from "@/app/[id]/BigPaintDetails";
+import InspirationDetails from "@/app/[id]/InspirationDetails";
 
 export default async function Page({
   params,
@@ -19,10 +12,10 @@ export default async function Page({
     searchParams["type"] === "big_paint" ? "big_paint" : "inspiration";
 
   if (type === "big_paint") {
-    return <BigPaintDetails id={params.id} db={db} />;
+    return <BigPaintDetails id={params.id} />;
   }
 
   if (type === "inspiration") {
-    return <InspirationDetails id={params.id} db={db} />;
+    return <InspirationDetails id={params.id} />;
   }
 }

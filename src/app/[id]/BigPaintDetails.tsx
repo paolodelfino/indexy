@@ -1,11 +1,9 @@
 import BigPaint from "@/components/big_paint/BigPaint";
-import { Kysely } from "kysely";
-import { DB } from "kysely-codegen/dist/db";
+import { db } from "@/db/db";
 import { notFound } from "next/navigation";
 import { VList } from "virtua";
 
-export default async function ({ id, db }: { id: string; db: Kysely<DB> }) {
-  // TODO: After we remove right panel bullscheisse, we can remove this injection
+export default async function BigPaintDetails({ id }: { id: string }) {
   // TODO: Can we combine those operations?
 
   const bigPaint = await db

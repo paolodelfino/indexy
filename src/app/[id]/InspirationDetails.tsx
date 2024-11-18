@@ -1,16 +1,9 @@
 import Inspiration from "@/components/inspiration/Inspiration";
-import { Kysely } from "kysely";
-import { DB } from "kysely-codegen/dist/db";
+import { db } from "@/db/db";
 import { notFound } from "next/navigation";
 import { VList } from "virtua";
 
-export default async function InspirationDetails({
-  id,
-  db,
-}: {
-  id: string;
-  db: Kysely<DB>;
-}) {
+export default async function InspirationDetails({ id }: { id: string }) {
   const inspiration = await db
     .selectFrom("inspiration")
     .where("id", "=", id)
@@ -71,9 +64,7 @@ export default async function InspirationDetails({
         {inspirations.length <= 0 && <p>empty</p>}
         {inspirations.length > 0 && (
           <div className="h-[80vh]">
-            <VList
-              keepMounted={[inspirations.length - 1]}
-            >
+            <VList keepMounted={[inspirations.length - 1]}>
               {inspirations.map((it, i) => {
                 return <Inspiration key={it.id} data={it} />;
               })}

@@ -1,11 +1,5 @@
-import { db } from "@/db/db";
-import dynamic from "next/dynamic";
-const BigPaintEditForm = dynamic(
-  () => import("@/components/big_paint/BigPaintEditForm"),
-);
-const InspirationEditForm = dynamic(
-  () => import("@/components/inspiration/InspirationEditForm"),
-);
+import BigPaintEditForm from "@/app/edit/[id]/BigPaintEditForm";
+import InspirationEditForm from "@/app/edit/[id]/InspirationEditForm";
 
 export default async function Page({
   params,
@@ -18,10 +12,10 @@ export default async function Page({
     searchParams["type"] === "big_paint" ? "big_paint" : "inspiration";
 
   if (type === "inspiration") {
-    return <InspirationEditForm id={params.id} db={db} />;
+    return <InspirationEditForm id={params.id} />;
   }
 
   if (type === "big_paint") {
-    return <BigPaintEditForm id={params.id} db={db} />;
+    return <BigPaintEditForm id={params.id} />;
   }
 }

@@ -1,13 +1,13 @@
-import { Kysely } from "kysely";
-import { DB } from "kysely-codegen/dist/db";
+import { db } from "@/db/db";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 const InspirationEditFormView = dynamic(
-  () => import("@/components/inspiration/InspirationEditFormView"),
+  () => import("@/app/edit/[id]/InspirationEditFormView"),
 );
 
 // TODO: History (using versioning)
-export default async function ({ id, db }: { id: string; db: Kysely<DB> }) {
+
+export default async function InspirationEditForm({ id }: { id: string }) {
   const inspiration = await db
     .selectFrom("inspiration")
     .where("id", "=", id)

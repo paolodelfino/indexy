@@ -1,60 +1,33 @@
 "use client";
+
 import { searchBigPaintAction } from "@/actions/searchBigPaintAction";
-import { searchInspirationAction } from "@/actions/searchInspirationAction";
+import BigPaint from "@/components/big_paint/BigPaint";
 import Button from "@/components/Button";
-import FormCheckbox from "@/components/form/FormCheckbox";
 import FormDateComparison from "@/components/form/FormDateComparison";
 import FormSelect from "@/components/form/FormSelect";
 import FormSelectSearch from "@/components/form/FormSelectSearch";
-import FormTextArea from "@/components/form/FormTextArea";
+import FormText from "@/components/form/FormText";
 import { Cloud, InformationCircle } from "@/components/icons";
-import Inspiration from "@/components/inspiration/Inspiration";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
-import useInspirationSearchQuery from "@/stores/useInspirationSearchQuery";
-import { useSearchInspirationForm } from "@/stores/useSearchInspirationForm";
-import { useEffect, useId, useRef } from "react";
+import useInfiniteQuery from "@/hooks/useInfiniteQuery";
+import useBigPaintSearchQuery from "@/stores/useBigPaintSearchQuery";
+import { useSearchBigPaintForm } from "@/stores/useSearchBigPaintForm";
+import { useEffect } from "react";
 import { VList } from "virtua";
 
-// TODO: History
-// TODO: Infinite query (or pagination or both)
-// TODO: Merge with View
-// TODO: Open to result endpoint
-// TODO: Scatta una ricerca se reimpostati i valori del form con una ricerca cached associata
-// TODO: Scattano un sacco di ricerche all'improvviso (forse quando chrome rientra in focus)
+export default function BigPaintSearchForm() {
+  const form = useSearchBigPaintForm();
+  const query = useBigPaintSearchQuery();
 
-export default function InspirationSearchForm() {
-  const form = useSearchInspirationForm();
-  const observer = useRef<IntersectionObserver>(null);
-  const id = useId();
-  const query = useInspirationSearchQuery();
-
-  useEffect(() => {
-    query.active();
-    return () => query.inactive();
-  }, []);
-
-  useEffect(() => {
-    if (query.nextOffset !== undefined && query.data !== undefined) {
-      observer.current = new IntersectionObserver((entries, observer) => {
-        if (entries[0].isIntersecting) {
-          query.fetch(query.lastArgs![0]);
-
-          observer.disconnect();
-        }
-      });
-
-      observer.current.observe(
-        document.getElementById(
-          `${id}_${query.data[query.data.length - 1].id}`,
-        )!,
-      );
-    }
-
-    return () => {
-      observer.current?.disconnect();
-      observer.current = null;
-    };
-  }, [query.nextOffset]);
+  const id = useInfiniteQuery({
+    nextOffset: query.nextOffset,
+    hasData: query.data !== undefined,
+    lastId: query.data?.[query.data.length - 1].id,
+    callback: () => query.fetch(query.lastArgs![0]),
+    fetchIfNoData: false,
+    active: query.active,
+    inactive: query.inactive,
+  });
 
   useEffect(() => {
     // TODO: Vedi se questo problema del cambio route si è risolto ora che non uso più quello schifo di query management
@@ -101,7 +74,7 @@ export default function InspirationSearchForm() {
         data-disabled={query.isFetching}
         className="py-1 pl-4 text-2xl font-medium leading-[3rem] data-[disabled=true]:opacity-50"
       >
-        Search Inspiration
+        Search BigPaint
       </h1>
 
       <div>
@@ -133,13 +106,13 @@ export default function InspirationSearchForm() {
         </div>
       </div>
 
-      <FormTextArea
-        label="Content"
-        meta={form.fields.content.meta}
-        setValue={form.setValue.bind(form, "content")}
-        setMeta={form.setMeta.bind(form, "content")}
+      <FormText
+        label="Name"
+        meta={form.fields.name.meta}
+        setValue={form.setValue.bind(form, "name")}
+        setMeta={form.setMeta.bind(form, "name")}
         disabled={query.isFetching}
-        error={form.fields.content.error}
+        error={form.fields.name.error}
         acceptIndeterminate
       />
 
@@ -158,25 +131,6 @@ export default function InspirationSearchForm() {
           setMeta={form.setMeta.bind(form, "date")}
           disabled={query.isFetching}
           error={form.fields.date.error}
-          acceptIndeterminate
-        />
-      </div>
-
-      <div>
-        <h2
-          data-disabled={query.isFetching}
-          className="py-1 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
-        >
-          Highlight
-        </h2>
-
-        <FormCheckbox
-          label="Highlight"
-          meta={form.fields.highlight.meta}
-          setValue={form.setValue.bind(form, "highlight")}
-          setMeta={form.setMeta.bind(form, "highlight")}
-          disabled={query.isFetching}
-          error={form.fields.highlight.error}
           acceptIndeterminate
         />
       </div>
@@ -205,41 +159,13 @@ export default function InspirationSearchForm() {
         }
       />
 
-      <FormSelectSearch
-        title="Related Inspirations"
-        meta={form.fields.related_inspirations_ids.meta}
-        setValue={form.setValue.bind(form, "related_inspirations_ids")}
-        setMeta={form.setMeta.bind(form, "related_inspirations_ids")}
-        disabled={query.isFetching}
-        error={form.fields.related_inspirations_ids.error}
-        acceptIndeterminate
-        search={(prevState, { query }) =>
-          searchInspirationAction(null, null, {
-            content: query,
-            orderBy: "date",
-            orderByDir: "asc",
-            date: undefined,
-            related_inspirations_ids: undefined,
-            related_big_paints_ids: undefined,
-            highlight: undefined,
-          }).then((res) =>
-            res.data.map((item) => ({
-              content: item.content,
-              id: item.id,
-            })),
-          )
-        }
-      />
-
       {query.data !== undefined && (
         <div>
           <h2 className="p-4 text-lg font-medium">Result ({query.total})</h2>
           <div className="h-[80vh]">
             <VList keepMounted={[query.data.length - 1, query.data.length - 2]}>
               {query.data.map((it, i) => {
-                return (
-                  <Inspiration key={it.id} data={it} id={`${id}_${it.id}`} />
-                );
+                return <BigPaint key={it.id} data={it} id={`${id}_${it.id}`} />;
               })}
               {query.isFetching ? "loading..." : ""}
             </VList>

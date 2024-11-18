@@ -1,36 +1,37 @@
 "use client";
-import { createInspirationAction } from "@/actions/createInspirationAction";
+
+import { createBigPaintAction } from "@/actions/createBigPaintAction";
 import Button from "@/components/Button";
-import FormTextArea from "@/components/form/FormTextArea";
+import FormText from "@/components/form/FormText";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
-import { useCreateInspirationForm } from "@/stores/useCreateInspirationForm";
-import useInspirationSearchQuery from "@/stores/useInspirationSearchQuery";
-import useInspirationViewQuery from "@/stores/useInspirationViewQuery";
+import useBigPaintSearchQuery from "@/stores/useBigPaintSearchQuery";
+import useBigPaintViewQuery from "@/stores/useBigPaintViewQuery";
+import { useCreateBigPaintForm } from "@/stores/useCreateBigPaintForm";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function InspirationCreateForm() {
+export default function BigPaintCreateForm() {
   const router = useRouter();
 
-  const invalidateInspirationViewQuery = useInspirationViewQuery(
+  const invalidateBigPaintViewQuery = useBigPaintViewQuery(
     (state) => state.invalidate,
   );
-  const invalidateInspirationSearchQuery = useInspirationSearchQuery(
+  const invalidateBigPaintSearchQuery = useBigPaintSearchQuery(
     (state) => state.invalidate,
   );
 
   const [isCreateFormPending, setIsCreateFormPending] = useState(false);
 
-  const form = useCreateInspirationForm();
+  const form = useCreateBigPaintForm();
   useEffect(() => {
     form.setOnSubmit(async (form) => {
       setIsCreateFormPending(true);
 
-      await createInspirationAction(form.values());
+      await createBigPaintAction(form.values());
 
-      invalidateInspirationViewQuery();
-      invalidateInspirationSearchQuery();
+      invalidateBigPaintViewQuery();
+      invalidateBigPaintSearchQuery();
 
       form.reset();
 
@@ -71,13 +72,13 @@ export default function InspirationCreateForm() {
         data-disabled={isCreateFormPending}
         className="py-1 pl-4 text-2xl font-medium leading-[3rem] data-[disabled=true]:opacity-50"
       >
-        Create Inspiration
+        Create BigPaint
       </h1>
-      <FormTextArea
-        meta={form.fields.content.meta}
-        setMeta={form.setMeta.bind(form, "content")}
-        setValue={form.setValue.bind(form, "content")}
-        error={form.fields.content.error}
+      <FormText
+        meta={form.fields.name.meta}
+        setMeta={form.setMeta.bind(form, "name")}
+        setValue={form.setValue.bind(form, "name")}
+        error={form.fields.name.error}
         disabled={isCreateFormPending}
       />
     </div>

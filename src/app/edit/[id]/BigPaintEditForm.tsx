@@ -1,13 +1,13 @@
-import { Kysely } from "kysely";
-import { DB } from "kysely-codegen/dist/db";
+import { db } from "@/db/db";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 const BigPaintEditFormView = dynamic(
-  () => import("@/components/big_paint/BigPaintEditFormView"),
+  () => import("@/app/edit/[id]/BigPaintEditFormView"),
 );
 
 // TODO: History (using versioning)
-export default async function ({ id, db }: { id: string; db: Kysely<DB> }) {
+
+export default async function BigPaintEditForm({ id }: { id: string }) {
   const bigPaint = await db
     .selectFrom("big_paint")
     .where("id", "=", id)
