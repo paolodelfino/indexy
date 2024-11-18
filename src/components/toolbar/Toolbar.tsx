@@ -8,7 +8,6 @@ import {
 } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import { cn } from "@/utils/cn";
-import { useMediaQuery } from "@mantine/hooks";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -17,8 +16,6 @@ export default function Toolbar({
 }: {
   variant: "monitor" | "mobile";
 }) {
-  const isMonitor = useMediaQuery("(min-width: 1600px)", false);
-
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [url, setUrl] = useState("");
@@ -86,7 +83,7 @@ export default function Toolbar({
               <ButtonLink
                 classNames={{ text: "text-neutral-300" }}
                 full
-                href={`${isMonitor && !url.startsWith("/create") ? "/redirect?url=" : ""}/create?type=big_paint`}
+                href="/create?type=big_paint"
                 // target="_blank"
                 role="listitem"
                 size="large"
@@ -97,7 +94,7 @@ export default function Toolbar({
               <ButtonLink
                 classNames={{ text: "text-neutral-300" }}
                 full
-                href={`${isMonitor && !url.startsWith("/create") ? "/redirect?url=" : ""}/create?type=inspiration`}
+                href="/create?type=inspiration"
                 // target="_blank"
                 role="listitem"
                 size="large"

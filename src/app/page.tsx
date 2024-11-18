@@ -1,10 +1,10 @@
 import dynamic from "next/dynamic";
 
 const InspirationView = dynamic(
-  () => import("@/components/inspiration/InspirationView"),
+  () => import("@/app/InspirationView"),
 );
 const BigPaintView = dynamic(
-  () => import("@/components/big_paint/BigPaintView"),
+  () => import("@/app/BigPaintView"),
 );
 
 export default async function Home({

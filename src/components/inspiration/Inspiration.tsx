@@ -2,8 +2,7 @@
 import Button, { ButtonLink } from "@/components/Button";
 import { PencilEdit01, Star } from "@/components/icons";
 import { cn } from "@/utils/cn";
-import { useMediaQuery } from "@mantine/hooks";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Inspiration({
@@ -27,18 +26,6 @@ export default function Inspiration({
   const pathname = usePathname();
   const isItsPage = pathname.endsWith(`/${data.id}`);
 
-  const isMonitor = useMediaQuery("(min-width: 1600px)", false);
-
-  const searchParams = useSearchParams();
-  const [url, setUrl] = useState("");
-
-  useEffect(() => {
-    const search = searchParams.toString();
-    const url = `${pathname}${search ? `?${search}` : ""}`;
-    setUrl(url);
-    // console.log(decodeURI(url));
-  }, [pathname, searchParams]);
-
   return (
     <div id={id} className={cn(isItsPage && "border border-blue-500")}>
       <p className="hyphens-auto break-words bg-neutral-700 p-4">
@@ -48,7 +35,7 @@ export default function Inspiration({
         <div className="flex">
           <ButtonLink
             color="ghost"
-            href={`${isMonitor && url !== `/${data.id}?type=inspiration` ? "/redirect?url=" : ""}${`/${data.id}?type=inspiration`}`}
+            href={`/${data.id}?type=inspiration`}
             data-disabled={isItsPage}
             classNames={{
               button: cn(
@@ -61,7 +48,7 @@ export default function Inspiration({
           </ButtonLink>
           <ButtonLink
             color="ghost"
-            href={`${isMonitor && url !== `/edit/${data.id}?type=inspiration` ? "/redirect?url=" : ""}${`/edit/${data.id}?type=inspiration`}`}
+            href={`/edit/${data.id}?type=inspiration`}
             classNames={{ button: "size-9 justify-center items-center" }}
           >
             <PencilEdit01 className="text-neutral-300" />
