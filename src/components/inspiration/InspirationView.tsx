@@ -26,7 +26,7 @@ export default function InspirationView() {
   return (
     <>
       <div className="h-[80vh]">
-        {/* TODO: Fix height. TODO: Fix Scrollbar. TODO: Questa VList rallenta il rendering e in più sembra metterci lo stesso tempo di quando non c'era quando ci sono tante entry */}
+        {/* TODO: Fix height. TODO: Fix Scrollbar */}
         <VList
           // overscan={20} 20 = limit
           keepMounted={[query.data.length - 1, query.data.length - 2]}
