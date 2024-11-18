@@ -1,7 +1,6 @@
 import Providers from "@/components/Providers";
 import CenterPanel from "@/components/screen/CenterPanel";
 import LeftPanel from "@/components/screen/LeftPanel";
-import RightPanel from "@/components/screen/RightPanel";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -22,10 +21,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-  rightPanel,
 }: Readonly<{
   children: React.ReactNode;
-  rightPanel: React.ReactNode;
 }>) {
   return (
     <html lang="en">
@@ -35,7 +32,7 @@ export default function RootLayout({
         <Providers>
           <LeftPanel />
           <CenterPanel>{children}</CenterPanel>
-          <RightPanel>{rightPanel}</RightPanel>
+          <div className="hidden flex-1 overflow-hidden p-2 monitor:block" />
         </Providers>
       </body>
     </html>
