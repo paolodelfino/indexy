@@ -2,6 +2,7 @@
 
 import { searchBigPaintAction } from "@/actions/searchBigPaintAction";
 import { searchInspirationAction } from "@/actions/searchInspirationAction";
+import updateInspirationHistoryAction from "@/actions/updateInspirationHistoryAction";
 import Button from "@/components/Button";
 import FormCheckbox from "@/components/form/FormCheckbox";
 import FormDateComparison from "@/components/form/FormDateComparison";
@@ -10,20 +11,35 @@ import FormSelectSearch from "@/components/form/FormSelectSearch";
 import FormTextArea from "@/components/form/FormTextArea";
 import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
+import useInspirationHistoryQuery from "@/stores/useInspirationHistoryQuery";
 import { useSearchInspirationForm } from "@/stores/useSearchInspirationForm";
 import { valuesToSearchParams } from "@/utils/url";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function InspirationSearchForm() {
   const form = useSearchInspirationForm();
   const router = useRouter();
+  const [isHistoryPending, setIsHistoryPending] = useState(false);
+  const invalidateInspirationHistoryQuery = useInspirationHistoryQuery(
+    (state) => state.invalidate,
+  );
 
   useEffect(() => {
     // TODO: Vedi se questo problema del cambio route si è risolto ora che non uso più quello schifo di query management
-    form.setOnSubmit((form) =>
-      router.push(`/result/inspiration?${valuesToSearchParams(form.values())}`),
-    );
+    form.setOnSubmit(async (form) => {
+      setIsHistoryPending(true);
+
+      const values = valuesToSearchParams(form.values());
+
+      await updateInspirationHistoryAction({ values, date: new Date() });
+
+      invalidateInspirationHistoryQuery(); // TODO: Non avevo pensato allo scenario in cui la funzione non finisce in tempo, siam sicuri che continua lo stesso?
+
+      setIsHistoryPending(false);
+
+      router.push(`/result/inspiration?${values}`);
+    });
   }, [form.setOnSubmit]);
 
   return (
@@ -42,7 +58,7 @@ export default function InspirationSearchForm() {
 
         <Button
           title="Clear"
-          // disabled={query.isFetching}
+          disabled={isHistoryPending}
           color="ghost"
           onClick={form.reset}
         >
@@ -51,17 +67,15 @@ export default function InspirationSearchForm() {
 
         <Button
           color="accent"
-          // disabled={query.isFetching || form.isInvalid}
-          disabled={form.isInvalid}
+          disabled={isHistoryPending || form.isInvalid}
           onClick={form.submit}
         >
-          {/* {query.isFetching ? "Searching..." : "Search"} */}
-          Search
+          {isHistoryPending ? "Updating history..." : "Search"}
         </Button>
       </div>
 
       <h1
-        // data-disabled={query.isFetching}
+        data-disabled={isHistoryPending}
         className="py-1 pl-4 text-2xl font-medium leading-[3rem] data-[disabled=true]:opacity-50"
       >
         Search Inspiration
@@ -69,7 +83,7 @@ export default function InspirationSearchForm() {
 
       <div>
         <h2
-          // data-disabled={query.isFetching}
+          data-disabled={isHistoryPending}
           className="py-1 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
         >
           Order
@@ -81,8 +95,7 @@ export default function InspirationSearchForm() {
             meta={form.fields.orderBy.meta}
             setValue={form.setValue.bind(form, "orderBy")}
             setMeta={form.setMeta.bind(form, "orderBy")}
-            // disabled={query.isFetching}
-            disabled={false}
+            disabled={isHistoryPending}
             error={form.fields.orderBy.error}
           />
 
@@ -91,8 +104,7 @@ export default function InspirationSearchForm() {
             meta={form.fields.orderByDir.meta}
             setValue={form.setValue.bind(form, "orderByDir")}
             setMeta={form.setMeta.bind(form, "orderByDir")}
-            // disabled={query.isFetching}
-            disabled={false}
+            disabled={isHistoryPending}
             error={form.fields.orderByDir.error}
           />
         </div>
@@ -103,15 +115,14 @@ export default function InspirationSearchForm() {
         meta={form.fields.content.meta}
         setValue={form.setValue.bind(form, "content")}
         setMeta={form.setMeta.bind(form, "content")}
-        // disabled={query.isFetching}
-        disabled={false}
+        disabled={isHistoryPending}
         error={form.fields.content.error}
         acceptIndeterminate
       />
 
       <div>
         <h2
-          // data-disabled={query.isFetching}
+          data-disabled={isHistoryPending}
           className="py-1 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
         >
           Date
@@ -122,8 +133,7 @@ export default function InspirationSearchForm() {
           meta={form.fields.date.meta}
           setValue={form.setValue.bind(form, "date")}
           setMeta={form.setMeta.bind(form, "date")}
-          // disabled={query.isFetching}
-          disabled={false}
+          disabled={isHistoryPending}
           error={form.fields.date.error}
           acceptIndeterminate
         />
@@ -131,7 +141,7 @@ export default function InspirationSearchForm() {
 
       <div>
         <h2
-          // data-disabled={query.isFetching}
+          data-disabled={isHistoryPending}
           className="py-1 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
         >
           Highlight
@@ -142,8 +152,7 @@ export default function InspirationSearchForm() {
           meta={form.fields.highlight.meta}
           setValue={form.setValue.bind(form, "highlight")}
           setMeta={form.setMeta.bind(form, "highlight")}
-          // disabled={query.isFetching}
-          disabled={false}
+          disabled={isHistoryPending}
           error={form.fields.highlight.error}
           acceptIndeterminate
         />
@@ -154,8 +163,7 @@ export default function InspirationSearchForm() {
         meta={form.fields.related_big_paints_ids.meta}
         setValue={form.setValue.bind(form, "related_big_paints_ids")}
         setMeta={form.setMeta.bind(form, "related_big_paints_ids")}
-        // disabled={query.isFetching}
-        disabled={false}
+        disabled={isHistoryPending}
         error={form.fields.related_big_paints_ids.error}
         acceptIndeterminate
         search={(prevState, { query }) =>
@@ -179,8 +187,7 @@ export default function InspirationSearchForm() {
         meta={form.fields.related_inspirations_ids.meta}
         setValue={form.setValue.bind(form, "related_inspirations_ids")}
         setMeta={form.setMeta.bind(form, "related_inspirations_ids")}
-        // disabled={query.isFetching}
-        disabled={false}
+        disabled={isHistoryPending}
         error={form.fields.related_inspirations_ids.error}
         acceptIndeterminate
         search={(prevState, { query }) =>

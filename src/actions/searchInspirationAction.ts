@@ -1,4 +1,5 @@
 "use server";
+
 import { db } from "@/db/db";
 import { searchInspirationFormSchema } from "@/schemas/searchInspirationFormSchema";
 import { FormValues } from "@/utils/form";

@@ -2,6 +2,7 @@
 import { ButtonLink } from "@/components/Button";
 import {
   Add02,
+  FilterMailSquare,
   InkStroke20Filled,
   SearchSquare,
   Square,
@@ -33,7 +34,7 @@ export default function Toolbar({
             text: "text-neutral-300",
           }}
           full={variant === "monitor"}
-          icon={<Square />}
+          startContent={<Square />}
         >
           BigPaints
         </ButtonLink>
@@ -44,7 +45,7 @@ export default function Toolbar({
           size="large"
           classNames={{ button: "py-5", text: "text-neutral-300" }}
           full={variant === "monitor"}
-          icon={<InkStroke20Filled />}
+          startContent={<InkStroke20Filled />}
         >
           Inspirations
         </ButtonLink>
@@ -55,7 +56,46 @@ export default function Toolbar({
             size="large"
             classNames={{ button: "py-5", text: "text-neutral-300" }}
             full={variant === "monitor"}
-            icon={<Add02 />}
+            startContent={<FilterMailSquare />}
+          >
+            History
+          </PopoverTrigger>
+          <PopoverContent
+            className="z-20 flex min-w-16 max-w-[160px] flex-col"
+            role="list"
+          >
+            <ButtonLink
+              classNames={{ text: "text-neutral-300" }}
+              full
+              href="/?view=big_paint_history"
+              // target="_blank"
+              role="listitem"
+              size="large"
+              startContent={<Square />}
+            >
+              BigPaint
+            </ButtonLink>
+            <ButtonLink
+              classNames={{ text: "text-neutral-300" }}
+              full
+              href="/?view=inspiration_history"
+              // target="_blank"
+              role="listitem"
+              size="large"
+              startContent={<InkStroke20Filled />}
+            >
+              Inspiration
+            </ButtonLink>
+          </PopoverContent>
+        </Popover>
+        <Popover placement="left-start">
+          <PopoverTrigger
+            role="listitem"
+            color="ghost"
+            size="large"
+            classNames={{ button: "py-5", text: "text-neutral-300" }}
+            full={variant === "monitor"}
+            startContent={<Add02 />}
           >
             Create
           </PopoverTrigger>
@@ -70,7 +110,7 @@ export default function Toolbar({
               // target="_blank"
               role="listitem"
               size="large"
-              icon={<Square />}
+              startContent={<Square />}
             >
               BigPaint
             </ButtonLink>
@@ -81,7 +121,7 @@ export default function Toolbar({
               // target="_blank"
               role="listitem"
               size="large"
-              icon={<InkStroke20Filled />}
+              startContent={<InkStroke20Filled />}
             >
               Inspiration
             </ButtonLink>
@@ -93,7 +133,7 @@ export default function Toolbar({
             color="ghost"
             size="large"
             classNames={{ button: "py-5", text: "text-neutral-300" }}
-            icon={<SearchSquare />}
+            startContent={<SearchSquare />}
             full={variant === "monitor"}
           >
             Search
@@ -108,7 +148,7 @@ export default function Toolbar({
               href="/search?type=big_paint"
               role="listitem"
               size="large"
-              icon={<Square />}
+              startContent={<Square />}
             >
               BigPaint
             </ButtonLink>
@@ -118,7 +158,7 @@ export default function Toolbar({
               href="/search?type=inspiration"
               role="listitem"
               size="large"
-              icon={<InkStroke20Filled />}
+              startContent={<InkStroke20Filled />}
             >
               Inspiration
             </ButtonLink>

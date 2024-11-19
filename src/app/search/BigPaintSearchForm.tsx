@@ -1,6 +1,7 @@
 "use client";
 
 import { searchBigPaintAction } from "@/actions/searchBigPaintAction";
+import updateBigPaintHistoryAction from "@/actions/updateBigPaintHistoryAction";
 import Button from "@/components/Button";
 import FormDateComparison from "@/components/form/FormDateComparison";
 import FormSelect from "@/components/form/FormSelect";
@@ -8,20 +9,35 @@ import FormSelectSearch from "@/components/form/FormSelectSearch";
 import FormText from "@/components/form/FormText";
 import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
+import useBigPaintHistoryQuery from "@/stores/useBigPaintHistoryQuery";
 import { useSearchBigPaintForm } from "@/stores/useSearchBigPaintForm";
 import { valuesToSearchParams } from "@/utils/url";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function BigPaintSearchForm() {
   const form = useSearchBigPaintForm();
   const router = useRouter();
+  const [isHistoryPending, setIsHistoryPending] = useState(false);
+  const invalidateBigPaintHistoryQuery = useBigPaintHistoryQuery(
+    (state) => state.invalidate,
+  );
 
   useEffect(() => {
     // TODO: Vedi se questo problema del cambio route si è risolto ora che non uso più quello schifo di query management
-    form.setOnSubmit((form) =>
-      router.push(`/result/big_paint?${valuesToSearchParams(form.values())}`),
-    );
+    form.setOnSubmit(async (form) => {
+      setIsHistoryPending(true);
+
+      const values = valuesToSearchParams(form.values());
+
+      await updateBigPaintHistoryAction({ values, date: new Date() });
+
+      invalidateBigPaintHistoryQuery(); // TODO: Non avevo pensato allo scenario in cui la funzione non finisce in tempo, siam sicuri che continua lo stesso?
+
+      setIsHistoryPending(false);
+
+      router.push(`/result/big_paint?${valuesToSearchParams(form.values())}`);
+    });
   }, [form.setOnSubmit]);
 
   return (
@@ -40,7 +56,7 @@ export default function BigPaintSearchForm() {
 
         <Button
           title="Clear"
-          // disabled={query.isFetching}
+          disabled={isHistoryPending}
           color="ghost"
           onClick={form.reset}
         >
@@ -49,17 +65,15 @@ export default function BigPaintSearchForm() {
 
         <Button
           color="accent"
-          // disabled={query.isFetching || form.isInvalid}
-          disabled={form.isInvalid}
+          disabled={isHistoryPending || form.isInvalid}
           onClick={form.submit}
         >
-          {/* {query.isFetching ? "Searching..." : "Search"} */}
-          Search
+          {isHistoryPending ? "Updating history..." : "Search"}
         </Button>
       </div>
 
       <h1
-        // data-disabled={query.isFetching}
+        data-disabled={isHistoryPending}
         className="py-1 pl-4 text-2xl font-medium leading-[3rem] data-[disabled=true]:opacity-50"
       >
         Search BigPaint
@@ -67,7 +81,7 @@ export default function BigPaintSearchForm() {
 
       <div>
         <h2
-          // data-disabled={query.isFetching}
+          data-disabled={isHistoryPending}
           className="py-1 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
         >
           Order
@@ -79,8 +93,7 @@ export default function BigPaintSearchForm() {
             meta={form.fields.orderBy.meta}
             setValue={form.setValue.bind(form, "orderBy")}
             setMeta={form.setMeta.bind(form, "orderBy")}
-            // disabled={query.isFetching}
-            disabled={false}
+            disabled={isHistoryPending}
             error={form.fields.orderBy.error}
           />
 
@@ -89,8 +102,7 @@ export default function BigPaintSearchForm() {
             meta={form.fields.orderByDir.meta}
             setValue={form.setValue.bind(form, "orderByDir")}
             setMeta={form.setMeta.bind(form, "orderByDir")}
-            // disabled={query.isFetching}
-            disabled={false}
+            disabled={isHistoryPending}
             error={form.fields.orderByDir.error}
           />
         </div>
@@ -101,15 +113,14 @@ export default function BigPaintSearchForm() {
         meta={form.fields.name.meta}
         setValue={form.setValue.bind(form, "name")}
         setMeta={form.setMeta.bind(form, "name")}
-        // disabled={query.isFetching}
-        disabled={false}
+        disabled={isHistoryPending}
         error={form.fields.name.error}
         acceptIndeterminate
       />
 
       <div>
         <h2
-          // data-disabled={query.isFetching}
+          data-disabled={isHistoryPending}
           className="py-1 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
         >
           Date
@@ -120,8 +131,7 @@ export default function BigPaintSearchForm() {
           meta={form.fields.date.meta}
           setValue={form.setValue.bind(form, "date")}
           setMeta={form.setMeta.bind(form, "date")}
-          // disabled={query.isFetching}
-          disabled={false}
+          disabled={isHistoryPending}
           error={form.fields.date.error}
           acceptIndeterminate
         />
@@ -132,8 +142,7 @@ export default function BigPaintSearchForm() {
         meta={form.fields.related_big_paints_ids.meta}
         setValue={form.setValue.bind(form, "related_big_paints_ids")}
         setMeta={form.setMeta.bind(form, "related_big_paints_ids")}
-        // disabled={query.isFetching}
-        disabled={false}
+        disabled={isHistoryPending}
         error={form.fields.related_big_paints_ids.error}
         acceptIndeterminate
         search={(prevState, { query }) =>

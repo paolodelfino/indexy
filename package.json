@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "db:migrate": "bun run src/db/migrate.ts",
+    "db:test": "bun run src/db/test.ts",
     "db:codegen": "kysely-codegen --url 'env(POSTGRES_URL_NO_SSL)'",
     "ts": "tsc --noEmit"
   },

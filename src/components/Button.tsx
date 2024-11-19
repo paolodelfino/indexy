@@ -5,7 +5,8 @@ import { ClassValue, tv, VariantProps } from "tailwind-variants";
 export const styles = tv({
   slots: {
     button: "flex gap-2 text-start m-px",
-    iconContainer: "flex-shrink-0",
+    startContentContainer: "flex-shrink-0",
+    endContentContainer: "ml-auto flex-shrink-0",
     text: "overflow-hidden text-ellipsis hyphens-auto break-words",
   },
   variants: {
@@ -36,7 +37,8 @@ export const styles = tv({
       false: { text: "whitespace-nowrap" },
     },
     full: {
-      true: { button: "w-[calc(100%-1px)]" },
+      // true: { button: "w-[calc(100%-1px)]" }, TODO: Perché avevo messo 1px invece di 2?
+      true: { button: "w-[calc(100%-2px)]" },
       false: { button: "w-min" },
     },
   },
@@ -54,7 +56,8 @@ export default function Button({
   size = "default",
   type = "button",
   multiple = false,
-  icon,
+  startContent,
+  endContent,
   children,
   classNames,
   full = false,
@@ -62,7 +65,8 @@ export default function Button({
   ...rest
 }: {
   children: React.ReactNode;
-  icon?: React.ReactNode;
+  startContent?: React.ReactNode;
+  endContent?: React.ReactNode;
   className?: never;
   classNames?: {
     [key in keyof ReturnType<typeof styles>]?: ClassValue;
@@ -72,7 +76,7 @@ export default function Button({
   HTMLButtonElement
 > &
   VariantProps<typeof styles>) {
-  const { button, iconContainer, text } = styles({
+  const { button, startContentContainer, endContentContainer, text } = styles({
     color,
     size,
     multiple,
@@ -87,14 +91,25 @@ export default function Button({
       data-disabled={disabled === undefined ? false : disabled}
       {...rest}
     >
-      {icon && (
+      {startContent && (
         <div
-          className={iconContainer({ className: classNames?.iconContainer })}
+          className={startContentContainer({
+            className: classNames?.startContentContainer,
+          })}
         >
-          {icon}
+          {startContent}
         </div>
       )}
       <span className={text({ className: classNames?.text })}>{children}</span>
+      {endContent && (
+        <div
+          className={endContentContainer({
+            className: classNames?.endContentContainer,
+          })}
+        >
+          {endContent}
+        </div>
+      )}
     </button>
   );
 }
@@ -102,15 +117,17 @@ export default function Button({
 export function ButtonLink({
   color = "default",
   size = "default",
-  icon,
+  startContent,
   children,
   classNames,
   full = false,
   disabled,
+  endContent,
   ...rest
 }: {
   children: React.ReactNode;
-  icon?: React.ReactNode;
+  endContent?: React.ReactNode;
+  startContent?: React.ReactNode;
   className?: never;
   classNames?: {
     [key in keyof ReturnType<typeof styles>]?: ClassValue;
@@ -122,11 +139,11 @@ export function ButtonLink({
 > &
   LinkProps &
   VariantProps<typeof styles>) {
-  const {
-    button,
-    iconContainer: iconStyles,
-    text,
-  } = styles({ color, size, full });
+  const { button, text, endContentContainer, startContentContainer } = styles({
+    color,
+    size,
+    full,
+  });
 
   return (
     <Link
@@ -134,12 +151,25 @@ export function ButtonLink({
       data-disabled={disabled === undefined ? false : disabled}
       {...rest}
     >
-      {icon && (
-        <div className={iconStyles({ className: classNames?.iconContainer })}>
-          {icon}
+      {startContent && (
+        <div
+          className={startContentContainer({
+            className: classNames?.startContentContainer,
+          })}
+        >
+          {startContent}
         </div>
       )}
       <span className={text({ className: classNames?.text })}>{children}</span>
+      {endContent && (
+        <div
+          className={endContentContainer({
+            className: classNames?.endContentContainer,
+          })}
+        >
+          {endContent}
+        </div>
+      )}
     </Link>
   );
 }

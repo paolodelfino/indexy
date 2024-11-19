@@ -73,9 +73,10 @@ export default function FormCheckbox({
 
   const {
     button,
-    iconContainer,
-    icon: iconStyles,
+    endContentContainer,
+    startContentContainer,
     text,
+    icon: iconStyles,
   } = styles({
     color,
     size,
@@ -112,14 +113,14 @@ export default function FormCheckbox({
         color="ghost"
         classNames={{
           button: button({ className: classNames?.button }),
-          iconContainer: iconContainer({
-            className: classNames?.iconContainer,
+          startContentContainer: startContentContainer({
+            className: classNames?.startContentContainer,
           }),
           text: text({ className: classNames?.text }),
         }}
         onClick={onClick}
         disabled={disabled}
-        icon={label && icon}
+        startContent={label && icon}
       >
         {!label && icon}
         {label}
