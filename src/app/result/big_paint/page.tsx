@@ -40,11 +40,10 @@ export default function Page({
 
   const id = useInfiniteQuery({
     nextOffset: query.nextOffset,
-    hasData: query.data !== undefined,
-    lastId:
-      query.data === undefined || query.data.length <= 0
-        ? undefined
-        : query.data[query.data.length - 1].id,
+    data: query.data,
+    getId(item) {
+      return item.id;
+    },
     // callback: () => query.fetch(query.lastArgs![0]),
     callback: () => query.fetch(values),
     fetchIfNoData: true,

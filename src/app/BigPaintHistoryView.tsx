@@ -11,11 +11,10 @@ export default function BigPaintHistoryView() {
   const id = useInfiniteQuery({
     callback: query.fetch,
     fetchIfNoData: true,
-    hasData: query.data !== undefined,
-    lastId:
-      query.data === undefined || query.data.length <= 0
-        ? undefined
-        : query.data[query.data.length - 1].values,
+    data: query.data,
+    getId(item) {
+      return item.values;
+    },
     nextOffset: query.nextOffset,
     active: query.active,
     inactive: query.inactive,

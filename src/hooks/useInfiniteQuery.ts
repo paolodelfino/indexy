@@ -1,31 +1,30 @@
-import { useCallback, useEffect, useId, useRef } from "react";
+import { useEffect, useId, useMemo, useRef } from "react";
 
 // TODO: Mi sa che se fai form.reset() e hai fetchIfNoData a true, potrebbe partire un fetch indesiderato (perché lo vuoi fare tu, però in effetti dovrebbe essere la stessa cosa)
-export default function yseInfiniteQuery({
-  hasData,
+export default function useInfiniteQuery<T extends Array<any>>({
   nextOffset,
   callback,
-  lastId,
   fetchIfNoData,
   active,
   inactive,
+  data,
+  getId,
 }: {
   nextOffset: number | undefined;
-  hasData: boolean;
-  lastId: string | undefined;
-  callback(): void;
+  data: T | undefined;
   fetchIfNoData: boolean;
+  getId: (item: T[number]) => string;
+  callback: () => void;
   active(): void;
   inactive(): void;
 }) {
   const id = useId(); // TODO: Does it hurt performance? // TODO: Does this work if the component is opened twice simultaneously?
   const observer = useRef<IntersectionObserver>(null);
 
-  const observeLast = useCallback(
-    () =>
-      observer.current!.observe(document.getElementById(`${id}_${lastId}`)!),
-    [id, lastId],
-  );
+  const lastId = useMemo(() => {
+    if (data === undefined || data.length <= 0) return undefined;
+    return getId(data[data.length - 1]);
+  }, [data, getId]);
 
   useEffect(() => {
     active();
@@ -34,18 +33,23 @@ export default function yseInfiniteQuery({
 
   useEffect(() => {
     if (nextOffset !== undefined) {
-      if (hasData) {
-        observer.current = new IntersectionObserver((entries, observer) => {
-          if (entries[0].isIntersecting) {
-            callback();
+      console.log("data", data);
+      if (data === undefined) {
+        if (fetchIfNoData) callback();
+      } else {
+        const target = document.getElementById(`${id}_${lastId}`);
+        if (target === null)
+          callback(); // Should be because of an empty array returned previously
+        else {
+          observer.current = new IntersectionObserver((entries, observer) => {
+            if (entries[0].isIntersecting) {
+              callback();
 
-            observer.disconnect();
-          }
-        });
-
-        observeLast();
-      } else if (fetchIfNoData) {
-        callback();
+              observer.disconnect();
+            }
+          });
+          observer.current.observe(target);
+        }
       }
     }
 
@@ -53,7 +57,7 @@ export default function yseInfiniteQuery({
       observer.current?.disconnect();
       observer.current = null;
     };
-  }, [nextOffset]);
+  }, [nextOffset, data, id, lastId, callback]);
 
   return id;
 }

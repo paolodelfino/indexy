@@ -14,11 +14,10 @@ export default function InspirationView() {
     inactive: query.inactive,
     callback: query.fetch,
     fetchIfNoData: true,
-    hasData: query.data !== undefined,
-    lastId:
-      query.data === undefined || query.data.length <= 0
-        ? undefined
-        : query.data[query.data.length - 1].id,
+    data: query.data,
+    getId(item) {
+      return item.id;
+    },
     nextOffset: query.nextOffset,
   });
 

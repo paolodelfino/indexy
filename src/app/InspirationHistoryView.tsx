@@ -11,19 +11,18 @@ export default function InspirationHistoryView() {
   const id = useInfiniteQuery({
     callback: query.fetch,
     fetchIfNoData: true,
-    hasData: query.data !== undefined,
-    lastId:
-      query.data === undefined || query.data.length <= 0
-        ? undefined
-        : query.data[query.data.length - 1].values,
     nextOffset: query.nextOffset,
     active: query.active,
     inactive: query.inactive,
+    data: query.data,
+    getId(item) {
+      return item.values;
+    },
   });
 
-  if (query.data === undefined) return <span>loading no cache</span>;
+  if (query.data === undefined) return <p>loading no cache</p>;
 
-  if (query.data.length <= 0) return <span>empty</span>;
+  if (query.data.length <= 0) return <p>empty</p>;
 
   return (
     <VList
@@ -41,7 +40,7 @@ export default function InspirationHistoryView() {
           />
         );
       })}
-      {query.isFetching ? <span>loading next</span> : ""}
+      {query.isFetching ? <p>loading next</p> : ""}
     </VList>
   );
 }
