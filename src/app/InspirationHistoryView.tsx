@@ -12,7 +12,10 @@ export default function InspirationHistoryView() {
     callback: query.fetch,
     fetchIfNoData: true,
     hasData: query.data !== undefined,
-    lastId: query.data?.[query.data.length - 1].values,
+    lastId:
+      query.data === undefined || query.data.length <= 0
+        ? undefined
+        : query.data[query.data.length - 1].values,
     nextOffset: query.nextOffset,
     active: query.active,
     inactive: query.inactive,

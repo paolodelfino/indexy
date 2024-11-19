@@ -15,7 +15,10 @@ export default function InspirationView() {
     callback: query.fetch,
     fetchIfNoData: true,
     hasData: query.data !== undefined,
-    lastId: query.data?.[query.data.length - 1].id,
+    lastId:
+      query.data === undefined || query.data.length <= 0
+        ? undefined
+        : query.data[query.data.length - 1].id,
     nextOffset: query.nextOffset,
   });
 

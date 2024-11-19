@@ -12,7 +12,10 @@ export default function BigPaintView() {
     callback: query.fetch,
     fetchIfNoData: true,
     hasData: query.data !== undefined,
-    lastId: query.data?.[query.data.length - 1].id,
+    lastId:
+      query.data === undefined || query.data.length <= 0
+        ? undefined
+        : query.data[query.data.length - 1].id,
     nextOffset: query.nextOffset,
     active: query.active,
     inactive: query.inactive,
