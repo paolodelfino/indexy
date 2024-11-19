@@ -27,7 +27,7 @@ export default function BigPaintView() {
 
   return (
     <VList
-      keepMounted={[query.data.length - 1, query.data.length - 2]}
+      keepMounted={[query.data.length - 1, query.data.length - 1 + 1]}
       className="pb-16 scrollbar-hidden"
     >
       {query.data.map((it) => {
