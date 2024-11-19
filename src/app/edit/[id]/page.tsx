@@ -1,4 +1,5 @@
 import BigPaintEditForm from "@/app/edit/[id]/BigPaintEditForm";
+import HistoryEntryEditForm from "@/app/edit/[id]/HistoryEntryEditForm";
 import InspirationEditForm from "@/app/edit/[id]/InspirationEditForm";
 
 export default async function Page({
@@ -20,6 +21,7 @@ export default async function Page({
   if (type === "inspiration") return <InspirationEditForm id={params.id} />;
   else if (type === "big_paint") return <BigPaintEditForm id={params.id} />;
   else if (type === "inspiration_history")
-    throw new Error("TODO: Unimplemented");
-  else if (type === "big_paint_history") throw new Error("TODO: Unimplemented");
+    return <HistoryEntryEditForm id={params.id} type="inspiration_history" />;
+  else if (type === "big_paint_history")
+    return <HistoryEntryEditForm id={params.id} type="big_paint_history" />;
 }
