@@ -36,12 +36,9 @@ export default function Inspiration({
           <ButtonLink
             color="ghost"
             href={`/${data.id}?type=inspiration`}
-            data-disabled={isItsPage}
+            disabled={isItsPage}
             classNames={{
-              button: cn(
-                "text-neutral-300 size-9 justify-center items-center",
-                isItsPage && "pointer-events-none",
-              ),
+              button: "text-neutral-300 size-9 justify-center items-center",
             }}
           >
             ...

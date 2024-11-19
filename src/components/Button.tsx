@@ -12,19 +12,19 @@ export const styles = tv({
     color: {
       ghost: {
         button:
-          "ring-neutral-600 data-[disabled=true]:text-neutral-500 disabled:text-neutral-500 [&:not([data-disabled=true]):active]:!bg-neutral-700 [&:not(:disabled):active]:!bg-neutral-700 [&:not([data-disabled=true]):active]:!ring-1 [&:not(:disabled):active]:!ring-1 [&:not([data-disabled=true]):hover]:bg-neutral-600 [&:not(:disabled):hover]:bg-neutral-600 [&:not([data-disabled=true]):hover]:ring-0 [&:not(:disabled):hover]:ring-0",
+          "ring-neutral-600 data-[disabled=true]:text-neutral-500 active:!bg-neutral-700 active:!ring-1 hover:bg-neutral-600 hover:ring-0 data-[disabled=true]:pointer-events-none",
       },
       default: {
         button:
-          "bg-neutral-800 ring-1 ring-neutral-600 data-[disabled=true]:text-neutral-500 disabled:text-neutral-500 [&:not([data-disabled=true]):active]:!bg-neutral-700 [&:not(:disabled):active]:!bg-neutral-700 [&:not([data-disabled=true]):active]:!ring-1 [&:not(:disabled):active]:!ring-1 [&:not([data-disabled=true]):hover]:bg-neutral-600 [&:not(:disabled):hover]:bg-neutral-600 [&:not([data-disabled=true]):hover]:ring-0 [&:not(:disabled):hover]:ring-0",
+          "bg-neutral-800 ring-1 ring-neutral-600 data-[disabled=true]:text-neutral-500 active:!bg-neutral-700 active:!ring-1 hover:bg-neutral-600 hover:ring-0 data-[disabled=true]:pointer-events-none",
       },
       accent: {
         button:
-          "bg-blue-500 ring-1 ring-blue-300 data-[disabled=true]:text-blue-200 disabled:text-blue-200 [&:not([data-disabled=true]):active]:!bg-blue-300 [&:not(:disabled):active]:!bg-blue-300 [&:not([data-disabled=true]):active]:!ring-1 [&:not(:disabled):active]:!ring-1 [&:not([data-disabled=true]):hover]:bg-blue-300 [&:not(:disabled):hover]:bg-blue-300 [&:not([data-disabled=true]):hover]:ring-0 [&:not(:disabled):hover]:ring-0",
+          "bg-blue-500 ring-1 ring-blue-300 data-[disabled=true]:text-blue-200 active:!bg-blue-300 active:!ring-1 hover:bg-blue-300 hover:ring-0 data-[disabled=true]:pointer-events-none",
       },
       danger: {
         button:
-          "bg-red-800 ring-1 ring-red-600 data-[disabled=true]:text-red-500 disabled:text-red-500 [&:not([data-disabled=true]):active]:!bg-red-700 [&:not(:disabled):active]:!bg-red-700 [&:not([data-disabled=true]):active]:!ring-1 [&:not(:disabled):active]:!ring-1 [&:not([data-disabled=true]):hover]:bg-red-600 [&:not(:disabled):hover]:bg-red-600 [&:not([data-disabled=true]):hover]:ring-0 [&:not(:disabled):hover]:ring-0",
+          "bg-red-800 ring-1 ring-red-600 data-[disabled=true]:text-red-500 active:!bg-red-700 active:!ring-1 hover:bg-red-600 hover:ring-0 data-[disabled=true]:pointer-events-none",
       },
     },
     size: {
@@ -58,6 +58,7 @@ export default function Button({
   children,
   classNames,
   full = false,
+  disabled,
   ...rest
 }: {
   children: React.ReactNode;
@@ -82,6 +83,8 @@ export default function Button({
     <button
       className={button({ className: classNames?.button })}
       type={type}
+      disabled={disabled}
+      data-disabled={disabled === undefined ? false : disabled}
       {...rest}
     >
       {icon && (
@@ -103,6 +106,7 @@ export function ButtonLink({
   children,
   classNames,
   full = false,
+  disabled,
   ...rest
 }: {
   children: React.ReactNode;
@@ -111,6 +115,7 @@ export function ButtonLink({
   classNames?: {
     [key in keyof ReturnType<typeof styles>]?: ClassValue;
   };
+  disabled?: boolean;
 } & React.DetailedHTMLProps<
   React.AnchorHTMLAttributes<HTMLAnchorElement>,
   HTMLAnchorElement
@@ -124,7 +129,11 @@ export function ButtonLink({
   } = styles({ color, size, full });
 
   return (
-    <Link className={button({ className: classNames?.button })} {...rest}>
+    <Link
+      className={button({ className: classNames?.button })}
+      data-disabled={disabled === undefined ? false : disabled}
+      {...rest}
+    >
       {icon && (
         <div className={iconStyles({ className: classNames?.iconContainer })}>
           {icon}
