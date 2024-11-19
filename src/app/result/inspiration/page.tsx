@@ -52,22 +52,17 @@ export default function Page({
   if (query.data === undefined) return <span>loading no cache</span>;
 
   return (
-    <div>
-      {query.data !== undefined && (
-        <div>
-          <h2 className="p-4 text-lg font-medium">Result ({query.total})</h2>
-          <div className="h-[80vh]">
-            <VList keepMounted={[query.data.length - 1, query.data.length - 2]}>
-              {query.data.map((it, i) => {
-                return (
-                  <Inspiration key={it.id} data={it} id={`${id}_${it.id}`} />
-                );
-              })}
-              {query.isFetching ? "loading..." : ""}
-            </VList>
-          </div>
-        </div>
-      )}
+    <div className="flex h-full flex-col">
+      <h2 className="p-4 text-lg font-medium">Result ({query.total})</h2>
+      <VList
+        keepMounted={[query.data.length - 1, query.data.length - 2]}
+        className="pb-16 scrollbar-hidden"
+      >
+        {query.data.map((it, i) => {
+          return <Inspiration key={it.id} data={it} id={`${id}_${it.id}`} />;
+        })}
+        {query.isFetching ? "loading..." : ""}
+      </VList>
     </div>
   );
 }

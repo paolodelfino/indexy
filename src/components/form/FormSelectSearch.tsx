@@ -197,7 +197,7 @@ function SelectedList({
 }) {
   if (meta.selectedItems.length > 0)
     return (
-      <div className="flex flex-wrap gap-1">
+      <div className="flex flex-wrap gap-2">
         {meta.selectedItems.map((it) => (
           <SelectedItem
             key={it.id}

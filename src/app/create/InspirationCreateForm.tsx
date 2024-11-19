@@ -40,7 +40,7 @@ export default function InspirationCreateForm() {
   }, [form.setOnSubmit]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-16">
       <div className="flex items-center justify-between p-4">
         <Button
           disabled={isCreateFormPending}

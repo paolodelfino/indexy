@@ -5,6 +5,7 @@ import { fieldText } from "@/components/form/FormText";
 import { searchBigPaintFormSchema } from "@/schemas/searchBigPaintFormSchema";
 import { createForm } from "@/utils/form";
 
+// TODO: There are other predicates to play with like limit, maybe offset
 export const useSearchBigPaintForm = createForm(
   searchBigPaintFormSchema,
   {

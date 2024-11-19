@@ -1,6 +1,4 @@
-import Providers from "@/components/Providers";
-import CenterPanel from "@/components/screen/CenterPanel";
-import LeftPanel from "@/components/screen/LeftPanel";
+import _Layout from "@/app/_Layout";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -29,11 +27,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} mx-auto flex max-w-screen-monitor bg-black font-sans text-white`}
       >
-        <Providers>
-          <LeftPanel />
-          <CenterPanel>{children}</CenterPanel>
-          <div className="hidden flex-1 overflow-hidden p-2 monitor:block" />
-        </Providers>
+        <_Layout>{children}</_Layout>
       </body>
     </html>
   );

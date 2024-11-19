@@ -24,19 +24,15 @@ export default function InspirationView() {
   if (query.data.length <= 0) return <span>empty</span>;
 
   return (
-    <>
-      <div className="h-[80vh]">
-        {/* TODO: Fix height. TODO: Fix Scrollbar */}
-        <VList
-          // overscan={20} 20 = limit
-          keepMounted={[query.data.length - 1, query.data.length - 2]}
-        >
-          {query.data.map((it) => {
-            return <Inspiration key={it.id} data={it} id={`${id}_${it.id}`} />;
-          })}
-          {query.isFetching ? <span>loading next</span> : ""}
-        </VList>
-      </div>
-    </>
+    <VList
+      // overscan={20} 20 = limit
+      keepMounted={[query.data.length - 1, query.data.length - 2]}
+      className="pb-16 scrollbar-hidden"
+    >
+      {query.data.map((it) => {
+        return <Inspiration key={it.id} data={it} id={`${id}_${it.id}`} />;
+      })}
+      {query.isFetching ? <span>loading next</span> : ""}
+    </VList>
   );
 }

@@ -87,7 +87,7 @@ export default function InspirationEditFormView({
   }, [data]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-16">
       <div className="flex items-center justify-end gap-4 p-4">
         <Button
           onClick={async () => {
