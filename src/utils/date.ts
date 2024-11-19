@@ -63,3 +63,30 @@ export function dateToString(value: Date) {
   const date = `${day} ${month} ${year} ${hour}:${minute}:${second}.${fractionalSecond}`;
   return date;
 }
+
+export function dateFromString(value: string) {
+  const match = /(.+) (.+) (.+) (.+):(.+):(.+)[.](.+)/.exec(value);
+  if (match === null) throw new Error(`'${value}' is not a valid date format`);
+  let monthIndex = -1;
+  if (match.at(2) === "Jan") monthIndex = 0;
+  else if (match.at(2) === "Feb") monthIndex = 1;
+  else if (match.at(2) === "Mar") monthIndex = 2;
+  else if (match.at(2) === "Apr") monthIndex = 3;
+  else if (match.at(2) === "May") monthIndex = 4;
+  else if (match.at(2) === "Jun") monthIndex = 5;
+  else if (match.at(2) === "Jul") monthIndex = 6;
+  else if (match.at(2) === "Aug") monthIndex = 7;
+  else if (match.at(2) === "Sep") monthIndex = 8;
+  else if (match.at(2) === "Oct") monthIndex = 9;
+  else if (match.at(2) === "Nov") monthIndex = 10;
+  else if (match.at(2) === "Dec") monthIndex = 11;
+  return new Date(
+    Number(match.at(3)!),
+    monthIndex,
+    Number(match.at(1)!),
+    Number(match.at(4)!),
+    Number(match.at(5)!),
+    Number(match.at(6)!),
+    Number(match.at(7)!),
+  );
+}

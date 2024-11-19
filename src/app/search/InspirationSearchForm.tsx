@@ -9,54 +9,21 @@ import FormSelect from "@/components/form/FormSelect";
 import FormSelectSearch from "@/components/form/FormSelectSearch";
 import FormTextArea from "@/components/form/FormTextArea";
 import { Cloud, InformationCircle } from "@/components/icons";
-import Inspiration from "@/components/inspiration/Inspiration";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
-import useInspirationSearchQuery from "@/stores/useInspirationSearchQuery";
 import { useSearchInspirationForm } from "@/stores/useSearchInspirationForm";
-import { useEffect, useId, useRef } from "react";
-import { VList } from "virtua";
+import { valuesToSearchParams } from "@/utils/url";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function InspirationSearchForm() {
   const form = useSearchInspirationForm();
-  const observer = useRef<IntersectionObserver>(null);
-  const id = useId();
-  const query = useInspirationSearchQuery();
-
-  useEffect(() => {
-    query.active();
-    return () => query.inactive();
-  }, []);
-
-  useEffect(() => {
-    if (query.nextOffset !== undefined && query.data !== undefined) {
-      observer.current = new IntersectionObserver((entries, observer) => {
-        if (entries[0].isIntersecting) {
-          query.fetch(query.lastArgs![0]);
-
-          observer.disconnect();
-        }
-      });
-
-      observer.current.observe(
-        document.getElementById(
-          `${id}_${query.data[query.data.length - 1].id}`,
-        )!,
-      );
-    }
-
-    return () => {
-      observer.current?.disconnect();
-      observer.current = null;
-    };
-  }, [query.nextOffset]);
+  const router = useRouter();
 
   useEffect(() => {
     // TODO: Vedi se questo problema del cambio route si è risolto ora che non uso più quello schifo di query management
-    form.setOnSubmit((form) => {
-      query.reset();
-      query.active();
-      query.fetch(form.values());
-    });
+    form.setOnSubmit((form) =>
+      router.push(`/result/inspiration?${valuesToSearchParams(form.values())}`),
+    );
   }, [form.setOnSubmit]);
 
   return (
@@ -75,7 +42,7 @@ export default function InspirationSearchForm() {
 
         <Button
           title="Clear"
-          disabled={query.isFetching}
+          // disabled={query.isFetching}
           color="ghost"
           onClick={form.reset}
         >
@@ -84,15 +51,17 @@ export default function InspirationSearchForm() {
 
         <Button
           color="accent"
-          disabled={query.isFetching || form.isInvalid}
+          // disabled={query.isFetching || form.isInvalid}
+          disabled={form.isInvalid}
           onClick={form.submit}
         >
-          {query.isFetching ? "Searching..." : "Search"}
+          {/* {query.isFetching ? "Searching..." : "Search"} */}
+          Search
         </Button>
       </div>
 
       <h1
-        data-disabled={query.isFetching}
+        // data-disabled={query.isFetching}
         className="py-1 pl-4 text-2xl font-medium leading-[3rem] data-[disabled=true]:opacity-50"
       >
         Search Inspiration
@@ -100,7 +69,7 @@ export default function InspirationSearchForm() {
 
       <div>
         <h2
-          data-disabled={query.isFetching}
+          // data-disabled={query.isFetching}
           className="py-1 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
         >
           Order
@@ -112,7 +81,8 @@ export default function InspirationSearchForm() {
             meta={form.fields.orderBy.meta}
             setValue={form.setValue.bind(form, "orderBy")}
             setMeta={form.setMeta.bind(form, "orderBy")}
-            disabled={query.isFetching}
+            // disabled={query.isFetching}
+            disabled={false}
             error={form.fields.orderBy.error}
           />
 
@@ -121,7 +91,8 @@ export default function InspirationSearchForm() {
             meta={form.fields.orderByDir.meta}
             setValue={form.setValue.bind(form, "orderByDir")}
             setMeta={form.setMeta.bind(form, "orderByDir")}
-            disabled={query.isFetching}
+            // disabled={query.isFetching}
+            disabled={false}
             error={form.fields.orderByDir.error}
           />
         </div>
@@ -132,14 +103,15 @@ export default function InspirationSearchForm() {
         meta={form.fields.content.meta}
         setValue={form.setValue.bind(form, "content")}
         setMeta={form.setMeta.bind(form, "content")}
-        disabled={query.isFetching}
+        // disabled={query.isFetching}
+        disabled={false}
         error={form.fields.content.error}
         acceptIndeterminate
       />
 
       <div>
         <h2
-          data-disabled={query.isFetching}
+          // data-disabled={query.isFetching}
           className="py-1 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
         >
           Date
@@ -150,7 +122,8 @@ export default function InspirationSearchForm() {
           meta={form.fields.date.meta}
           setValue={form.setValue.bind(form, "date")}
           setMeta={form.setMeta.bind(form, "date")}
-          disabled={query.isFetching}
+          // disabled={query.isFetching}
+          disabled={false}
           error={form.fields.date.error}
           acceptIndeterminate
         />
@@ -158,7 +131,7 @@ export default function InspirationSearchForm() {
 
       <div>
         <h2
-          data-disabled={query.isFetching}
+          // data-disabled={query.isFetching}
           className="py-1 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
         >
           Highlight
@@ -169,7 +142,8 @@ export default function InspirationSearchForm() {
           meta={form.fields.highlight.meta}
           setValue={form.setValue.bind(form, "highlight")}
           setMeta={form.setMeta.bind(form, "highlight")}
-          disabled={query.isFetching}
+          // disabled={query.isFetching}
+          disabled={false}
           error={form.fields.highlight.error}
           acceptIndeterminate
         />
@@ -180,7 +154,8 @@ export default function InspirationSearchForm() {
         meta={form.fields.related_big_paints_ids.meta}
         setValue={form.setValue.bind(form, "related_big_paints_ids")}
         setMeta={form.setMeta.bind(form, "related_big_paints_ids")}
-        disabled={query.isFetching}
+        // disabled={query.isFetching}
+        disabled={false}
         error={form.fields.related_big_paints_ids.error}
         acceptIndeterminate
         search={(prevState, { query }) =>
@@ -204,7 +179,8 @@ export default function InspirationSearchForm() {
         meta={form.fields.related_inspirations_ids.meta}
         setValue={form.setValue.bind(form, "related_inspirations_ids")}
         setMeta={form.setMeta.bind(form, "related_inspirations_ids")}
-        disabled={query.isFetching}
+        // disabled={query.isFetching}
+        disabled={false}
         error={form.fields.related_inspirations_ids.error}
         acceptIndeterminate
         search={(prevState, { query }) =>
@@ -224,22 +200,6 @@ export default function InspirationSearchForm() {
           )
         }
       />
-
-      {query.data !== undefined && (
-        <div>
-          <h2 className="p-4 text-lg font-medium">Result ({query.total})</h2>
-          <div className="h-[80vh]">
-            <VList keepMounted={[query.data.length - 1, query.data.length - 2]}>
-              {query.data.map((it, i) => {
-                return (
-                  <Inspiration key={it.id} data={it} id={`${id}_${it.id}`} />
-                );
-              })}
-              {query.isFetching ? "loading..." : ""}
-            </VList>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import { searchBigPaintAction } from "@/actions/searchBigPaintAction";
-import BigPaint from "@/components/big_paint/BigPaint";
 import Button from "@/components/Button";
 import FormDateComparison from "@/components/form/FormDateComparison";
 import FormSelect from "@/components/form/FormSelect";
@@ -9,33 +8,20 @@ import FormSelectSearch from "@/components/form/FormSelectSearch";
 import FormText from "@/components/form/FormText";
 import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
-import useInfiniteQuery from "@/hooks/useInfiniteQuery";
-import useBigPaintSearchQuery from "@/stores/useBigPaintSearchQuery";
 import { useSearchBigPaintForm } from "@/stores/useSearchBigPaintForm";
+import { valuesToSearchParams } from "@/utils/url";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { VList } from "virtua";
 
 export default function BigPaintSearchForm() {
   const form = useSearchBigPaintForm();
-  const query = useBigPaintSearchQuery();
-
-  const id = useInfiniteQuery({
-    nextOffset: query.nextOffset,
-    hasData: query.data !== undefined,
-    lastId: query.data?.[query.data.length - 1].id,
-    callback: () => query.fetch(query.lastArgs![0]),
-    fetchIfNoData: false,
-    active: query.active,
-    inactive: query.inactive,
-  });
+  const router = useRouter();
 
   useEffect(() => {
     // TODO: Vedi se questo problema del cambio route si è risolto ora che non uso più quello schifo di query management
-    form.setOnSubmit((form) => {
-      query.reset();
-      query.active();
-      query.fetch(form.values());
-    });
+    form.setOnSubmit((form) =>
+      router.push(`/result/big_paint?${valuesToSearchParams(form.values())}`),
+    );
   }, [form.setOnSubmit]);
 
   return (
@@ -54,7 +40,7 @@ export default function BigPaintSearchForm() {
 
         <Button
           title="Clear"
-          disabled={query.isFetching}
+          // disabled={query.isFetching}
           color="ghost"
           onClick={form.reset}
         >
@@ -63,15 +49,17 @@ export default function BigPaintSearchForm() {
 
         <Button
           color="accent"
-          disabled={query.isFetching || form.isInvalid}
+          // disabled={query.isFetching || form.isInvalid}
+          disabled={form.isInvalid}
           onClick={form.submit}
         >
-          {query.isFetching ? "Searching..." : "Search"}
+          {/* {query.isFetching ? "Searching..." : "Search"} */}
+          Search
         </Button>
       </div>
 
       <h1
-        data-disabled={query.isFetching}
+        // data-disabled={query.isFetching}
         className="py-1 pl-4 text-2xl font-medium leading-[3rem] data-[disabled=true]:opacity-50"
       >
         Search BigPaint
@@ -79,7 +67,7 @@ export default function BigPaintSearchForm() {
 
       <div>
         <h2
-          data-disabled={query.isFetching}
+          // data-disabled={query.isFetching}
           className="py-1 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
         >
           Order
@@ -91,7 +79,8 @@ export default function BigPaintSearchForm() {
             meta={form.fields.orderBy.meta}
             setValue={form.setValue.bind(form, "orderBy")}
             setMeta={form.setMeta.bind(form, "orderBy")}
-            disabled={query.isFetching}
+            // disabled={query.isFetching}
+            disabled={false}
             error={form.fields.orderBy.error}
           />
 
@@ -100,7 +89,8 @@ export default function BigPaintSearchForm() {
             meta={form.fields.orderByDir.meta}
             setValue={form.setValue.bind(form, "orderByDir")}
             setMeta={form.setMeta.bind(form, "orderByDir")}
-            disabled={query.isFetching}
+            // disabled={query.isFetching}
+            disabled={false}
             error={form.fields.orderByDir.error}
           />
         </div>
@@ -111,14 +101,15 @@ export default function BigPaintSearchForm() {
         meta={form.fields.name.meta}
         setValue={form.setValue.bind(form, "name")}
         setMeta={form.setMeta.bind(form, "name")}
-        disabled={query.isFetching}
+        // disabled={query.isFetching}
+        disabled={false}
         error={form.fields.name.error}
         acceptIndeterminate
       />
 
       <div>
         <h2
-          data-disabled={query.isFetching}
+          // data-disabled={query.isFetching}
           className="py-1 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
         >
           Date
@@ -129,7 +120,8 @@ export default function BigPaintSearchForm() {
           meta={form.fields.date.meta}
           setValue={form.setValue.bind(form, "date")}
           setMeta={form.setMeta.bind(form, "date")}
-          disabled={query.isFetching}
+          // disabled={query.isFetching}
+          disabled={false}
           error={form.fields.date.error}
           acceptIndeterminate
         />
@@ -140,7 +132,8 @@ export default function BigPaintSearchForm() {
         meta={form.fields.related_big_paints_ids.meta}
         setValue={form.setValue.bind(form, "related_big_paints_ids")}
         setMeta={form.setMeta.bind(form, "related_big_paints_ids")}
-        disabled={query.isFetching}
+        // disabled={query.isFetching}
+        disabled={false}
         error={form.fields.related_big_paints_ids.error}
         acceptIndeterminate
         search={(prevState, { query }) =>
@@ -158,20 +151,6 @@ export default function BigPaintSearchForm() {
           )
         }
       />
-
-      {query.data !== undefined && (
-        <div>
-          <h2 className="p-4 text-lg font-medium">Result ({query.total})</h2>
-          <div className="h-[80vh]">
-            <VList keepMounted={[query.data.length - 1, query.data.length - 2]}>
-              {query.data.map((it, i) => {
-                return <BigPaint key={it.id} data={it} id={`${id}_${it.id}`} />;
-              })}
-              {query.isFetching ? "loading..." : ""}
-            </VList>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

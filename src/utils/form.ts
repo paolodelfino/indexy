@@ -43,9 +43,10 @@ export type FormState<T extends FormFields, FormMeta, U extends FormSchema> = {
   submit: () => void;
 };
 
-export type FormValues<T extends ZodType> = {
-  [key in NonNullable<keyof z.infer<T>>]: z.infer<T>[key];
-};
+// export type FormValues<T extends ZodType> = {
+//   [key in NonNullable<keyof z.infer<T>>]: z.infer<T>[key];
+// };
+export type FormValues<T extends ZodType> = z.infer<T>;
 
 export type FormHook<
   T extends FormFields,

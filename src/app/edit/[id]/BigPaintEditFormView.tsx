@@ -42,6 +42,7 @@ export default function BigPaintEditFormView({
     form.setOnSubmit(async (form) => {
       setIsEditFormPending(true);
 
+      // await (await import("@/actions/editBigPaintAction")).editBigPaintAction(data.id, form.values())
       await editBigPaintAction(data.id, form.values());
 
       invalidateBigPaintViewQuery();

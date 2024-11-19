@@ -30,5 +30,5 @@ export const useSearchInspirationForm = createForm(
     highlight: fieldCheckbox(),
     related_inspirations_ids: fieldSelectSearch(),
   },
-  {},
+  { lastValues: undefined as string | undefined },
 );

@@ -26,5 +26,5 @@ export const useSearchBigPaintForm = createForm(
     related_big_paints_ids: fieldSelectSearch(),
     name: fieldText(),
   },
-  {},
+  { lastValues: undefined as string | undefined },
 );
