@@ -1,17 +1,17 @@
 "use client";
 
-import { deleteBigPaintAction } from "@/actions/ActionDelete__BigPaint";
-import { editBigPaintAction } from "@/actions/ActionEdit__BigPaint";
-import { searchBigPaintAction } from "@/actions/ActionSearch__BigPaint";
+import ActionDelete__BigPaint from "@/actions/ActionDelete__BigPaint";
+import ActionEdit__BigPaint from "@/actions/ActionEdit__BigPaint";
+import ActionSearch__BigPaint from "@/actions/ActionSearch__BigPaint";
 import Button from "@/components/Button";
 import FieldDate from "@/components/form/FieldDate";
 import FieldSelect__Search from "@/components/form/FieldSelect__Search";
 import FieldText from "@/components/form/FieldText";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
+import useFormEdit__BigPaint from "@/stores/forms/useFormEdit__BigPaint";
 import useBigPaintSearchQuery from "@/stores/queries/useQueryBigPaints__Search";
 import useBigPaintViewQuery from "@/stores/queries/useQueryBigPaints__View";
-import useFormEdit__BigPaint from "@/stores/forms/useFormEdit__BigPaint";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -42,8 +42,8 @@ export default function BigPaintEditFormView({
     form.setOnSubmit(async (form) => {
       setIsEditFormPending(true);
 
-      // await (await import("@/actions/editBigPaintAction")).editBigPaintAction(data.id, form.values())
-      await editBigPaintAction(data.id, form.values());
+      // await (await import("@/actions/ActionEdit__BigPaint")).ActionEdit__BigPaint(data.id, form.values())
+      await ActionEdit__BigPaint(data.id, form.values());
 
       invalidateBigPaintViewQuery();
       invalidateBigPaintSearchQuery();
@@ -99,7 +99,7 @@ export default function BigPaintEditFormView({
             if (confirm("Are you sure?")) {
               setIsDeleteFormPending(true);
 
-              await deleteBigPaintAction({ id: data.id });
+              await ActionDelete__BigPaint({ id: data.id });
 
               invalidateBigPaintViewQuery();
               invalidateBigPaintSearchQuery();
@@ -150,7 +150,7 @@ export default function BigPaintEditFormView({
           disabled={isEditFormPending || isDeleteFormPending}
           // TODO: Maybe use query to handle invalidations
           search={(_, { query }) =>
-            searchBigPaintAction(null, null, {
+            ActionSearch__BigPaint(null, null, {
               name: query,
               orderBy: "date",
               orderByDir: "asc",

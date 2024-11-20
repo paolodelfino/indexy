@@ -2,8 +2,8 @@
 
 import { deleteInspirationAction } from "@/actions/ActionDelete__Inspiration";
 import { editInspirationAction } from "@/actions/ActionEdit__Inspiration";
-import { searchBigPaintAction } from "@/actions/ActionSearch__BigPaint";
-import { searchInspirationAction } from "@/actions/ActionSearch__Inspiration";
+import ActionSearch__BigPaint from "@/actions/ActionSearch__BigPaint";
+import ActionSearch__Inspiration from "@/actions/ActionSearch__Inspiration";
 import Button from "@/components/Button";
 import FieldCheckbox from "@/components/form/FieldCheckbox";
 import FieldDate from "@/components/form/FieldDate";
@@ -164,7 +164,7 @@ export default function InspirationEditFormView({
         error={form.fields.related_big_paints_ids.error}
         disabled={isEditFormPending || isDeleteFormPending}
         search={(_, { query }) =>
-          searchBigPaintAction(null, null, {
+          ActionSearch__BigPaint(null, null, {
             name: query,
             orderBy: "date",
             orderByDir: "asc",
@@ -186,7 +186,7 @@ export default function InspirationEditFormView({
         error={form.fields.related_inspirations_ids.error}
         disabled={isEditFormPending || isDeleteFormPending}
         search={(_, { query }) =>
-          searchInspirationAction(null, null, {
+          ActionSearch__Inspiration(null, null, {
             content: query,
             orderBy: "date",
             orderByDir: "asc",

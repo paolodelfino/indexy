@@ -49,45 +49,17 @@ export default function Toolbar({
         >
           Inspirations
         </ButtonLink>
-        <Popover placement="left-start">
-          <PopoverTrigger
-            role="listitem"
-            color="ghost"
-            size="large"
-            classNames={{ button: "py-5", text: "text-neutral-300" }}
-            full={variant === "monitor"}
-            startContent={<FilterMailSquare />}
-          >
-            History
-          </PopoverTrigger>
-          <PopoverContent
-            className="z-20 flex min-w-16 max-w-[160px] flex-col"
-            role="list"
-          >
-            <ButtonLink
-              classNames={{ text: "text-neutral-300" }}
-              full
-              href="/?view=big_paint_history"
-              // target="_blank"
-              role="listitem"
-              size="large"
-              startContent={<Square />}
-            >
-              BigPaint
-            </ButtonLink>
-            <ButtonLink
-              classNames={{ text: "text-neutral-300" }}
-              full
-              href="/?view=inspiration_history"
-              // target="_blank"
-              role="listitem"
-              size="large"
-              startContent={<InkStroke20Filled />}
-            >
-              Inspiration
-            </ButtonLink>
-          </PopoverContent>
-        </Popover>
+        <ButtonLink
+          href="/?view=query"
+          role="listitem"
+          color="ghost"
+          size="large"
+          classNames={{ button: "py-5", text: "text-neutral-300" }}
+          full={variant === "monitor"}
+          startContent={<FilterMailSquare />}
+        >
+          Queries
+        </ButtonLink>
         <Popover placement="left-start">
           <PopoverTrigger
             role="listitem"

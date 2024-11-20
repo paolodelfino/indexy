@@ -8,7 +8,3 @@ export default z.object({
   date: z.date().optional(), // TODO: Add date range check
   name: z.string().trim().min(1).optional(),
 });
-
-export const editHistoryEntryFormSchema = z.object({
-  name: z.string().trim().min(1).optional(),
-});

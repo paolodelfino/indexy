@@ -2,7 +2,7 @@ import { db } from "@/db/db";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 const BigPaintEditFormView = dynamic(
-  () => import("@/app/edit/[id]/BigPaintEditFormView"),
+  () => import("@/app/edit/[id]/BigPaintFormView"),
 );
 
 // TODO: History (using versioning)

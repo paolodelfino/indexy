@@ -1,8 +1,8 @@
 "use client";
 
-import { searchBigPaintAction } from "@/actions/ActionSearch__BigPaint";
-import { searchInspirationAction } from "@/actions/ActionSearch__Inspiration";
-import updateInspirationHistoryAction from "@/actions/updateInspirationHistoryAction";
+import ActionSearch__BigPaint from "@/actions/ActionSearch__BigPaint";
+import ActionSearch__Inspiration from "@/actions/ActionSearch__Inspiration";
+import updateInspirationHistoryAction from "@/actions/ActionEdit__Query";
 import Button from "@/components/Button";
 import FieldCheckbox from "@/components/form/FieldCheckbox";
 import FieldDateComparison from "@/components/form/FieldDateComparison";
@@ -11,7 +11,7 @@ import FieldSelect__Search from "@/components/form/FieldSelect__Search";
 import FieldTextArea from "@/components/form/FieldText__Area";
 import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
-import useInspirationHistoryQuery from "@/stores/queries/useInspirationHistoryQuery";
+import useInspirationHistoryQuery from "@/stores/queries/useQueryQueries__View";
 import useFormSearch__Inspiration from "@/stores/forms/useFormSearch__Inspiration";
 import { valuesToSearchParams } from "@/utils/url";
 import { useRouter } from "next/navigation";
@@ -167,7 +167,7 @@ export default function InspirationSearchForm() {
         error={form.fields.related_big_paints_ids.error}
         acceptIndeterminate
         search={(prevState, { query }) =>
-          searchBigPaintAction(null, null, {
+          ActionSearch__BigPaint(null, null, {
             name: query,
             orderBy: "date",
             orderByDir: "asc",
@@ -191,7 +191,7 @@ export default function InspirationSearchForm() {
         error={form.fields.related_inspirations_ids.error}
         acceptIndeterminate
         search={(prevState, { query }) =>
-          searchInspirationAction(null, null, {
+          ActionSearch__Inspiration(null, null, {
             content: query,
             orderBy: "date",
             orderByDir: "asc",

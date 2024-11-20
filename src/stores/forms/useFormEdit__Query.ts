@@ -1,9 +1,9 @@
 import { fieldText } from "@/components/form/FieldText";
-import { editHistoryEntryFormSchema } from "@/schemas/schemaQuery__Update";
+import schemaQuery__Edit from "@/schemas/schemaQuery__Edit";
 import { createForm } from "@/utils/form";
 
-const useEditHistoryEntryForm = createForm(
-  editHistoryEntryFormSchema,
+export default createForm(
+  schemaQuery__Edit,
   {
     name: fieldText(),
   },
@@ -11,5 +11,3 @@ const useEditHistoryEntryForm = createForm(
     lastId: undefined as string | undefined,
   },
 );
-
-export default useEditHistoryEntryForm;

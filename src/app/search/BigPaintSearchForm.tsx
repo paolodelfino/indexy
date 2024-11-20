@@ -1,6 +1,6 @@
 "use client";
 
-import { searchBigPaintAction } from "@/actions/ActionSearch__BigPaint";
+import ActionSearch__BigPaint from "@/actions/ActionSearch__BigPaint";
 import updateBigPaintHistoryAction from "@/actions/updateBigPaintHistoryAction";
 import Button from "@/components/Button";
 import FieldDateComparison from "@/components/form/FieldDateComparison";
@@ -146,7 +146,7 @@ export default function BigPaintSearchForm() {
         error={form.fields.related_big_paints_ids.error}
         acceptIndeterminate
         search={(prevState, { query }) =>
-          searchBigPaintAction(null, null, {
+          ActionSearch__BigPaint(null, null, {
             name: query,
             orderBy: "date",
             orderByDir: "asc",

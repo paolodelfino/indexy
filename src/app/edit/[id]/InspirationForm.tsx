@@ -2,7 +2,7 @@ import { db } from "@/db/db";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 const InspirationEditFormView = dynamic(
-  () => import("@/app/edit/[id]/InspirationEditFormView"),
+  () => import("@/app/edit/[id]/InspirationFormView"),
 );
 
 // TODO: History (using versioning)

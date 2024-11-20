@@ -33,7 +33,6 @@ export default function <T extends Array<any>>({
 
   useEffect(() => {
     if (nextOffset !== undefined) {
-      console.log("data", data);
       if (data === undefined) {
         if (fetchIfNoData) callback();
       } else {

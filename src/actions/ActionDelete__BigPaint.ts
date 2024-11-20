@@ -1,12 +1,12 @@
 "use server";
 
 import { db } from "@/db/db";
-import { deleteBigPaintFormSchema } from "@/schemas/schemaBigPaint__Delete";
+import schemaBigPaint__Delete from "@/schemas/schemaBigPaint__Delete";
 import { FormValues } from "@/utils/form";
 
-export async function deleteBigPaintAction(
-  values: FormValues<typeof deleteBigPaintFormSchema>,
+export default async function (
+  values: FormValues<typeof schemaBigPaint__Delete>,
 ) {
-  const validated = deleteBigPaintFormSchema.parse(values);
+  const validated = schemaBigPaint__Delete.parse(values);
   await db.deleteFrom("big_paint").where("id", "=", validated.id).execute();
 }

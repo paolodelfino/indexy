@@ -1,61 +1,46 @@
 "use client";
 
-import deleteBigPaintHistoryEntryAction from "@/actions/deleteBigPaintHistoryEntryAction";
-import deleteInspirationHistoryEntryAction from "@/actions/deleteInspirationHistoryEntryAction";
-import updateBigPaintHistoryAction from "@/actions/updateBigPaintHistoryAction";
-import updateInspirationHistoryAction from "@/actions/updateInspirationHistoryAction";
+import ActionDelete__Query from "@/actions/ActionDelete__Query";
+import ActionEdit__Query from "@/actions/ActionEdit__Query";
 import Button from "@/components/Button";
 import FieldText from "@/components/form/FieldText";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
-import useBigPaintHistoryQuery from "@/stores/queries/useBigPaintHistoryQuery";
-import useEditHistoryEntryForm from "@/stores/forms/useFormEdit__Query";
-import useInspirationHistoryQuery from "@/stores/queries/useInspirationHistoryQuery";
+import useFormEdit__Query from "@/stores/forms/useFormEdit__Query";
+import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function HistoryEntryEditFormView({
+export default function QueryFormView({
   data,
-  type,
 }: {
-  type: "inspiration_history" | "big_paint_history";
   data: {
     values: string;
     name: string;
+    date: Date;
   };
 }) {
   const router = useRouter();
 
-  const invalidateBigPaintHistoryQuery = useBigPaintHistoryQuery(
-    (state) => state.invalidate,
-  );
-  const invalidateInspirationHistoryQuery = useInspirationHistoryQuery(
+  const invalidateQueriesQuery = useQueryQueries__View(
     (state) => state.invalidate,
   );
 
   const [isDeleteFormPending, setIsDeleteFormPending] = useState(false);
   const [isEditFormPending, setIsEditFormPending] = useState(false);
 
-  const form = useEditHistoryEntryForm();
+  const form = useFormEdit__Query();
   useEffect(() => {
     form.setOnSubmit(async (form) => {
       setIsEditFormPending(true);
 
       const values = form.values();
 
-      if (type === "big_paint_history") {
-        await updateBigPaintHistoryAction({
-          values: data.values,
-          ...values,
-        });
-        invalidateBigPaintHistoryQuery();
-      } else {
-        await updateInspirationHistoryAction({
-          values: data.values,
-          ...values,
-        });
-        invalidateInspirationHistoryQuery();
-      }
+      await ActionEdit__Query({
+        ...values,
+        values: data.values,
+      });
+      invalidateQueriesQuery();
 
       setIsEditFormPending(false);
     });
@@ -92,17 +77,10 @@ export default function HistoryEntryEditFormView({
             if (confirm("Are you sure?")) {
               setIsDeleteFormPending(true);
 
-              if (type === "big_paint_history") {
-                await deleteBigPaintHistoryEntryAction({
-                  values: data.values,
-                });
-                invalidateBigPaintHistoryQuery();
-              } else {
-                await deleteInspirationHistoryEntryAction({
-                  values: data.values,
-                });
-                invalidateInspirationHistoryQuery();
-              }
+              await ActionDelete__Query({
+                values: data.values,
+              });
+              invalidateQueriesQuery();
 
               setIsDeleteFormPending(false);
 

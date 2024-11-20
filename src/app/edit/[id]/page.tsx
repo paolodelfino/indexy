@@ -1,6 +1,6 @@
-import BigPaintEditForm from "@/app/edit/[id]/BigPaintEditForm";
-import HistoryEntryEditForm from "@/app/edit/[id]/HistoryEntryEditForm";
-import InspirationEditForm from "@/app/edit/[id]/InspirationEditForm";
+import BigPaintForm from "@/app/edit/[id]/BigPaintForm";
+import InspirationForm from "@/app/edit/[id]/InspirationForm";
+import QueryForm from "@/app/edit/[id]/QueryForm";
 
 export default async function Page({
   params,
@@ -12,16 +12,11 @@ export default async function Page({
   const type =
     searchParams["type"] === "big_paint"
       ? "big_paint"
-      : searchParams["type"] === "big_paint_history"
-        ? "big_paint_history"
-        : searchParams["type"] === "inspiration_history"
-          ? "inspiration_history"
-          : "inspiration";
+      : searchParams["type"] === "query"
+        ? "query"
+        : "inspiration";
 
-  if (type === "inspiration") return <InspirationEditForm id={params.id} />;
-  else if (type === "big_paint") return <BigPaintEditForm id={params.id} />;
-  else if (type === "inspiration_history")
-    return <HistoryEntryEditForm id={params.id} type="inspiration_history" />;
-  else if (type === "big_paint_history")
-    return <HistoryEntryEditForm id={params.id} type="big_paint_history" />;
+  if (type === "inspiration") return <InspirationForm id={params.id} />;
+  else if (type === "big_paint") return <BigPaintForm id={params.id} />;
+  else return <QueryForm values={params.id} />;
 }

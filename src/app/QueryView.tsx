@@ -1,12 +1,12 @@
 "use client";
 
-import HistoryEntry from "@/app/HistoryEntry";
+import Query from "@/app/Query";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
-import useInspirationHistoryQuery from "@/stores/queries/useInspirationHistoryQuery";
+import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
 import { VList } from "virtua";
 
-export default function InspirationHistoryView() {
-  const query = useInspirationHistoryQuery();
+export default function QueryView() {
+  const query = useQueryQueries__View();
 
   const id = useInfiniteQuery({
     callback: query.fetch,
@@ -31,14 +31,7 @@ export default function InspirationHistoryView() {
       className="pb-16 scrollbar-hidden"
     >
       {query.data.map((it) => {
-        return (
-          <HistoryEntry
-            key={it.values}
-            data={it}
-            id={`${id}_${it.values}`}
-            type="inspiration"
-          />
-        );
+        return <Query key={it.values} data={it} id={`${id}_${it.values}`} />;
       })}
       {query.isFetching ? <p>loading next</p> : ""}
     </VList>

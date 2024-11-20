@@ -2,13 +2,10 @@
 
 import { db } from "@/db/db";
 
-export default async function fetchBigPaintHistoryAction(
-  offset: number,
-  limit: number,
-) {
+export default async function (offset: number, limit: number) {
   return {
     data: await db
-      .selectFrom("big_paint_search_history")
+      .selectFrom("query")
       .orderBy("date")
       .offset(offset)
       .limit(limit)
