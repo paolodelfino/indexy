@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db/db";
-import { deleteInspirationFormSchema } from "@/schemas/schemaInspiration_Delete";
+import { deleteInspirationFormSchema } from "@/schemas/schemaInspiration__Delete";
 import { FormValues } from "@/utils/form";
 
 export async function deleteInspirationAction(

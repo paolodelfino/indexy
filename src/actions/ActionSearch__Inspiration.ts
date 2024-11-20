@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db/db";
-import { searchInspirationFormSchema } from "@/schemas/schemaInspiration_Search";
+import { searchInspirationFormSchema } from "@/schemas/schemaInspiration__Search";
 import { FormValues } from "@/utils/form";
 import { sql } from "kysely";
 import { z } from "zod";

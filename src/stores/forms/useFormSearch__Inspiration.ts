@@ -3,7 +3,7 @@ import { fieldDateComparison } from "@/components/form/FieldDateComparison";
 import { fieldSelect } from "@/components/form/FieldSelect";
 import { fieldSelectSearch } from "@/components/form/FieldSelect__Search";
 import { fieldTextArea } from "@/components/form/FieldText__Area";
-import { searchInspirationFormSchema } from "@/schemas/schemaInspiration_Search";
+import { searchInspirationFormSchema } from "@/schemas/schemaInspiration__Search";
 import { createForm } from "@/utils/form";
 
 export default createForm(

@@ -2,7 +2,7 @@
 
 import Inspiration from "@/components/inspiration/Inspiration";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
-import { searchInspirationFormSchema } from "@/schemas/schemaInspiration_Search";
+import { searchInspirationFormSchema } from "@/schemas/schemaInspiration__Search";
 import useInspirationSearchQuery from "@/stores/queries/useQueryInspirations__Search";
 import { useSearchInspirationForm } from "@/stores/forms/useFormSearch__Inspiration";
 import { valuesFromSearchParams } from "@/utils/url";
