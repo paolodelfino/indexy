@@ -1,6 +1,6 @@
 "use client";
 
-import BigPaint from "@/components/big_paint/BigPaint";
+import UIBigPaint from "@/components/db_ui/UIBigPaint";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
 import schemaBigPaint__Search from "@/schemas/schemaBigPaint__Search";
 import useBigPaintSearchQuery from "@/stores/queries/useQueryBigPaints__Search";
@@ -61,7 +61,7 @@ export default function Page({
         className="pb-16 scrollbar-hidden"
       >
         {query.data.map((it, i) => {
-          return <BigPaint key={it.id} data={it} id={`${id}_${it.id}`} />;
+          return <UIBigPaint key={it.id} data={it} id={`${id}_${it.id}`} />;
         })}
         {query.isFetching ? "loading..." : ""}
       </VList>

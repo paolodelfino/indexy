@@ -1,10 +1,16 @@
 import { ButtonLink } from "@/components/Button";
-import Inspiration from "@/components/inspiration/Inspiration";
+import UIInspiration from "@/components/db_ui/UIInspiration";
 import { db } from "@/db/db";
 import { notFound } from "next/navigation";
 import { VList } from "virtua";
 
-export default async function InspirationDetails({ id }: { id: string }) {
+export default async function Skeleton__InspirationDetails({
+  id,
+}: {
+  id: string;
+}) {
+  // TODO: Add query
+
   const inspiration = await db
     .selectFrom("inspiration")
     .where("id", "=", id)
@@ -66,7 +72,7 @@ export default async function InspirationDetails({ id }: { id: string }) {
           className="pb-16 scrollbar-hidden"
         >
           {inspirations.map((it, i) => {
-            return <Inspiration key={it.id} data={it} />;
+            return <UIInspiration key={it.id} data={it} />;
           })}
         </VList>
       </div>

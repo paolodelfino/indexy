@@ -2,7 +2,7 @@
 
 import { createInspirationAction } from "@/actions/ActionCreate__Inspiration";
 import Button from "@/components/Button";
-import FieldTextArea from "@/components/form/FieldText__Area";
+import FieldTextArea from "@/components/form_ui/FieldTextArea";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormCreate__Inspiration from "@/stores/forms/useFormCreate__Inspiration";
@@ -11,7 +11,7 @@ import useInspirationViewQuery from "@/stores/queries/useQueryInspirations__View
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function InspirationCreateForm() {
+export default function FormCreate__Inspiration() {
   const router = useRouter();
 
   const invalidateInspirationViewQuery = useInspirationViewQuery(

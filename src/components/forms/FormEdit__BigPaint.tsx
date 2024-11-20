@@ -4,9 +4,9 @@ import ActionDelete__BigPaint from "@/actions/ActionDelete__BigPaint";
 import ActionEdit__BigPaint from "@/actions/ActionEdit__BigPaint";
 import ActionSearch__BigPaint from "@/actions/ActionSearch__BigPaint";
 import Button from "@/components/Button";
-import FieldDate from "@/components/form/FieldDate";
-import FieldSelect__Search from "@/components/form/FieldSelect__Search";
-import FieldText from "@/components/form/FieldText";
+import FieldDate from "@/components/form_ui/FieldDate";
+import FieldDynamicSelect from "@/components/form_ui/FieldDynamicSelect";
+import FieldText from "@/components/form_ui/FieldText";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormEdit__BigPaint from "@/stores/forms/useFormEdit__BigPaint";
@@ -15,7 +15,7 @@ import useBigPaintViewQuery from "@/stores/queries/useQueryBigPaints__View";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function BigPaintEditFormView({
+export default function FormEdit__BigPaint({
   data,
 }: {
   data: {
@@ -141,7 +141,7 @@ export default function BigPaintEditFormView({
             disabled={isEditFormPending || isDeleteFormPending}
           />
         </div>
-        <FieldSelect__Search
+        <FieldDynamicSelect
           title="Related BigPaints"
           setValue={form.setValue.bind(form, "related_big_paints_ids")}
           setMeta={form.setMeta.bind(form, "related_big_paints_ids")}

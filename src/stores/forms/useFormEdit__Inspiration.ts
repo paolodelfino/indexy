@@ -1,7 +1,7 @@
-import { fieldCheckbox } from "@/components/form/FieldCheckbox";
-import { fieldDate } from "@/components/form/FieldDate";
-import { fieldSelectSearch } from "@/components/form/FieldSelect__Search";
-import { fieldTextArea } from "@/components/form/FieldText__Area";
+import { fieldCheckbox } from "@/components/form_ui/FieldCheckbox";
+import { fieldDate } from "@/components/form_ui/FieldDate";
+import { fieldDynamicSelect } from "@/components/form_ui/FieldDynamicSelect";
+import { fieldTextArea } from "@/components/form_ui/FieldTextArea";
 import schemaInspiration__Edit from "@/schemas/schemaInspiration__Edit";
 import { createForm } from "@/utils/form";
 
@@ -11,10 +11,10 @@ export default createForm(
   schemaInspiration__Edit,
   {
     date: fieldDate(),
-    related_big_paints_ids: fieldSelectSearch(),
+    related_big_paints_ids: fieldDynamicSelect(),
     content: fieldTextArea(),
     highlight: fieldCheckbox(),
-    related_inspirations_ids: fieldSelectSearch(),
+    related_inspirations_ids: fieldDynamicSelect(),
   },
   { lastId: undefined as string | undefined },
 );

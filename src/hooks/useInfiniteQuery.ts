@@ -36,9 +36,7 @@ export default function <T extends Array<any>>({
       if (data === undefined) {
         if (fetchIfNoData) callback();
       } else {
-        const target = document.getElementById(`${id}_${lastId}`);
-        if (target === null)
-          callback(); // Should be because of an empty array returned previously
+        if (data.length <= 0) callback();
         else {
           observer.current = new IntersectionObserver((entries, observer) => {
             if (entries[0].isIntersecting) {
@@ -47,7 +45,8 @@ export default function <T extends Array<any>>({
               observer.disconnect();
             }
           });
-          observer.current.observe(target);
+          const target = document.getElementById(`${id}_${lastId}`);
+          observer.current.observe(target!);
         }
       }
     }

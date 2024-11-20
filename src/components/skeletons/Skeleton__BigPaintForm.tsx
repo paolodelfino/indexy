@@ -2,12 +2,12 @@ import { db } from "@/db/db";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 const BigPaintEditFormView = dynamic(
-  () => import("@/app/edit/[id]/BigPaintFormView"),
+  () => import("@/components/forms/FormEdit__BigPaint"),
 );
 
 // TODO: History (using versioning)
 
-export default async function BigPaintEditForm({ id }: { id: string }) {
+export default async function Skeleton__BigPaintForm({ id }: { id: string }) {
   const bigPaint = await db
     .selectFrom("big_paint")
     .where("id", "=", id)

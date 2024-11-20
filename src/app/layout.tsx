@@ -1,4 +1,4 @@
-import _Layout from "@/app/_Layout";
+import Layout from "@/components/Layout";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -28,7 +28,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} mx-auto flex max-w-screen-monitor bg-black font-sans text-white antialiased`}
         style={{ textRendering: "optimizeLegibility" }}
       >
-        <_Layout>{children}</_Layout>
+        <Layout>{children}</Layout>
       </body>
     </html>
   );

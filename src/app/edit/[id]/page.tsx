@@ -1,6 +1,6 @@
-import BigPaintForm from "@/app/edit/[id]/BigPaintForm";
-import InspirationForm from "@/app/edit/[id]/InspirationForm";
-import QueryForm from "@/app/edit/[id]/QueryForm";
+import BigPaintForm from "@/components/skeletons/Skeleton__BigPaintForm";
+import InspirationForm from "@/components/skeletons/Skeleton__InspirationForm";
+import Skeleton__QueryForm from "@/components/skeletons/Skeleton__QueryForm";
 
 export default async function Page({
   params,
@@ -18,5 +18,5 @@ export default async function Page({
 
   if (type === "inspiration") return <InspirationForm id={params.id} />;
   else if (type === "big_paint") return <BigPaintForm id={params.id} />;
-  else return <QueryForm values={params.id} />;
+  else return <Skeleton__QueryForm values={params.id} />;
 }

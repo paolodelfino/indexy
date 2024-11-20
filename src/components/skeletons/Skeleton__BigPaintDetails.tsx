@@ -1,11 +1,16 @@
-import BigPaint from "@/components/big_paint/BigPaint";
+import UIBigPaint from "@/components/db_ui/UIBigPaint";
 import { db } from "@/db/db";
 import { notFound } from "next/navigation";
 import { VList } from "virtua";
 
-export default async function BigPaintDetails({ id }: { id: string }) {
+export default async function Skeleton__BigPaintDetails({
+  id,
+}: {
+  id: string;
+}) {
   // TODO: Can we combine those operations?
   // TODO: Esperimento per capire di più: col client-side routing qui, riparte il fetch anche se non cambia id?
+  // TODO: Add query
 
   const bigPaint = await db
     .selectFrom("big_paint")
@@ -40,7 +45,7 @@ export default async function BigPaintDetails({ id }: { id: string }) {
           className="pb-16 scrollbar-hidden"
         >
           {bigPaints.map((it, i) => {
-            return <BigPaint key={it.id} data={it} />;
+            return <UIBigPaint key={it.id} data={it} />;
           })}
         </VList>
       </div>

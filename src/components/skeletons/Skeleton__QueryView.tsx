@@ -1,11 +1,11 @@
 "use client";
 
-import Query from "@/app/Query";
+import UIQuery from "@/components/db_ui/UIQuery";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
 import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
 import { VList } from "virtua";
 
-export default function QueryView() {
+export default function Skeleton__QueryView() {
   const query = useQueryQueries__View();
 
   const id = useInfiniteQuery({
@@ -31,7 +31,7 @@ export default function QueryView() {
       className="pb-16 scrollbar-hidden"
     >
       {query.data.map((it) => {
-        return <Query key={it.values} data={it} id={`${id}_${it.values}`} />;
+        return <UIQuery key={it.values} data={it} id={`${id}_${it.values}`} />;
       })}
       {query.isFetching ? <p>loading next</p> : ""}
     </VList>

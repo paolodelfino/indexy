@@ -5,10 +5,10 @@ import { editInspirationAction } from "@/actions/ActionEdit__Inspiration";
 import ActionSearch__BigPaint from "@/actions/ActionSearch__BigPaint";
 import ActionSearch__Inspiration from "@/actions/ActionSearch__Inspiration";
 import Button from "@/components/Button";
-import FieldCheckbox from "@/components/form/FieldCheckbox";
-import FieldDate from "@/components/form/FieldDate";
-import FieldSelect__Search from "@/components/form/FieldSelect__Search";
-import FieldTextArea from "@/components/form/FieldText__Area";
+import FieldCheckbox from "@/components/form_ui/FieldCheckbox";
+import FieldDate from "@/components/form_ui/FieldDate";
+import FieldDynamicSelect from "@/components/form_ui/FieldDynamicSelect";
+import FieldTextArea from "@/components/form_ui/FieldTextArea";
 import { InformationCircle, Star } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormEdit__Inspiration from "@/stores/forms/useFormEdit__Inspiration";
@@ -17,7 +17,7 @@ import useInspirationViewQuery from "@/stores/queries/useQueryInspirations__View
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function InspirationEditFormView({
+export default function FormEdit__Inspiration({
   data,
 }: {
   data: {
@@ -156,7 +156,7 @@ export default function InspirationEditFormView({
           />
         </div>
       </div>
-      <FieldSelect__Search
+      <FieldDynamicSelect
         title="Related BigPaints"
         setValue={form.setValue.bind(form, "related_big_paints_ids")}
         setMeta={form.setMeta.bind(form, "related_big_paints_ids")}
@@ -178,7 +178,7 @@ export default function InspirationEditFormView({
           )
         }
       />
-      <FieldSelect__Search
+      <FieldDynamicSelect
         title="Related Inspirations"
         setValue={form.setValue.bind(form, "related_inspirations_ids")}
         setMeta={form.setMeta.bind(form, "related_inspirations_ids")}

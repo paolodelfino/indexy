@@ -4,11 +4,11 @@ import ActionSearch__BigPaint from "@/actions/ActionSearch__BigPaint";
 import ActionSearch__Inspiration from "@/actions/ActionSearch__Inspiration";
 import updateInspirationHistoryAction from "@/actions/ActionEdit__Query";
 import Button from "@/components/Button";
-import FieldCheckbox from "@/components/form/FieldCheckbox";
-import FieldDateComparison from "@/components/form/FieldDateComparison";
-import FieldSelect from "@/components/form/FieldSelect";
-import FieldSelect__Search from "@/components/form/FieldSelect__Search";
-import FieldTextArea from "@/components/form/FieldText__Area";
+import FieldCheckbox from "@/components/form_ui/FieldCheckbox";
+import FieldComparisonDate from "@/components/form_ui/FieldComparisonDate";
+import FieldSelect from "@/components/form_ui/FieldSelect";
+import FieldDynamicSelect from "@/components/form_ui/FieldDynamicSelect";
+import FieldTextArea from "@/components/form_ui/FieldTextArea";
 import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useInspirationHistoryQuery from "@/stores/queries/useQueryQueries__View";
@@ -17,7 +17,7 @@ import { valuesToSearchParams } from "@/utils/url";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function InspirationSearchForm() {
+export default function FormSearch__Inspiration() {
   const form = useFormSearch__Inspiration();
   const router = useRouter();
   const [isHistoryPending, setIsHistoryPending] = useState(false);
@@ -128,7 +128,7 @@ export default function InspirationSearchForm() {
           Date
         </h2>
 
-        <FieldDateComparison
+        <FieldComparisonDate
           title="Date"
           meta={form.fields.date.meta}
           setValue={form.setValue.bind(form, "date")}
@@ -158,7 +158,7 @@ export default function InspirationSearchForm() {
         />
       </div>
 
-      <FieldSelect__Search
+      <FieldDynamicSelect
         title="Related BigPaints"
         meta={form.fields.related_big_paints_ids.meta}
         setValue={form.setValue.bind(form, "related_big_paints_ids")}
@@ -182,7 +182,7 @@ export default function InspirationSearchForm() {
         }
       />
 
-      <FieldSelect__Search
+      <FieldDynamicSelect
         title="Related Inspirations"
         meta={form.fields.related_inspirations_ids.meta}
         setValue={form.setValue.bind(form, "related_inspirations_ids")}

@@ -4,14 +4,14 @@ import { ButtonLink } from "@/components/Button";
 import { PencilEdit01 } from "@/components/icons";
 import { dateToString } from "@/utils/date";
 import { Selectable } from "kysely";
-import { Query as Query__Type } from "kysely-codegen/dist/db";
+import { Query } from "kysely-codegen/dist/db";
 import { useMemo } from "react";
 
-export default function Query({
+export default function UIQuery({
   data,
   id,
 }: {
-  data: Selectable<Query__Type>;
+  data: Selectable<Query>;
   id?: string;
 }) {
   const date = useMemo(() => dateToString(data.date), [data.date]);

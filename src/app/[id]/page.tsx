@@ -1,5 +1,5 @@
-import BigPaintDetails from "@/app/[id]/BigPaintDetails";
-import InspirationDetails from "@/app/[id]/InspirationDetails";
+import Skeleton__BigPaintDetails from "@/components/skeletons/Skeleton__BigPaintDetails";
+import Skeleton__InspirationDetails from "@/components/skeletons/Skeleton__InspirationDetails";
 
 export default async function Page({
   params,
@@ -12,10 +12,10 @@ export default async function Page({
     searchParams["type"] === "big_paint" ? "big_paint" : "inspiration";
 
   if (type === "big_paint") {
-    return <BigPaintDetails id={params.id} />;
+    return <Skeleton__BigPaintDetails id={params.id} />;
   }
 
   if (type === "inspiration") {
-    return <InspirationDetails id={params.id} />;
+    return <Skeleton__InspirationDetails id={params.id} />;
   }
 }

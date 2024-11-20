@@ -1,4 +1,4 @@
-import { fieldTextArea } from "@/components/form/FieldText__Area";
+import { fieldTextArea } from "@/components/form_ui/FieldTextArea";
 import schemaInspiration__Create from "@/schemas/schemaInspiration__Create";
 import { createForm } from "@/utils/form";
 

@@ -2,12 +2,12 @@ import { db } from "@/db/db";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 const InspirationEditFormView = dynamic(
-  () => import("@/app/edit/[id]/InspirationFormView"),
+  () => import("@/components/forms/FormEdit__Inspiration"),
 );
 
 // TODO: History (using versioning)
 
-export default async function InspirationEditForm({ id }: { id: string }) {
+export default async function Skeleton__InspirationForm({ id }: { id: string }) {
   const inspiration = await db
     .selectFrom("inspiration")
     .where("id", "=", id)

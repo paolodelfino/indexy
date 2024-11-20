@@ -1,15 +1,20 @@
 "use client";
-import { ButtonLink } from "@/components/Button";
-import { PencilEdit01 } from "@/components/icons";
+import Button, { ButtonLink } from "@/components/Button";
+import { PencilEdit01, Star } from "@/components/icons";
 import { cn } from "@/utils/cn";
+import { Selectable } from "kysely";
+import { Inspiration } from "kysely-codegen/dist/db";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function BigPaint({
+export default function UIInspiration({
   data,
   id,
 }: {
-  data: { id: string; date: Date; name: string };
+  data: Omit<
+    Selectable<Inspiration>,
+    "related_big_paints_ids" | "related_inspirations_ids" // TODO: Do something about this ommited params
+  >;
   id?: string;
 }) {
   // TODO: date doesnt't get updated
@@ -28,12 +33,14 @@ export default function BigPaint({
 
   return (
     <div id={id} className={cn(isItsPage && "border border-blue-500")}>
-      <p className="hyphens-auto break-words bg-neutral-700 p-4">{data.name}</p>
+      <p className="hyphens-auto break-words bg-neutral-700 p-4">
+        {data.content}
+      </p>
       <div className="flex items-center justify-between pr-2">
         <div className="flex">
           <ButtonLink
             color="ghost"
-            href={`/${data.id}?type=big_paint`}
+            href={`/${data.id}?type=inspiration`}
             disabled={isItsPage}
             classNames={{
               button: "text-neutral-300 size-9 justify-center items-center",
@@ -43,14 +50,21 @@ export default function BigPaint({
           </ButtonLink>
           <ButtonLink
             color="ghost"
-            href={`/edit/${data.id}?type=big_paint`}
+            href={`/edit/${data.id}?type=inspiration`}
             classNames={{ button: "size-9 justify-center items-center" }}
           >
             <PencilEdit01 className="text-neutral-300" />
           </ButtonLink>
         </div>
-        <div className="flex">
+        <div className="flex items-center">
           <span className="text-neutral-500">{date}</span>
+          <Button
+            color="ghost"
+            aria-label="Toggle highlight"
+            classNames={{ button: "pl-4 text-neutral-300" }}
+          >
+            <Star className={cn(data.highlight && "fill-current")} />
+          </Button>
         </div>
       </div>
     </div>

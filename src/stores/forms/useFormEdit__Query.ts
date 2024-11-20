@@ -1,4 +1,4 @@
-import { fieldText } from "@/components/form/FieldText";
+import { fieldText } from "@/components/form_ui/FieldText";
 import schemaQuery__Edit from "@/schemas/schemaQuery__Edit";
 import { createForm } from "@/utils/form";
 

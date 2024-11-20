@@ -1,6 +1,6 @@
 "use client";
 import Button from "@/components/Button";
-import FieldText from "@/components/form/FieldText";
+import FieldText from "@/components/form_ui/FieldText";
 import { ArrowDown01 } from "@/components/icons";
 import { FormField } from "@/utils/form";
 import React, { useActionState, useEffect } from "react";
@@ -24,10 +24,12 @@ type Meta = {
 
 type Value = string[] | undefined;
 
-export type FieldSelect__Search__Type = FormField<Value, Meta>;
+export type FieldDynamicSelect__Type = FormField<Value, Meta>;
 
 // We use undefined as the guard value assuming that undefined is equivalent to indeterminate state and nothing else for any field
-export function fieldSelectSearch(meta?: Partial<Meta>): FieldSelect__Search__Type {
+export function fieldDynamicSelect(
+  meta?: Partial<Meta>,
+): FieldDynamicSelect__Type {
   return {
     meta: {
       selectedItems: [],
@@ -68,7 +70,7 @@ function validate(searchQueryValue: Meta["searchQueryValue"]): Partial<Meta> {
   return meta;
 }
 
-export default function FieldSelect__Search({
+export default function FieldDynamicSelect({
   meta,
   setMeta,
   setValue,

@@ -3,11 +3,11 @@
 import FieldDate, {
   fieldDate,
   FieldDate__Type,
-} from "@/components/form/FieldDate";
+} from "@/components/form_ui/FieldDate";
 import FieldSelect, {
   fieldSelect,
   FieldSelect__Type,
-} from "@/components/form/FieldSelect";
+} from "@/components/form_ui/FieldSelect";
 import { dateFromDatetime } from "@/utils/date";
 import { FormField } from "@/utils/form";
 import { useEffect } from "react";
@@ -32,14 +32,14 @@ type Meta = {
   date2: FieldDate__Type | undefined;
 };
 
-export type FieldDateComparison__Type = FormField<Value, Meta>;
+export type FieldComparisonDate__Type = FormField<Value, Meta>;
 
 // We use undefined as the guard value assuming that undefined is equivalent to indeterminate state and nothing else for any field
-export function fieldDateComparison(value?: {
+export function fieldComparisonDate(value?: {
   comparison?: Omit<Parameters<typeof fieldSelect>[0], "items">;
   date?: Parameters<typeof fieldDate>[0];
   date2?: Parameters<typeof fieldDate>[0];
-}): FieldDateComparison__Type {
+}): FieldComparisonDate__Type {
   const comparison: FieldSelect__Type = fieldSelect({
     items: [
       { content: "=", id: "=" },
@@ -66,7 +66,7 @@ export function fieldDateComparison(value?: {
   };
 }
 
-export default function FieldDateComparison({
+export default function FieldComparisonDate({
   disabled,
   error,
   meta,

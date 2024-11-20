@@ -1,6 +1,6 @@
 "use client";
 
-import Inspiration from "@/components/inspiration/Inspiration";
+import UIInspiration from "@/components/db_ui/UIInspiration";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
 import schemaInspiration__Search from "@/schemas/schemaInspiration__Search";
 import useInspirationSearchQuery from "@/stores/queries/useQueryInspirations__Search";
@@ -61,7 +61,7 @@ export default function Page({
         className="pb-16 scrollbar-hidden"
       >
         {query.data.map((it, i) => {
-          return <Inspiration key={it.id} data={it} id={`${id}_${it.id}`} />;
+          return <UIInspiration key={it.id} data={it} id={`${id}_${it.id}`} />;
         })}
         {query.isFetching ? "loading..." : ""}
       </VList>

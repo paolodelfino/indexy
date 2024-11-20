@@ -3,7 +3,7 @@
 import ActionDelete__Query from "@/actions/ActionDelete__Query";
 import ActionEdit__Query from "@/actions/ActionEdit__Query";
 import Button from "@/components/Button";
-import FieldText from "@/components/form/FieldText";
+import FieldText from "@/components/form_ui/FieldText";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormEdit__Query from "@/stores/forms/useFormEdit__Query";
@@ -11,7 +11,7 @@ import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function QueryFormView({
+export default function FormEdit__Query({
   data,
 }: {
   data: {

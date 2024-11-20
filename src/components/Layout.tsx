@@ -4,7 +4,7 @@ import Toolbar from "@/components/Toolbar";
 import useMediaQuery from "@/hooks/useMediaQuery";
 import React, { ReactNode } from "react";
 
-export default function _Layout({ children }: { children: ReactNode }) {
+export default function Layout({ children }: { children: ReactNode }) {
   const isMonitor = useMediaQuery("(min-width: 1600px)", false);
 
   return (

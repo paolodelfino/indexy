@@ -1,7 +1,7 @@
-import { fieldDateComparison } from "@/components/form/FieldDateComparison";
-import { fieldSelect } from "@/components/form/FieldSelect";
-import { fieldSelectSearch } from "@/components/form/FieldSelect__Search";
-import { fieldText } from "@/components/form/FieldText";
+import { fieldComparisonDate } from "@/components/form_ui/FieldComparisonDate";
+import { fieldSelect } from "@/components/form_ui/FieldSelect";
+import { fieldDynamicSelect } from "@/components/form_ui/FieldDynamicSelect";
+import { fieldText } from "@/components/form_ui/FieldText";
 import schemaBigPaint__Search from "@/schemas/schemaBigPaint__Search";
 import { createForm } from "@/utils/form";
 
@@ -9,7 +9,7 @@ import { createForm } from "@/utils/form";
 export default createForm(
   schemaBigPaint__Search,
   {
-    date: fieldDateComparison(),
+    date: fieldComparisonDate(),
     orderBy: fieldSelect({
       items: [
         { content: "Date", id: "date" },
@@ -24,7 +24,7 @@ export default createForm(
       ],
       selectedItem: { content: "Asc", id: "asc" },
     }),
-    related_big_paints_ids: fieldSelectSearch(),
+    related_big_paints_ids: fieldDynamicSelect(),
     name: fieldText(),
   },
   { lastValues: undefined as string | undefined },

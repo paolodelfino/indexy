@@ -2,7 +2,7 @@
 
 import { createBigPaintAction } from "@/actions/ActionCreate__BigPaint";
 import Button from "@/components/Button";
-import FieldText from "@/components/form/FieldText";
+import FieldText from "@/components/form_ui/FieldText";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useBigPaintSearchQuery from "@/stores/queries/useQueryBigPaints__Search";
@@ -11,7 +11,7 @@ import useFormCreate__BigPaint from "@/stores/forms/useFormCreate__BigPaint";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function BigPaintCreateForm() {
+export default function FormCreate__BigPaint() {
   const router = useRouter();
 
   const invalidateBigPaintViewQuery = useBigPaintViewQuery(

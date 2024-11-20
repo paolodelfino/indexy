@@ -25,31 +25,6 @@ export default function Toolbar({
     >
       <ul className={cn(variant === "mobile" && "flex h-16")}>
         <ButtonLink
-          href="/?view=big_paint"
-          role="listitem"
-          color="ghost"
-          size="large"
-          classNames={{
-            button: "py-5",
-            text: "text-neutral-300",
-          }}
-          full={variant === "monitor"}
-          startContent={<Square />}
-        >
-          BigPaints
-        </ButtonLink>
-        <ButtonLink
-          href="/?view=inspiration"
-          role="listitem"
-          color="ghost"
-          size="large"
-          classNames={{ button: "py-5", text: "text-neutral-300" }}
-          full={variant === "monitor"}
-          startContent={<InkStroke20Filled />}
-        >
-          Inspirations
-        </ButtonLink>
-        <ButtonLink
           href="/?view=query"
           role="listitem"
           color="ghost"
