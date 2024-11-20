@@ -6,13 +6,13 @@ export async function up(db: Kysely<any>): Promise<void> {
       CREATE TABLE inspiration_search_history (
         values                  TEXT        PRIMARY KEY CHECK (LENGTH(TRIM(values)) >= 3), -- TODO: Maybe readonly
         date                    TIMESTAMPTZ NOT NULL DEFAULT now() CHECK (date <= now()), -- TODO: Maybe save all dates
-        name                    TEXT        CHECK (name IS NULL OR LENGTH(TRIM(name)) >= 1)
+        name                    TEXT        NOT NULL DEFAULT 'Untitled' CHECK (LENGTH(TRIM(name)) >= 1)
       );
 
       CREATE TABLE big_paint_search_history (
         values                  TEXT        PRIMARY KEY CHECK (LENGTH(TRIM(values)) >= 3), -- TODO: Maybe readonly
         date                    TIMESTAMPTZ NOT NULL DEFAULT now() CHECK (date <= now()), -- TODO: Maybe save all dates
-        name                    TEXT        CHECK (name IS NULL OR LENGTH(TRIM(name)) >= 1)
+        name                    TEXT        NOT NULL DEFAULT 'Untitled' CHECK (LENGTH(TRIM(name)) >= 1)
       );
 
       CREATE OR REPLACE FUNCTION trim_values_before_insert()

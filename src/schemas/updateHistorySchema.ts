@@ -5,11 +5,11 @@ export const idSchema = z.string().trim().min(3);
 const updateHistorySchema = z.object({
   values: idSchema,
   date: z.date().optional(), // TODO: Add date range check
-  name: z.string().trim().min(1).nullable().optional(),
+  name: z.string().trim().min(1).optional(),
 });
 
 export const editHistoryEntryFormSchema = z.object({
-  name: z.string().trim().min(1).nullable(),
+  name: z.string().trim().min(1).optional(),
 });
 
 export default updateHistorySchema;

@@ -12,10 +12,10 @@ const db = new Kysely<DB>({
   }),
 });
 
-// console.log(
-//   "delete",
-//   await db.deleteFrom("inspiration_search_history").execute(),
-// );
+console.log(
+  "delete",
+  await db.deleteFrom("inspiration_search_history").execute(),
+);
 
 console.log(
   "history",
@@ -30,6 +30,7 @@ console.log(
       { values: "    al2   " },
       { name: "   2    ", values: "hiòf" },
       { name: "hi2", values: "bye" },
+      { values: "bye2",  },
     ])
     .execute(),
 );

@@ -21,7 +21,7 @@ export default function HistoryEntryEditFormView({
   type: "inspiration_history" | "big_paint_history";
   data: {
     values: string;
-    name: string | null;
+    name: string;
   };
 }) {
   const router = useRouter();
@@ -67,7 +67,7 @@ export default function HistoryEntryEditFormView({
     // when client-side routing even and/or at least to the same (cached) entry.
     if (data.values !== form.meta.lastId) {
       form.setMetas({
-        name: data.name === null ? "" : data.name,
+        name: data.name,
       });
 
       form.setFormMeta({ lastId: data.values });
@@ -125,14 +125,12 @@ export default function HistoryEntryEditFormView({
       </div>
       <div>
         <FormText
-          setValue={
-            (value) =>
-              form.setValue("name", (value === undefined ? null : value) as any) // TODO: Probably have to do something about this
-          }
+          setValue={form.setValue.bind(form, "name")}
           setMeta={form.setMeta.bind(form, "name")}
           meta={form.fields.name.meta}
           error={form.fields.name.error}
           disabled={isEditFormPending || isDeleteFormPending}
+          acceptIndeterminate
         />
       </div>
     </div>
