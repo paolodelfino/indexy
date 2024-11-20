@@ -7,7 +7,11 @@ const BigPaintEditFormView = dynamic(
 
 // TODO: History (using versioning)
 
-export default async function Skeleton__BigPaintForm({ id }: { id: string }) {
+export default async function Page({
+  params: { id },
+}: {
+  params: { id: string };
+}) {
   const bigPaint = await db
     .selectFrom("big_paint")
     .where("id", "=", id)

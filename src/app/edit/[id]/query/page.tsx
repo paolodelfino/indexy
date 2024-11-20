@@ -4,10 +4,10 @@ import { notFound } from "next/navigation";
 
 // TODO: History (using versioning)
 
-export default async function Skeleton__QueryForm({
-  values, // TODO: Ottima occasione per scoprire una cosa nuova: questo è un server component come chi lo chiama, vedi se questo riceve l'id encodato anche se l'altro glielo manda decodato
+export default async function Page({
+  params: { id: values }, // TODO: Ottima occasione per scoprire una cosa nuova: questo è un server component come chi lo chiama, vedi se questo riceve l'id encodato anche se l'altro glielo manda decodato
 }: {
-  values: string;
+  params: { id: string };
 }) {
   const entry = await db
     .selectFrom("query")

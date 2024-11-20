@@ -25,7 +25,7 @@ export default function Toolbar({
     >
       <ul className={cn(variant === "mobile" && "flex h-16")}>
         <ButtonLink
-          href="/?view=query"
+          href="/"
           role="listitem"
           color="ghost"
           size="large"
@@ -53,7 +53,7 @@ export default function Toolbar({
             <ButtonLink
               classNames={{ text: "text-neutral-300" }}
               full
-              href="/create?type=big_paint"
+              href="/create/big_paint"
               // target="_blank"
               role="listitem"
               size="large"
@@ -64,7 +64,7 @@ export default function Toolbar({
             <ButtonLink
               classNames={{ text: "text-neutral-300" }}
               full
-              href="/create?type=inspiration"
+              href="/create/inspiration"
               // target="_blank"
               role="listitem"
               size="large"

@@ -5,13 +5,13 @@ import Button from "@/components/Button";
 import FieldText from "@/components/form_ui/FieldText";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
+import useFormCreate__BigPaint from "@/stores/forms/useFormCreate__BigPaint";
 import useBigPaintSearchQuery from "@/stores/queries/useQueryBigPaints__Search";
 import useBigPaintViewQuery from "@/stores/queries/useQueryBigPaints__View";
-import useFormCreate__BigPaint from "@/stores/forms/useFormCreate__BigPaint";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function FormCreate__BigPaint() {
+export default function Page() {
   const router = useRouter();
 
   const invalidateBigPaintViewQuery = useBigPaintViewQuery(

@@ -1,10 +1,10 @@
-import { ButtonLink } from "@/components/Button";
-import UIInspiration from "@/components/db_ui/UIInspiration";
-import { db } from "@/db/db";
-import { notFound } from "next/navigation";
-import { VList } from "virtua";
+import { ButtonLink } from "@/components/Button"
+import UIInspiration from "@/components/db_ui/UIInspiration"
+import { db } from "@/db/db"
+import { notFound } from "next/navigation"
+import { VList } from "virtua"
 
-export default async function Skeleton__InspirationDetails({
+export default async function Page({
   id,
 }: {
   id: string;
@@ -51,7 +51,7 @@ export default async function Skeleton__InspirationDetails({
         <ul className="flex flex-wrap gap-2">
           {relatedBigPaints.map((it) => (
             <ButtonLink
-              href={`/${it.id}?type=big_paint`}
+              href={`/${it.id}/big_paint`}
               key={it.id}
               title={it.name}
               classNames={{ button: "max-w-32" }}

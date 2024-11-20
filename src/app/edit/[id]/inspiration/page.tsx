@@ -7,7 +7,11 @@ const InspirationEditFormView = dynamic(
 
 // TODO: History (using versioning)
 
-export default async function Skeleton__InspirationForm({ id }: { id: string }) {
+export default async function Page({
+  params: { id },
+}: {
+  params: { id: string };
+}) {
   const inspiration = await db
     .selectFrom("inspiration")
     .where("id", "=", id)

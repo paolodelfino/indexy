@@ -29,7 +29,7 @@ export default function UIInspiration({
   useEffect(() => setDate(dateTimeFormat.format(data.date)), []);
 
   const pathname = usePathname();
-  const isItsPage = pathname.endsWith(`/${data.id}`);
+  const isItsPage = pathname.endsWith(`/${data.id}/inspiration`);
 
   return (
     <div id={id} className={cn(isItsPage && "border border-blue-500")}>
@@ -40,7 +40,7 @@ export default function UIInspiration({
         <div className="flex">
           <ButtonLink
             color="ghost"
-            href={`/${data.id}?type=inspiration`}
+            href={`/${data.id}/inspiration`}
             disabled={isItsPage}
             classNames={{
               button: "text-neutral-300 size-9 justify-center items-center",
@@ -50,7 +50,7 @@ export default function UIInspiration({
           </ButtonLink>
           <ButtonLink
             color="ghost"
-            href={`/edit/${data.id}?type=inspiration`}
+            href={`/edit/${data.id}/inspiration`}
             classNames={{ button: "size-9 justify-center items-center" }}
           >
             <PencilEdit01 className="text-neutral-300" />

@@ -15,7 +15,7 @@ import { valuesToSearchParams } from "@/utils/url";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function FormSearch__BigPaint() {
+export default function Page() {
   const form = useFormSearch__BigPaint();
   const router = useRouter();
   const [isHistoryPending, setIsHistoryPending] = useState(false);

@@ -11,7 +11,7 @@ import useInspirationViewQuery from "@/stores/queries/useQueryInspirations__View
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function FormCreate__Inspiration() {
+export default function Page() {
   const router = useRouter();
 
   const invalidateInspirationViewQuery = useInspirationViewQuery(

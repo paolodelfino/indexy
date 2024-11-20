@@ -3,11 +3,7 @@ import { db } from "@/db/db";
 import { notFound } from "next/navigation";
 import { VList } from "virtua";
 
-export default async function Skeleton__BigPaintDetails({
-  id,
-}: {
-  id: string;
-}) {
+export default async function Page({ id }: { id: string }) {
   // TODO: Can we combine those operations?
   // TODO: Esperimento per capire di più: col client-side routing qui, riparte il fetch anche se non cambia id?
   // TODO: Add query

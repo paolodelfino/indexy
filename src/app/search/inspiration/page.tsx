@@ -17,7 +17,7 @@ import { valuesToSearchParams } from "@/utils/url";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function FormSearch__Inspiration() {
+export default function Page() {
   const form = useFormSearch__Inspiration();
   const router = useRouter();
   const [isHistoryPending, setIsHistoryPending] = useState(false);
