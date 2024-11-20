@@ -24,10 +24,10 @@ type Meta = {
 
 type Value = string[] | undefined;
 
-export type FieldSelectSearch = FormField<Value, Meta>;
+export type FieldSelect__Search__Type = FormField<Value, Meta>;
 
 // We use undefined as the guard value assuming that undefined is equivalent to indeterminate state and nothing else for any field
-export function fieldSelectSearch(meta?: Partial<Meta>): FieldSelectSearch {
+export function fieldSelectSearch(meta?: Partial<Meta>): FieldSelect__Search__Type {
   return {
     meta: {
       selectedItems: [],
@@ -68,7 +68,7 @@ function validate(searchQueryValue: Meta["searchQueryValue"]): Partial<Meta> {
   return meta;
 }
 
-export default function FieldSelectSearch({
+export default function FieldSelect__Search({
   meta,
   setMeta,
   setValue,

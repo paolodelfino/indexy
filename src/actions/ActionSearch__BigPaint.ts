@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db/db";
-import { searchBigPaintFormSchema } from "@/schemas/schemaBigPaint__Search";
+import schemaBigPaint__Search from "@/schemas/schemaBigPaint__Search";
 import { FormValues } from "@/utils/form";
 import { sql } from "kysely";
 import { z } from "zod";
@@ -10,12 +10,12 @@ import { z } from "zod";
 export async function searchBigPaintAction(
   _offset: number | null, // TODO: Remove optional
   _limit: number | null, // TODO: Remove optional
-  values: FormValues<typeof searchBigPaintFormSchema>,
+  values: FormValues<typeof schemaBigPaint__Search>,
 ) {
   const offset = z.number().int().gte(0).nullable().parse(_offset); // TODO: Remove optional
   const limit = z.number().int().gte(0).nullable().parse(_limit); // TODO: Remove optional
   const { name, date, related_big_paints_ids, orderBy, orderByDir } =
-    searchBigPaintFormSchema.parse(values);
+    schemaBigPaint__Search.parse(values);
 
   let q = db.selectFrom("big_paint");
 

@@ -1,14 +1,14 @@
 "use server";
 
 import { db } from "@/db/db";
-import { editInspirationFormSchema } from "@/schemas/schemaInspiration__Edit";
+import schemaInspiration__Edit from "@/schemas/schemaInspiration__Edit";
 import { FormValues } from "@/utils/form";
 
 export async function editInspirationAction(
   id: string,
-  values: FormValues<typeof editInspirationFormSchema>,
+  values: FormValues<typeof schemaInspiration__Edit>,
 ) {
-  const validated = editInspirationFormSchema.parse(values);
+  const validated = schemaInspiration__Edit.parse(values);
   await db
     .updateTable("inspiration")
     .where("id", "=", id)

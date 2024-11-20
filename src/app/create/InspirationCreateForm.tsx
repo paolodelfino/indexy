@@ -5,7 +5,7 @@ import Button from "@/components/Button";
 import FieldTextArea from "@/components/form/FieldText__Area";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
-import { useCreateInspirationForm } from "@/stores/forms/useFormCreate__Inspiration";
+import useFormCreate__Inspiration from "@/stores/forms/useFormCreate__Inspiration";
 import useInspirationSearchQuery from "@/stores/queries/useQueryInspirations__Search";
 import useInspirationViewQuery from "@/stores/queries/useQueryInspirations__View";
 import { useRouter } from "next/navigation";
@@ -23,7 +23,7 @@ export default function InspirationCreateForm() {
 
   const [isCreateFormPending, setIsCreateFormPending] = useState(false);
 
-  const form = useCreateInspirationForm();
+  const form = useFormCreate__Inspiration();
   useEffect(() => {
     form.setOnSubmit(async (form) => {
       setIsCreateFormPending(true);

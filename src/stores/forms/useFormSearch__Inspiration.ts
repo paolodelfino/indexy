@@ -3,11 +3,11 @@ import { fieldDateComparison } from "@/components/form/FieldDateComparison";
 import { fieldSelect } from "@/components/form/FieldSelect";
 import { fieldSelectSearch } from "@/components/form/FieldSelect__Search";
 import { fieldTextArea } from "@/components/form/FieldText__Area";
-import { searchInspirationFormSchema } from "@/schemas/schemaInspiration__Search";
+import schemaInspiration__Create from "@/schemas/schemaInspiration__Create";
 import { createForm } from "@/utils/form";
 
 export default createForm(
-  searchInspirationFormSchema,
+  schemaInspiration__Create,
   {
     date: fieldDateComparison(),
     orderBy: fieldSelect({

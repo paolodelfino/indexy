@@ -2,9 +2,9 @@
 
 import BigPaint from "@/components/big_paint/BigPaint";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
-import { searchBigPaintFormSchema } from "@/schemas/schemaBigPaint__Search";
+import schemaBigPaint__Search from "@/schemas/schemaBigPaint__Search";
 import useBigPaintSearchQuery from "@/stores/queries/useQueryBigPaints__Search";
-import { useSearchBigPaintForm } from "@/stores/forms/useFormSearch__BigPaint";
+import useFormSearch__BigPaint from "@/stores/forms/useFormSearch__BigPaint";
 import { valuesFromSearchParams } from "@/utils/url";
 import { useEffect, useMemo } from "react";
 import { VList } from "virtua";
@@ -18,7 +18,7 @@ export default function Page({
 }) {
   const values = useMemo(
     () =>
-      searchBigPaintFormSchema.parse(
+      schemaBigPaint__Search.parse(
         // TODO: Possiamo probabilmente evitare di parsare con zod qui
         valuesFromSearchParams(searchParams),
       ),
@@ -26,7 +26,7 @@ export default function Page({
   );
 
   const query = useBigPaintSearchQuery();
-  const form = useSearchBigPaintForm();
+  const form = useFormSearch__BigPaint();
 
   useEffect(() => {
     const values_str = JSON.stringify(searchParams);

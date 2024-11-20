@@ -22,10 +22,10 @@ type Meta = boolean | undefined;
 
 type Value = boolean | undefined;
 
-export type FieldCheckbox = FormField<Value, Meta>;
+export type FieldCheckbox__Type = FormField<Value, Meta>;
 
 // We use undefined as the guard value assuming that undefined is equivalent to indeterminate state and nothing else for any field
-export function fieldCheckbox(meta?: Meta): FieldCheckbox {
+export function fieldCheckbox(meta?: Meta): FieldCheckbox__Type {
   return {
     meta: meta,
     value: undefined,

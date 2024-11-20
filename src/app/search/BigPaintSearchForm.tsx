@@ -5,18 +5,18 @@ import updateBigPaintHistoryAction from "@/actions/updateBigPaintHistoryAction";
 import Button from "@/components/Button";
 import FieldDateComparison from "@/components/form/FieldDateComparison";
 import FieldSelect from "@/components/form/FieldSelect";
-import FieldSelectSearch from "@/components/form/FieldSelect__Search";
+import FieldSelect__Search from "@/components/form/FieldSelect__Search";
 import FieldText from "@/components/form/FieldText";
 import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useBigPaintHistoryQuery from "@/stores/queries/useBigPaintHistoryQuery";
-import { useSearchBigPaintForm } from "@/stores/forms/useFormSearch__BigPaint";
+import useFormSearch__BigPaint from "@/stores/forms/useFormSearch__BigPaint";
 import { valuesToSearchParams } from "@/utils/url";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function BigPaintSearchForm() {
-  const form = useSearchBigPaintForm();
+  const form = useFormSearch__BigPaint();
   const router = useRouter();
   const [isHistoryPending, setIsHistoryPending] = useState(false);
   const invalidateBigPaintHistoryQuery = useBigPaintHistoryQuery(
@@ -137,7 +137,7 @@ export default function BigPaintSearchForm() {
         />
       </div>
 
-      <FieldSelectSearch
+      <FieldSelect__Search
         title="Related BigPaints"
         meta={form.fields.related_big_paints_ids.meta}
         setValue={form.setValue.bind(form, "related_big_paints_ids")}

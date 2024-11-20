@@ -7,7 +7,7 @@ import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useBigPaintSearchQuery from "@/stores/queries/useQueryBigPaints__Search";
 import useBigPaintViewQuery from "@/stores/queries/useQueryBigPaints__View";
-import { useCreateBigPaintForm } from "@/stores/forms/useFormCreate__BigPaint";
+import useFormCreate__BigPaint from "@/stores/forms/useFormCreate__BigPaint";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -23,7 +23,7 @@ export default function BigPaintCreateForm() {
 
   const [isCreateFormPending, setIsCreateFormPending] = useState(false);
 
-  const form = useCreateBigPaintForm();
+  const form = useFormCreate__BigPaint();
   useEffect(() => {
     form.setOnSubmit(async (form) => {
       setIsCreateFormPending(true);

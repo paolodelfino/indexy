@@ -5,6 +5,7 @@ import { VList } from "virtua";
 
 export default async function BigPaintDetails({ id }: { id: string }) {
   // TODO: Can we combine those operations?
+  // TODO: Esperimento per capire di più: col client-side routing qui, riparte il fetch anche se non cambia id?
 
   const bigPaint = await db
     .selectFrom("big_paint")

@@ -20,7 +20,7 @@ type Meta = {
 
 type Value = string | undefined;
 
-export type FieldSelect = FormField<Value, Meta>;
+export type FieldSelect__Type = FormField<Value, Meta>;
 
 export const indeterminateGuard: Item = { content: "", id: "" };
 
@@ -34,7 +34,7 @@ function isIndeterminateGuard(item: Item): boolean {
 // We use undefined as the guard value assuming that undefined is equivalent to indeterminate state and nothing else for any field
 export function fieldSelect(
   meta: Partial<Omit<Meta, "items">> & Pick<Meta, "items">,
-): FieldSelect {
+): FieldSelect__Type {
   if (meta.items.length <= 0) throw new Error("No items to select");
   return {
     meta: {

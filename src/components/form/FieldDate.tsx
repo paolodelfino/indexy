@@ -20,10 +20,11 @@ type Meta = {
 
 type Value = Date | undefined;
 
-export type FieldDate = FormField<Value, Meta>;
+// Must use another name that's why "__Type" because language server marks as duplicate FieldDate() and FieldDate, just saying
+export type FieldDate__Type = FormField<Value, Meta>;
 
 // We use undefined as the guard value assuming that undefined is equivalent to indeterminate state and nothing else for any field
-export function fieldDate(meta?: Partial<Meta>): FieldDate {
+export function fieldDate(meta?: Partial<Meta>): FieldDate__Type {
   return {
     meta: {
       date: undefined,

@@ -1,9 +1,12 @@
 "use client";
 
-import FieldDate, { fieldDate, FieldDate } from "@/components/form/FieldDate";
+import FieldDate, {
+  fieldDate,
+  FieldDate__Type,
+} from "@/components/form/FieldDate";
 import FieldSelect, {
   fieldSelect,
-  FieldSelect,
+  FieldSelect__Type,
 } from "@/components/form/FieldSelect";
 import { dateFromDatetime } from "@/utils/date";
 import { FormField } from "@/utils/form";
@@ -24,20 +27,20 @@ type Value =
   | undefined;
 
 type Meta = {
-  comparison: FieldSelect;
-  date: FieldDate | undefined;
-  date2: FieldDate | undefined;
+  comparison: FieldSelect__Type;
+  date: FieldDate__Type | undefined;
+  date2: FieldDate__Type | undefined;
 };
 
-export type FieldDateComparison = FormField<Value, Meta>;
+export type FieldDateComparison__Type = FormField<Value, Meta>;
 
 // We use undefined as the guard value assuming that undefined is equivalent to indeterminate state and nothing else for any field
 export function fieldDateComparison(value?: {
   comparison?: Omit<Parameters<typeof fieldSelect>[0], "items">;
   date?: Parameters<typeof fieldDate>[0];
   date2?: Parameters<typeof fieldDate>[0];
-}): FieldDateComparison {
-  const comparison: FieldSelect = fieldSelect({
+}): FieldDateComparison__Type {
+  const comparison: FieldSelect__Type = fieldSelect({
     items: [
       { content: "=", id: "=" },
       { content: "<=", id: "<=" },
@@ -48,9 +51,9 @@ export function fieldDateComparison(value?: {
     ],
     ...value?.comparison,
   });
-  const date: FieldDate | undefined =
+  const date: FieldDate__Type | undefined =
     value?.date === undefined ? undefined : fieldDate(value.date);
-  const date2: FieldDate | undefined =
+  const date2: FieldDate__Type | undefined =
     value?.date2 === undefined ? undefined : fieldDate(value.date2);
   return {
     value: undefined,

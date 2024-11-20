@@ -7,11 +7,11 @@ import { searchInspirationAction } from "@/actions/ActionSearch__Inspiration";
 import Button from "@/components/Button";
 import FieldCheckbox from "@/components/form/FieldCheckbox";
 import FieldDate from "@/components/form/FieldDate";
-import FieldSelectSearch from "@/components/form/FieldSelect__Search";
+import FieldSelect__Search from "@/components/form/FieldSelect__Search";
 import FieldTextArea from "@/components/form/FieldText__Area";
 import { InformationCircle, Star } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
-import { useEditInspirationForm } from "@/stores/forms/useFormEdit__Inspiration";
+import useFormEdit__Inspiration from "@/stores/forms/useFormEdit__Inspiration";
 import useInspirationSearchQuery from "@/stores/queries/useQueryInspirations__Search";
 import useInspirationViewQuery from "@/stores/queries/useQueryInspirations__View";
 import { useRouter } from "next/navigation";
@@ -41,7 +41,7 @@ export default function InspirationEditFormView({
     (state) => state.invalidate,
   );
 
-  const form = useEditInspirationForm();
+  const form = useFormEdit__Inspiration();
   useEffect(() => {
     form.setOnSubmit(async (form) => {
       setIsEditFormPending(true);
@@ -156,7 +156,7 @@ export default function InspirationEditFormView({
           />
         </div>
       </div>
-      <FieldSelectSearch
+      <FieldSelect__Search
         title="Related BigPaints"
         setValue={form.setValue.bind(form, "related_big_paints_ids")}
         setMeta={form.setMeta.bind(form, "related_big_paints_ids")}
@@ -178,7 +178,7 @@ export default function InspirationEditFormView({
           )
         }
       />
-      <FieldSelectSearch
+      <FieldSelect__Search
         title="Related Inspirations"
         setValue={form.setValue.bind(form, "related_inspirations_ids")}
         setMeta={form.setMeta.bind(form, "related_inspirations_ids")}

@@ -7,18 +7,18 @@ import Button from "@/components/Button";
 import FieldCheckbox from "@/components/form/FieldCheckbox";
 import FieldDateComparison from "@/components/form/FieldDateComparison";
 import FieldSelect from "@/components/form/FieldSelect";
-import FieldSelectSearch from "@/components/form/FieldSelect__Search";
+import FieldSelect__Search from "@/components/form/FieldSelect__Search";
 import FieldTextArea from "@/components/form/FieldText__Area";
 import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useInspirationHistoryQuery from "@/stores/queries/useInspirationHistoryQuery";
-import { useSearchInspirationForm } from "@/stores/forms/useFormSearch__Inspiration";
+import useFormSearch__Inspiration from "@/stores/forms/useFormSearch__Inspiration";
 import { valuesToSearchParams } from "@/utils/url";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function InspirationSearchForm() {
-  const form = useSearchInspirationForm();
+  const form = useFormSearch__Inspiration();
   const router = useRouter();
   const [isHistoryPending, setIsHistoryPending] = useState(false);
   const invalidateInspirationHistoryQuery = useInspirationHistoryQuery(
@@ -158,7 +158,7 @@ export default function InspirationSearchForm() {
         />
       </div>
 
-      <FieldSelectSearch
+      <FieldSelect__Search
         title="Related BigPaints"
         meta={form.fields.related_big_paints_ids.meta}
         setValue={form.setValue.bind(form, "related_big_paints_ids")}
@@ -182,7 +182,7 @@ export default function InspirationSearchForm() {
         }
       />
 
-      <FieldSelectSearch
+      <FieldSelect__Search
         title="Related Inspirations"
         meta={form.fields.related_inspirations_ids.meta}
         setValue={form.setValue.bind(form, "related_inspirations_ids")}

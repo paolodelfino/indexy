@@ -2,12 +2,12 @@ import { fieldDateComparison } from "@/components/form/FieldDateComparison";
 import { fieldSelect } from "@/components/form/FieldSelect";
 import { fieldSelectSearch } from "@/components/form/FieldSelect__Search";
 import { fieldText } from "@/components/form/FieldText";
-import { searchBigPaintFormSchema } from "@/schemas/schemaBigPaint__Search";
+import schemaBigPaint__Search from "@/schemas/schemaBigPaint__Search";
 import { createForm } from "@/utils/form";
 
 // TODO: There are other predicates to play with like limit, maybe offset
 export default createForm(
-  searchBigPaintFormSchema,
+  schemaBigPaint__Search,
   {
     date: fieldDateComparison(),
     orderBy: fieldSelect({

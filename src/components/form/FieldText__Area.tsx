@@ -13,10 +13,10 @@ type Meta = string;
 
 type Value = string | undefined;
 
-export type FieldTextArea = FormField<Value, Meta>;
+export type FieldTextArea__Type = FormField<Value, Meta>;
 
 // We use undefined as the guard value assuming that undefined is equivalent to indeterminate state and nothing else for any field
-export function fieldTextArea(meta?: Meta): FieldTextArea {
+export function fieldTextArea(meta?: Meta): FieldTextArea__Type {
   return {
     meta: meta === undefined ? "" : meta,
     value: undefined,

@@ -1,12 +1,12 @@
 "use server";
 
 import { db } from "@/db/db";
-import { createInspirationFormSchema } from "@/schemas/schemaInspiration__Create";
+import schemaInspiration__Create from "@/schemas/schemaInspiration__Create";
 import { FormValues } from "@/utils/form";
 
 export async function createInspirationAction(
-  values: FormValues<typeof createInspirationFormSchema>,
+  values: FormValues<typeof schemaInspiration__Create>,
 ) {
-  const validated = createInspirationFormSchema.parse(values);
+  const validated = schemaInspiration__Create.parse(values);
   await db.insertInto("inspiration").values(validated).execute();
 }

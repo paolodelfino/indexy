@@ -1,14 +1,14 @@
 "use server";
 
 import { db } from "@/db/db";
-import { editBigPaintFormSchema } from "@/schemas/schemaBigPaint__Edit";
+import schemaBigPaint__Edit from "@/schemas/schemaBigPaint__Edit";
 import { FormValues } from "@/utils/form";
 
 export async function editBigPaintAction(
   id: string,
-  values: FormValues<typeof editBigPaintFormSchema>,
+  values: FormValues<typeof schemaBigPaint__Edit>,
 ) {
-  const validated = editBigPaintFormSchema.parse(values);
+  const validated = schemaBigPaint__Edit.parse(values);
   await db
     .updateTable("big_paint")
     .where("id", "=", id)

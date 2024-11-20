@@ -2,9 +2,9 @@
 
 import Inspiration from "@/components/inspiration/Inspiration";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
-import { searchInspirationFormSchema } from "@/schemas/schemaInspiration__Search";
+import schemaInspiration__Search from "@/schemas/schemaInspiration__Search";
 import useInspirationSearchQuery from "@/stores/queries/useQueryInspirations__Search";
-import { useSearchInspirationForm } from "@/stores/forms/useFormSearch__Inspiration";
+import useFormSearch__Inspiration from "@/stores/forms/useFormSearch__Inspiration";
 import { valuesFromSearchParams } from "@/utils/url";
 import { useEffect, useMemo } from "react";
 import { VList } from "virtua";
@@ -18,7 +18,7 @@ export default function Page({
 }) {
   const values = useMemo(
     () =>
-      searchInspirationFormSchema.parse(
+      schemaInspiration__Search.parse(
         // TODO: Possiamo probabilmente evitare di parsare con zod qui
         valuesFromSearchParams(searchParams),
       ),
@@ -26,7 +26,7 @@ export default function Page({
   );
 
   const query = useInspirationSearchQuery();
-  const form = useSearchInspirationForm();
+  const form = useFormSearch__Inspiration();
 
   useEffect(() => {
     const values_str = JSON.stringify(searchParams);

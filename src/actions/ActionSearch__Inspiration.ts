@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db/db";
-import { searchInspirationFormSchema } from "@/schemas/schemaInspiration__Search";
+import schemaInspiration__Search from "@/schemas/schemaInspiration__Search";
 import { FormValues } from "@/utils/form";
 import { sql } from "kysely";
 import { z } from "zod";
@@ -9,7 +9,7 @@ import { z } from "zod";
 export async function searchInspirationAction(
   _offset: number | null, // TODO: Remove optional
   _limit: number | null, // TODO: Remove optional
-  values: FormValues<typeof searchInspirationFormSchema>,
+  values: FormValues<typeof schemaInspiration__Search>,
 ) {
   const offset = z.number().int().gte(0).nullable().parse(_offset); // TODO: Remove optional
   const limit = z.number().int().gte(0).nullable().parse(_limit); // TODO: Remove optional
@@ -21,7 +21,7 @@ export async function searchInspirationAction(
     related_inspirations_ids,
     orderBy,
     orderByDir,
-  } = searchInspirationFormSchema.parse(values);
+  } = schemaInspiration__Search.parse(values);
 
   let q = db.selectFrom("inspiration");
 
