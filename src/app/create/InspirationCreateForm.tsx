@@ -1,13 +1,13 @@
 "use client";
 
-import { createInspirationAction } from "@/actions/createInspirationAction";
+import { createInspirationAction } from "@/actions/ActionCreate__Inspiration";
 import Button from "@/components/Button";
-import FormTextArea from "@/components/form/FormTextArea";
+import FieldTextArea from "@/components/form/FieldText__Area";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
-import { useCreateInspirationForm } from "@/stores/useCreateInspirationForm";
-import useInspirationSearchQuery from "@/stores/useInspirationSearchQuery";
-import useInspirationViewQuery from "@/stores/useInspirationViewQuery";
+import { useCreateInspirationForm } from "@/stores/forms/useFormCreate__Inspiration";
+import useInspirationSearchQuery from "@/stores/queries/useQueryInspirations__Search";
+import useInspirationViewQuery from "@/stores/queries/useQueryInspirations__View";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -74,7 +74,7 @@ export default function InspirationCreateForm() {
       >
         Create Inspiration
       </h1>
-      <FormTextArea
+      <FieldTextArea
         meta={form.fields.content.meta}
         setMeta={form.setMeta.bind(form, "content")}
         setValue={form.setValue.bind(form, "content")}

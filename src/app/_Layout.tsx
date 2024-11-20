@@ -1,7 +1,7 @@
 "use client";
 
 import Toolbar from "@/components/Toolbar";
-import { useMediaQuery } from "@mantine/hooks";
+import useMediaQuery from "@/hooks/useMediaQuery";
 import React, { ReactNode } from "react";
 
 export default function _Layout({ children }: { children: ReactNode }) {

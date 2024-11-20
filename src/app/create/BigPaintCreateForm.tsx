@@ -1,13 +1,13 @@
 "use client";
 
-import { createBigPaintAction } from "@/actions/createBigPaintAction";
+import { createBigPaintAction } from "@/actions/ActionCreate__BigPaint";
 import Button from "@/components/Button";
-import FormText from "@/components/form/FormText";
+import FieldText from "@/components/form/FieldText";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
-import useBigPaintSearchQuery from "@/stores/useBigPaintSearchQuery";
-import useBigPaintViewQuery from "@/stores/useBigPaintViewQuery";
-import { useCreateBigPaintForm } from "@/stores/useCreateBigPaintForm";
+import useBigPaintSearchQuery from "@/stores/queries/useQueryBigPaints__Search";
+import useBigPaintViewQuery from "@/stores/queries/useQueryBigPaints__View";
+import { useCreateBigPaintForm } from "@/stores/forms/useFormCreate__BigPaint";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -74,7 +74,7 @@ export default function BigPaintCreateForm() {
       >
         Create BigPaint
       </h1>
-      <FormText
+      <FieldText
         meta={form.fields.name.meta}
         setMeta={form.setMeta.bind(form, "name")}
         setValue={form.setValue.bind(form, "name")}

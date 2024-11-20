@@ -5,12 +5,12 @@ import deleteInspirationHistoryEntryAction from "@/actions/deleteInspirationHist
 import updateBigPaintHistoryAction from "@/actions/updateBigPaintHistoryAction";
 import updateInspirationHistoryAction from "@/actions/updateInspirationHistoryAction";
 import Button from "@/components/Button";
-import FormText from "@/components/form/FormText";
+import FieldText from "@/components/form/FieldText";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
-import useBigPaintHistoryQuery from "@/stores/useBigPaintHistoryQuery";
-import useEditHistoryEntryForm from "@/stores/useEditHistoryEntryForm";
-import useInspirationHistoryQuery from "@/stores/useInspirationHistoryQuery";
+import useBigPaintHistoryQuery from "@/stores/queries/useBigPaintHistoryQuery";
+import useEditHistoryEntryForm from "@/stores/forms/useFormEdit__Query";
+import useInspirationHistoryQuery from "@/stores/queries/useInspirationHistoryQuery";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -124,7 +124,7 @@ export default function HistoryEntryEditFormView({
         </Button>
       </div>
       <div>
-        <FormText
+        <FieldText
           setValue={form.setValue.bind(form, "name")}
           setMeta={form.setMeta.bind(form, "name")}
           meta={form.fields.name.meta}

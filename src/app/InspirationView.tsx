@@ -2,7 +2,7 @@
 
 import Inspiration from "@/components/inspiration/Inspiration";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
-import useInspirationQuery from "@/stores/useInspirationViewQuery";
+import useInspirationQuery from "@/stores/queries/useQueryInspirations__View";
 import { VList } from "virtua";
 
 // TODO: Possible server side first items injection

@@ -1,17 +1,17 @@
 "use client";
 
-import { deleteBigPaintAction } from "@/actions/deleteBigPaintAction";
-import { editBigPaintAction } from "@/actions/editBigPaintAction";
-import { searchBigPaintAction } from "@/actions/searchBigPaintAction";
+import { deleteBigPaintAction } from "@/actions/ActionDelete__BigPaint";
+import { editBigPaintAction } from "@/actions/ActionEdit__BigPaint";
+import { searchBigPaintAction } from "@/actions/ActionSearch__BigPaint";
 import Button from "@/components/Button";
-import FormDate from "@/components/form/FormDate";
-import FormSelectSearch from "@/components/form/FormSelectSearch";
-import FormText from "@/components/form/FormText";
+import FieldDate from "@/components/form/FieldDate";
+import FieldSelectSearch from "@/components/form/FieldSelect__Search";
+import FieldText from "@/components/form/FieldText";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
-import useBigPaintSearchQuery from "@/stores/useBigPaintSearchQuery";
-import useBigPaintViewQuery from "@/stores/useBigPaintViewQuery";
-import { useEditBigPaintForm } from "@/stores/useEditBigPaintForm";
+import useBigPaintSearchQuery from "@/stores/queries/useQueryBigPaints__Search";
+import useBigPaintViewQuery from "@/stores/queries/useQueryBigPaints__View";
+import { useEditBigPaintForm } from "@/stores/forms/useFormEdit__BigPaint";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -124,7 +124,7 @@ export default function BigPaintEditFormView({
         </Button>
       </div>
       <div>
-        <FormText
+        <FieldText
           setValue={form.setValue.bind(form, "name")}
           setMeta={form.setMeta.bind(form, "name")}
           meta={form.fields.name.meta}
@@ -132,7 +132,7 @@ export default function BigPaintEditFormView({
           disabled={isEditFormPending || isDeleteFormPending}
         />
         <div className="flex min-h-9 items-center justify-end pr-2">
-          <FormDate
+          <FieldDate
             placeholder="Date"
             setValue={form.setValue.bind(form, "date")}
             setMeta={form.setMeta.bind(form, "date")}
@@ -141,7 +141,7 @@ export default function BigPaintEditFormView({
             disabled={isEditFormPending || isDeleteFormPending}
           />
         </div>
-        <FormSelectSearch
+        <FieldSelectSearch
           title="Related BigPaints"
           setValue={form.setValue.bind(form, "related_big_paints_ids")}
           setMeta={form.setMeta.bind(form, "related_big_paints_ids")}

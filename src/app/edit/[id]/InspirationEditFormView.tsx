@@ -1,19 +1,19 @@
 "use client";
 
-import { deleteInspirationAction } from "@/actions/deleteInspirationAction";
-import { editInspirationAction } from "@/actions/editInspirationAction";
-import { searchBigPaintAction } from "@/actions/searchBigPaintAction";
-import { searchInspirationAction } from "@/actions/searchInspirationAction";
+import { deleteInspirationAction } from "@/actions/ActionDelete__Inspiration";
+import { editInspirationAction } from "@/actions/ActionEdit__Inspiration";
+import { searchBigPaintAction } from "@/actions/ActionSearch__BigPaint";
+import { searchInspirationAction } from "@/actions/ActionSearch__Inspiration";
 import Button from "@/components/Button";
-import FormCheckbox from "@/components/form/FormCheckbox";
-import FormDate from "@/components/form/FormDate";
-import FormSelectSearch from "@/components/form/FormSelectSearch";
-import FormTextArea from "@/components/form/FormTextArea";
+import FieldCheckbox from "@/components/form/FieldCheckbox";
+import FieldDate from "@/components/form/FieldDate";
+import FieldSelectSearch from "@/components/form/FieldSelect__Search";
+import FieldTextArea from "@/components/form/FieldText__Area";
 import { InformationCircle, Star } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
-import { useEditInspirationForm } from "@/stores/useEditInspirationForm";
-import useInspirationSearchQuery from "@/stores/useInspirationSearchQuery";
-import useInspirationViewQuery from "@/stores/useInspirationViewQuery";
+import { useEditInspirationForm } from "@/stores/forms/useFormEdit__Inspiration";
+import useInspirationSearchQuery from "@/stores/queries/useQueryInspirations__Search";
+import useInspirationViewQuery from "@/stores/queries/useQueryInspirations__View";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -128,7 +128,7 @@ export default function InspirationEditFormView({
         </Popover>
       )}
       <div>
-        <FormTextArea
+        <FieldTextArea
           setValue={form.setValue.bind(form, "content")}
           setMeta={form.setMeta.bind(form, "content")}
           meta={form.fields.content.meta}
@@ -136,7 +136,7 @@ export default function InspirationEditFormView({
           disabled={isEditFormPending || isDeleteFormPending}
         />
         <div className="flex min-h-9 items-center justify-end pr-2">
-          <FormDate
+          <FieldDate
             placeholder="Date"
             setValue={form.setValue.bind(form, "date")}
             setMeta={form.setMeta.bind(form, "date")}
@@ -144,7 +144,7 @@ export default function InspirationEditFormView({
             error={form.fields.date.error}
             disabled={isEditFormPending || isDeleteFormPending}
           />
-          <FormCheckbox
+          <FieldCheckbox
             setValue={form.setValue.bind(form, "highlight")}
             setMeta={form.setMeta.bind(form, "highlight")}
             meta={form.fields.highlight.meta!}
@@ -156,7 +156,7 @@ export default function InspirationEditFormView({
           />
         </div>
       </div>
-      <FormSelectSearch
+      <FieldSelectSearch
         title="Related BigPaints"
         setValue={form.setValue.bind(form, "related_big_paints_ids")}
         setMeta={form.setMeta.bind(form, "related_big_paints_ids")}
@@ -178,7 +178,7 @@ export default function InspirationEditFormView({
           )
         }
       />
-      <FormSelectSearch
+      <FieldSelectSearch
         title="Related Inspirations"
         setValue={form.setValue.bind(form, "related_inspirations_ids")}
         setMeta={form.setMeta.bind(form, "related_inspirations_ids")}

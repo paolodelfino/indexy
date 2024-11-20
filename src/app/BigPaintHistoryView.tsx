@@ -2,7 +2,7 @@
 
 import HistoryEntry from "@/app/HistoryEntry";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
-import useBigPaintHistoryQuery from "@/stores/useBigPaintHistoryQuery";
+import useBigPaintHistoryQuery from "@/stores/queries/useBigPaintHistoryQuery";
 import { VList } from "virtua";
 
 export default function BigPaintHistoryView() {

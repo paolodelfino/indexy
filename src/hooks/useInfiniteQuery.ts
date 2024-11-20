@@ -1,7 +1,7 @@
 import { useEffect, useId, useMemo, useRef } from "react";
 
 // TODO: Mi sa che se fai form.reset() e hai fetchIfNoData a true, potrebbe partire un fetch indesiderato (perché lo vuoi fare tu, però in effetti dovrebbe essere la stessa cosa)
-export default function useInfiniteQuery<T extends Array<any>>({
+export default function <T extends Array<any>>({
   nextOffset,
   callback,
   fetchIfNoData,

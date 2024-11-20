@@ -1,7 +1,7 @@
-"use server"
+"use server";
 
 import { db } from "@/db/db";
-import { idSchema } from "@/schemas/idSchema";
+import { idSchema } from "@/schemas/schemaId__InspirationBigPaint";
 import { z } from "zod";
 
 export default async function deleteBigPaintHistoryEntryAction(values: {

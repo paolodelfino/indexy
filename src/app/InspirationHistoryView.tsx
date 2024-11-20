@@ -2,7 +2,7 @@
 
 import HistoryEntry from "@/app/HistoryEntry";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
-import useInspirationHistoryQuery from "@/stores/useInspirationHistoryQuery";
+import useInspirationHistoryQuery from "@/stores/queries/useInspirationHistoryQuery";
 import { VList } from "virtua";
 
 export default function InspirationHistoryView() {

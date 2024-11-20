@@ -1,18 +1,18 @@
 "use client";
 
-import { searchBigPaintAction } from "@/actions/searchBigPaintAction";
-import { searchInspirationAction } from "@/actions/searchInspirationAction";
+import { searchBigPaintAction } from "@/actions/ActionSearch__BigPaint";
+import { searchInspirationAction } from "@/actions/ActionSearch__Inspiration";
 import updateInspirationHistoryAction from "@/actions/updateInspirationHistoryAction";
 import Button from "@/components/Button";
-import FormCheckbox from "@/components/form/FormCheckbox";
-import FormDateComparison from "@/components/form/FormDateComparison";
-import FormSelect from "@/components/form/FormSelect";
-import FormSelectSearch from "@/components/form/FormSelectSearch";
-import FormTextArea from "@/components/form/FormTextArea";
+import FieldCheckbox from "@/components/form/FieldCheckbox";
+import FieldDateComparison from "@/components/form/FieldDateComparison";
+import FieldSelect from "@/components/form/FieldSelect";
+import FieldSelectSearch from "@/components/form/FieldSelect__Search";
+import FieldTextArea from "@/components/form/FieldText__Area";
 import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
-import useInspirationHistoryQuery from "@/stores/useInspirationHistoryQuery";
-import { useSearchInspirationForm } from "@/stores/useSearchInspirationForm";
+import useInspirationHistoryQuery from "@/stores/queries/useInspirationHistoryQuery";
+import { useSearchInspirationForm } from "@/stores/forms/useFormSearch__Inspiration";
 import { valuesToSearchParams } from "@/utils/url";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -90,7 +90,7 @@ export default function InspirationSearchForm() {
         </h2>
 
         <div className="flex gap-2">
-          <FormSelect
+          <FieldSelect
             placeholder="Order By"
             meta={form.fields.orderBy.meta}
             setValue={form.setValue.bind(form, "orderBy")}
@@ -99,7 +99,7 @@ export default function InspirationSearchForm() {
             error={form.fields.orderBy.error}
           />
 
-          <FormSelect
+          <FieldSelect
             placeholder="Order By Dir"
             meta={form.fields.orderByDir.meta}
             setValue={form.setValue.bind(form, "orderByDir")}
@@ -110,7 +110,7 @@ export default function InspirationSearchForm() {
         </div>
       </div>
 
-      <FormTextArea
+      <FieldTextArea
         label="Content"
         meta={form.fields.content.meta}
         setValue={form.setValue.bind(form, "content")}
@@ -128,7 +128,7 @@ export default function InspirationSearchForm() {
           Date
         </h2>
 
-        <FormDateComparison
+        <FieldDateComparison
           title="Date"
           meta={form.fields.date.meta}
           setValue={form.setValue.bind(form, "date")}
@@ -147,7 +147,7 @@ export default function InspirationSearchForm() {
           Highlight
         </h2>
 
-        <FormCheckbox
+        <FieldCheckbox
           label="Highlight"
           meta={form.fields.highlight.meta}
           setValue={form.setValue.bind(form, "highlight")}
@@ -158,7 +158,7 @@ export default function InspirationSearchForm() {
         />
       </div>
 
-      <FormSelectSearch
+      <FieldSelectSearch
         title="Related BigPaints"
         meta={form.fields.related_big_paints_ids.meta}
         setValue={form.setValue.bind(form, "related_big_paints_ids")}
@@ -182,7 +182,7 @@ export default function InspirationSearchForm() {
         }
       />
 
-      <FormSelectSearch
+      <FieldSelectSearch
         title="Related Inspirations"
         meta={form.fields.related_inspirations_ids.meta}
         setValue={form.setValue.bind(form, "related_inspirations_ids")}

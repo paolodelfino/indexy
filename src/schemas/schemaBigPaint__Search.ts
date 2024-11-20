@@ -1,0 +1,31 @@
+import { idSchema } from "@/schemas/schemaId__InspirationBigPaint";
+import { z } from "zod";
+
+export default z
+  .object({
+    date: z
+      .object({
+        comparison: z.enum([">", "<", "=", ">=", "<="]),
+        date: z.date(),
+      })
+      .or(
+        z
+          .object({
+            comparison: z.literal("between"),
+            date: z.date(),
+            date2: z.date(),
+          })
+          .refine((value) => value.date < value.date2, "Invalid range"),
+      )
+      .optional(),
+    name: z.string().trim().min(1).optional(),
+    related_big_paints_ids: z.array(idSchema).min(1).optional(),
+    orderBy: z.enum(["date", "name"]),
+    orderByDir: z.enum(["desc", "asc"]),
+  })
+  .refine(
+    (value) =>
+      Object.entries(value).filter((entry) => entry[1] !== undefined).length >
+      2, // Update accordingly with above props
+    "A predicate must be provided",
+  );

@@ -2,9 +2,9 @@
 
 import Inspiration from "@/components/inspiration/Inspiration";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
-import { searchInspirationFormSchema } from "@/schemas/searchInspirationFormSchema";
-import useInspirationSearchQuery from "@/stores/useInspirationSearchQuery";
-import { useSearchInspirationForm } from "@/stores/useSearchInspirationForm";
+import { searchInspirationFormSchema } from "@/schemas/schemaInspiration_Search";
+import useInspirationSearchQuery from "@/stores/queries/useQueryInspirations__Search";
+import { useSearchInspirationForm } from "@/stores/forms/useFormSearch__Inspiration";
 import { valuesFromSearchParams } from "@/utils/url";
 import { useEffect, useMemo } from "react";
 import { VList } from "virtua";

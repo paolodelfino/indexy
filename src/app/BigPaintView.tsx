@@ -2,7 +2,7 @@
 
 import BigPaint from "@/components/big_paint/BigPaint";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
-import useBigPaintViewQuery from "@/stores/useBigPaintViewQuery";
+import useBigPaintViewQuery from "@/stores/queries/useQueryBigPaints__View";
 import { VList } from "virtua";
 
 export default function BigPaintView() {

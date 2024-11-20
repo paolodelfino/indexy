@@ -2,9 +2,9 @@
 
 import BigPaint from "@/components/big_paint/BigPaint";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
-import { searchBigPaintFormSchema } from "@/schemas/searchBigPaintFormSchema";
-import useBigPaintSearchQuery from "@/stores/useBigPaintSearchQuery";
-import { useSearchBigPaintForm } from "@/stores/useSearchBigPaintForm";
+import { searchBigPaintFormSchema } from "@/schemas/schemaBigPaint__Search";
+import useBigPaintSearchQuery from "@/stores/queries/useQueryBigPaints__Search";
+import { useSearchBigPaintForm } from "@/stores/forms/useFormSearch__BigPaint";
 import { valuesFromSearchParams } from "@/utils/url";
 import { useEffect, useMemo } from "react";
 import { VList } from "virtua";
