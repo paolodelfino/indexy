@@ -1,7 +1,7 @@
 "use client";
 
-import { deleteInspirationAction } from "@/actions/ActionDelete__Inspiration";
-import { editInspirationAction } from "@/actions/ActionEdit__Inspiration";
+import  ActionDelete__Inspiration from "@/actions/ActionDelete__Inspiration";
+import  ActionEdit__Inspiration from "@/actions/ActionEdit__Inspiration";
 import ActionSearch__BigPaint from "@/actions/ActionSearch__BigPaint";
 import ActionSearch__Inspiration from "@/actions/ActionSearch__Inspiration";
 import Button from "@/components/Button";
@@ -12,8 +12,8 @@ import FieldTextArea from "@/components/form_ui/FieldTextArea";
 import { InformationCircle, Star } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormEdit__Inspiration from "@/stores/forms/useFormEdit__Inspiration";
-import useInspirationSearchQuery from "@/stores/queries/useQueryInspirations__Search";
-import useInspirationViewQuery from "@/stores/queries/useQueryInspirations__View";
+import useQueryInspirations__Search from "@/stores/queries/useQueryInspirations__Search";
+import useQueryInspirations__View from "@/stores/queries/useQueryInspirations__View";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -34,10 +34,10 @@ export default function FormEdit__Inspiration({
   const [isDeleteFormPending, setIsDeleteFormPending] = useState(false);
   const [isEditFormPending, setIsEditFormPending] = useState(false);
 
-  const invalidateInspirationViewQuery = useInspirationViewQuery(
+  const invalidateQueryInspirations__View = useQueryInspirations__View(
     (state) => state.invalidate,
   );
-  const invalidateInspirationSearchQuery = useInspirationSearchQuery(
+  const invalidateQueryInspirations__Search = useQueryInspirations__Search(
     (state) => state.invalidate,
   );
 
@@ -46,10 +46,10 @@ export default function FormEdit__Inspiration({
     form.setOnSubmit(async (form) => {
       setIsEditFormPending(true);
 
-      await editInspirationAction(data.id, form.values());
+      await ActionEdit__Inspiration(data.id, form.values());
 
-      invalidateInspirationViewQuery();
-      invalidateInspirationSearchQuery();
+      invalidateQueryInspirations__View();
+      invalidateQueryInspirations__Search();
 
       setIsEditFormPending(false);
     });
@@ -94,10 +94,10 @@ export default function FormEdit__Inspiration({
             if (confirm("Are you sure?")) {
               setIsDeleteFormPending(true);
 
-              await deleteInspirationAction({ id: data.id });
+              await ActionDelete__Inspiration({ id: data.id });
 
-              invalidateInspirationViewQuery();
-              invalidateInspirationSearchQuery();
+              invalidateQueryInspirations__View();
+              invalidateQueryInspirations__Search();
 
               setIsDeleteFormPending(false);
 

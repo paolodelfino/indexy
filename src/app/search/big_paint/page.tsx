@@ -1,7 +1,6 @@
 "use client";
 
 import ActionSearch__BigPaint from "@/actions/ActionSearch__BigPaint";
-import updateBigPaintHistoryAction from "@/actions/updateBigPaintHistoryAction";
 import Button from "@/components/Button";
 import FieldComparisonDate from "@/components/form_ui/FieldComparisonDate";
 import FieldSelect from "@/components/form_ui/FieldSelect";
@@ -9,17 +8,18 @@ import FieldDynamicSelect from "@/components/form_ui/FieldDynamicSelect";
 import FieldText from "@/components/form_ui/FieldText";
 import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
-import useBigPaintHistoryQuery from "@/stores/queries/useBigPaintHistoryQuery";
 import useFormSearch__BigPaint from "@/stores/forms/useFormSearch__BigPaint";
 import { valuesToSearchParams } from "@/utils/url";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import useQueryQueries__View from "@/stores/queries/useQueryQueries__View"
+import ActionEdit__Query from "@/actions/ActionEdit__Query"
 
 export default function Page() {
   const form = useFormSearch__BigPaint();
   const router = useRouter();
   const [isHistoryPending, setIsHistoryPending] = useState(false);
-  const invalidateBigPaintHistoryQuery = useBigPaintHistoryQuery(
+  const invalidateQueryQueries__View = useQueryQueries__View(
     (state) => state.invalidate,
   );
 
@@ -30,9 +30,9 @@ export default function Page() {
 
       const values = valuesToSearchParams(form.values());
 
-      await updateBigPaintHistoryAction({ values, date: new Date() });
+      await ActionEdit__Query({ values, date: new Date() });
 
-      invalidateBigPaintHistoryQuery(); // TODO: Non avevo pensato allo scenario in cui la funzione non finisce in tempo, siam sicuri che continua lo stesso?
+      invalidateQueryQueries__View(); // TODO: Non avevo pensato allo scenario in cui la funzione non finisce in tempo, siam sicuri che continua lo stesso?
 
       setIsHistoryPending(false);
 

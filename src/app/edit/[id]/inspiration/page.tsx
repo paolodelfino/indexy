@@ -1,7 +1,7 @@
 import { db } from "@/db/db";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
-const InspirationEditFormView = dynamic(
+const FormEdit__Inspiration = dynamic(
   () => import("@/components/forms/FormEdit__Inspiration"),
 );
 
@@ -39,7 +39,7 @@ export default async function Page({
       : [];
 
   return (
-    <InspirationEditFormView
+    <FormEdit__Inspiration
       data={{
         id: inspiration.id,
         content: inspiration.content,

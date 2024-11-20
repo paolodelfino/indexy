@@ -1,6 +1,6 @@
 "use client";
 
-import { createBigPaintAction } from "@/actions/ActionCreate__BigPaint";
+import ActionCreate__BigPaint from "@/actions/ActionCreate__BigPaint";
 import Button from "@/components/Button";
 import FieldText from "@/components/form_ui/FieldText";
 import { InformationCircle } from "@/components/icons";
@@ -28,7 +28,7 @@ export default function Page() {
     form.setOnSubmit(async (form) => {
       setIsCreateFormPending(true);
 
-      await createBigPaintAction(form.values());
+      await ActionCreate__BigPaint(form.values());
 
       invalidateBigPaintViewQuery();
       invalidateBigPaintSearchQuery();

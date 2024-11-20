@@ -10,8 +10,8 @@ import FieldText from "@/components/form_ui/FieldText";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormEdit__BigPaint from "@/stores/forms/useFormEdit__BigPaint";
-import useBigPaintSearchQuery from "@/stores/queries/useQueryBigPaints__Search";
-import useBigPaintViewQuery from "@/stores/queries/useQueryBigPaints__View";
+import useQueryBigPaints__Search from "@/stores/queries/useQueryBigPaints__Search";
+import useQueryBigPaints__View from "@/stores/queries/useQueryBigPaints__View";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -27,10 +27,10 @@ export default function FormEdit__BigPaint({
 }) {
   const router = useRouter();
 
-  const invalidateBigPaintViewQuery = useBigPaintViewQuery(
+  const invalidateQueryBigPaints__View = useQueryBigPaints__View(
     (state) => state.invalidate,
   );
-  const invalidateBigPaintSearchQuery = useBigPaintSearchQuery(
+  const invalidateQueryBigPaints__Search = useQueryBigPaints__Search(
     (state) => state.invalidate,
   );
 
@@ -45,8 +45,8 @@ export default function FormEdit__BigPaint({
       // await (await import("@/actions/ActionEdit__BigPaint")).ActionEdit__BigPaint(data.id, form.values())
       await ActionEdit__BigPaint(data.id, form.values());
 
-      invalidateBigPaintViewQuery();
-      invalidateBigPaintSearchQuery();
+      invalidateQueryBigPaints__View();
+      invalidateQueryBigPaints__Search();
 
       setIsEditFormPending(false);
     });
@@ -101,8 +101,8 @@ export default function FormEdit__BigPaint({
 
               await ActionDelete__BigPaint({ id: data.id });
 
-              invalidateBigPaintViewQuery();
-              invalidateBigPaintSearchQuery();
+              invalidateQueryBigPaints__View();
+              invalidateQueryBigPaints__Search();
 
               setIsDeleteFormPending(false);
 

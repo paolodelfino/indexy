@@ -3,7 +3,7 @@
 import UIInspiration from "@/components/db_ui/UIInspiration";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
 import schemaInspiration__Search from "@/schemas/schemaInspiration__Search";
-import useInspirationSearchQuery from "@/stores/queries/useQueryInspirations__Search";
+import useQueryInspirations__Search from "@/stores/queries/useQueryInspirations__Search";
 import useFormSearch__Inspiration from "@/stores/forms/useFormSearch__Inspiration";
 import { valuesFromSearchParams } from "@/utils/url";
 import { useEffect, useMemo } from "react";
@@ -25,7 +25,7 @@ export default function Page({
     [searchParams],
   );
 
-  const query = useInspirationSearchQuery();
+  const query = useQueryInspirations__Search();
   const form = useFormSearch__Inspiration();
 
   useEffect(() => {

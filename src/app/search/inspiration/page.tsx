@@ -2,7 +2,7 @@
 
 import ActionSearch__BigPaint from "@/actions/ActionSearch__BigPaint";
 import ActionSearch__Inspiration from "@/actions/ActionSearch__Inspiration";
-import updateInspirationHistoryAction from "@/actions/ActionEdit__Query";
+import ActionEdit__Query from "@/actions/ActionEdit__Query";
 import Button from "@/components/Button";
 import FieldCheckbox from "@/components/form_ui/FieldCheckbox";
 import FieldComparisonDate from "@/components/form_ui/FieldComparisonDate";
@@ -11,7 +11,7 @@ import FieldDynamicSelect from "@/components/form_ui/FieldDynamicSelect";
 import FieldTextArea from "@/components/form_ui/FieldTextArea";
 import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
-import useInspirationHistoryQuery from "@/stores/queries/useQueryQueries__View";
+import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
 import useFormSearch__Inspiration from "@/stores/forms/useFormSearch__Inspiration";
 import { valuesToSearchParams } from "@/utils/url";
 import { useRouter } from "next/navigation";
@@ -21,7 +21,7 @@ export default function Page() {
   const form = useFormSearch__Inspiration();
   const router = useRouter();
   const [isHistoryPending, setIsHistoryPending] = useState(false);
-  const invalidateInspirationHistoryQuery = useInspirationHistoryQuery(
+  const invalidateQueryQueries_View = useQueryQueries__View(
     (state) => state.invalidate,
   );
 
@@ -32,9 +32,9 @@ export default function Page() {
 
       const values = valuesToSearchParams(form.values());
 
-      await updateInspirationHistoryAction({ values, date: new Date() });
+      await ActionEdit__Query({ values, date: new Date() });
 
-      invalidateInspirationHistoryQuery(); // TODO: Non avevo pensato allo scenario in cui la funzione non finisce in tempo, siam sicuri che continua lo stesso?
+      invalidateQueryQueries_View(); // TODO: Non avevo pensato allo scenario in cui la funzione non finisce in tempo, siam sicuri che continua lo stesso?
 
       setIsHistoryPending(false);
 

@@ -22,7 +22,7 @@ export default function FormEdit__Query({
 }) {
   const router = useRouter();
 
-  const invalidateQueriesQuery = useQueryQueries__View(
+  const invalidateQueryQueries__View = useQueryQueries__View(
     (state) => state.invalidate,
   );
 
@@ -40,7 +40,7 @@ export default function FormEdit__Query({
         ...values,
         values: data.values,
       });
-      invalidateQueriesQuery();
+      invalidateQueryQueries__View();
 
       setIsEditFormPending(false);
     });
@@ -80,7 +80,7 @@ export default function FormEdit__Query({
               await ActionDelete__Query({
                 values: data.values,
               });
-              invalidateQueriesQuery();
+              invalidateQueryQueries__View();
 
               setIsDeleteFormPending(false);
 

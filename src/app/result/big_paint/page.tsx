@@ -3,7 +3,7 @@
 import UIBigPaint from "@/components/db_ui/UIBigPaint";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
 import schemaBigPaint__Search from "@/schemas/schemaBigPaint__Search";
-import useBigPaintSearchQuery from "@/stores/queries/useQueryBigPaints__Search";
+import useQueryBigPaints__Search from "@/stores/queries/useQueryBigPaints__Search";
 import useFormSearch__BigPaint from "@/stores/forms/useFormSearch__BigPaint";
 import { valuesFromSearchParams } from "@/utils/url";
 import { useEffect, useMemo } from "react";
@@ -25,7 +25,7 @@ export default function Page({
     [searchParams],
   );
 
-  const query = useBigPaintSearchQuery();
+  const query = useQueryBigPaints__Search();
   const form = useFormSearch__BigPaint();
 
   useEffect(() => {

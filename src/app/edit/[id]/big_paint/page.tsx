@@ -1,9 +1,9 @@
 import { db } from "@/db/db";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
-const BigPaintEditFormView = dynamic(
+const FormEdit__BigPaint = dynamic(
   () => import("@/components/forms/FormEdit__BigPaint"),
-);
+); // TODO: Ma questo viene caricato sul server? quante volte? quando?
 
 // TODO: History (using versioning)
 
@@ -30,7 +30,7 @@ export default async function Page({
       : [];
 
   return (
-    <BigPaintEditFormView
+    <FormEdit__BigPaint
       data={{
         date: bigPaint.date,
         id: bigPaint.id,

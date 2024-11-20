@@ -1,6 +1,6 @@
 "use client";
 
-import { createInspirationAction } from "@/actions/ActionCreate__Inspiration";
+import ActionCreate__BigPaint from "@/actions/ActionCreate__Inspiration";
 import Button from "@/components/Button";
 import FieldTextArea from "@/components/form_ui/FieldTextArea";
 import { InformationCircle } from "@/components/icons";
@@ -28,7 +28,7 @@ export default function Page() {
     form.setOnSubmit(async (form) => {
       setIsCreateFormPending(true);
 
-      await createInspirationAction(form.values());
+      await ActionCreate__BigPaint(form.values());
 
       invalidateInspirationViewQuery();
       invalidateInspirationSearchQuery();
