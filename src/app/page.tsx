@@ -121,7 +121,7 @@ export default function Page() {
               searchQuery.data.length - 1,
               searchQuery.data.length - 1 + 1,
             ]}
-            className="pb-16"
+            className="pb-16 scrollbar-hidden"
             id={idSearch}
           >
             {searchQuery.data.map((it) => {
@@ -141,7 +141,7 @@ export default function Page() {
         <VList
           // ssrCount={}
           keepMounted={[query.data.length - 1, query.data.length - 1 + 1]}
-          className="pb-16"
+          className="pb-16 scrollbar-hidden"
         >
           {query.data.map((it) => {
             return (
