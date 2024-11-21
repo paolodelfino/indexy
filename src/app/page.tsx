@@ -67,6 +67,7 @@ export default function Page() {
     <div className="flex h-full flex-col space-y-6">
       <div className="flex items-center gap-2">
         <FieldText
+          placeholder="Name"
           disabled={isFormPending}
           error={form.fields.name.error}
           meta={form.fields.name.meta}
