@@ -1,7 +1,7 @@
 import { useEffect, useId, useMemo, useRef } from "react";
 
 // TODO: Mi sa che se fai form.reset() e hai fetchIfNoData a true, potrebbe partire un fetch indesiderato (perché lo vuoi fare tu, però in effetti dovrebbe essere la stessa cosa)
-export default function <T extends Array<any>>({
+export default function useInfiniteQuery<T extends Array<any>>({
   nextOffset,
   callback,
   fetchIfNoData,
@@ -29,14 +29,16 @@ export default function <T extends Array<any>>({
   useEffect(() => {
     active();
     return () => inactive();
-  }, []);
+  }, [active, inactive]);
 
   useEffect(() => {
+    console.log(nextOffset, "callback", data, fetchIfNoData, id, lastId);
     if (nextOffset !== undefined) {
       if (data === undefined) {
         if (fetchIfNoData) callback();
       } else {
-        if (data.length <= 0) callback();
+        if (data.length <= 0)
+          callback(); // TODO: Weird fetch everyrender at least at 0 items in useQueryQueries__View
         else {
           observer.current = new IntersectionObserver((entries, observer) => {
             if (entries[0].isIntersecting) {
@@ -46,7 +48,10 @@ export default function <T extends Array<any>>({
             }
           });
           const target = document.getElementById(`${id}_${lastId}`);
-          observer.current.observe(target!);
+          if (target === null) {
+            // TODO: Don't know
+            console.log(document.getElementById(id), id, lastId, nextOffset);
+          } else observer.current.observe(target!);
         }
       }
     }
@@ -55,7 +60,7 @@ export default function <T extends Array<any>>({
       observer.current?.disconnect();
       observer.current = null;
     };
-  }, [nextOffset]);
+  }, [nextOffset, data]);
 
   return id;
 }

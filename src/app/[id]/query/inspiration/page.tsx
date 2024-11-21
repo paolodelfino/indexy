@@ -53,7 +53,7 @@ export default function Page({
   return (
     <div className="flex h-full flex-col">
       <h2 className="p-4 text-lg font-medium">Result ({query.total})</h2>
-      {/* {query.data.length > 0 && (
+      {query.data.length > 0 && (
         <VList
           keepMounted={[query.data.length - 1, query.data.length - 1 + 1]}
           className="pb-16 scrollbar-hidden"
@@ -65,21 +65,7 @@ export default function Page({
           })}
           {query.isFetching ? "loading..." : ""}
         </VList>
-      )} */}
-
-      <VList
-        keepMounted={
-          query.data.length > 0
-            ? [query.data.length - 1, query.data.length - 1 + 1]
-            : [0]
-        }
-        className="pb-16 scrollbar-hidden"
-      >
-        {query.data.map((it, i) => {
-          return <UIInspiration key={it.id} data={it} id={`${id}_${it.id}`} />;
-        })}
-        {query.isFetching ? "loading..." : ""}
-      </VList>
+      )}
     </div>
   );
 }

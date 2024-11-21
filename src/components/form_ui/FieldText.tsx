@@ -1,10 +1,16 @@
 "use client";
+import { InformationCircle } from "@/components/icons";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import { FormField } from "@/utils/form";
 import { ReactNode, useEffect } from "react";
-import { tv } from "tailwind-variants";
+import { ClassValue, tv } from "tailwind-variants";
 
 export const styles = tv({
-  base: "w-full hyphens-auto break-words rounded bg-neutral-700 p-4 disabled:opacity-50",
+  slots: {
+    container: "",
+    input:
+      "w-full hyphens-auto break-words rounded bg-neutral-700 p-4 disabled:opacity-50",
+  },
   // TODO: Perché qui non c'è anche label?
 });
 
@@ -36,7 +42,7 @@ export default function FieldText({
   setValue,
   error,
   acceptIndeterminate,
-  className,
+  classNames,
   placeholder,
   label: _label,
   ...rest
@@ -47,14 +53,17 @@ export default function FieldText({
   setValue: (value: Value) => void;
   error: string | undefined;
   disabled: boolean;
-  className?: string;
+  className?: never;
+  classNames?: {
+    [key in keyof ReturnType<typeof styles>]?: ClassValue;
+  };
   placeholder?: string;
   label?: ReactNode;
 } & React.DetailedHTMLProps<
   React.InputHTMLAttributes<HTMLInputElement>,
   HTMLInputElement
 >) {
-  const style = styles({ className });
+  const { container, input } = styles();
 
   const label =
     typeof _label === "string" ? (
@@ -73,19 +82,30 @@ export default function FieldText({
   }, [meta]);
 
   return (
-    <div>
+    <div className={container({ className: classNames?.container })}>
       {label}
 
-      <input
-        className={style}
-        type="text"
-        value={meta}
-        onChange={(e) => setMeta(e.target.value)}
-        placeholder={placeholder}
-        {...rest}
-      />
+      <div className="flex items-center gap-2">
+        <input
+          className={input({ className: classNames?.input })}
+          type="text"
+          value={meta}
+          onChange={(e) => setMeta(e.target.value)}
+          placeholder={placeholder}
+          {...rest}
+        />
 
-      {error !== undefined && <span className="italic">{error}</span>}
+        {error !== undefined && (
+          <Popover>
+            <PopoverTrigger color="danger">
+              <InformationCircle />
+            </PopoverTrigger>
+            <PopoverContent className="rounded border bg-neutral-700 p-4 italic">
+              {error}
+            </PopoverContent>
+          </Popover>
+        )}
+      </div>
     </div>
   );
 }

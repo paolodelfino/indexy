@@ -10,6 +10,7 @@ import FieldText from "@/components/form_ui/FieldText";
 import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormSearch__BigPaint from "@/stores/forms/useFormSearch__BigPaint";
+import useQueryQueries__Search from "@/stores/queries/useQueryQueries__Search";
 import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
 import { formValuesToString } from "@/utils/url";
 import { useRouter } from "next/navigation";
@@ -20,6 +21,9 @@ export default function Page() {
   const router = useRouter();
   const [isFormPending, setIsFormPending] = useState(false);
   const invalidateQueryQueries__View = useQueryQueries__View(
+    (state) => state.invalidate,
+  );
+  const invalidateQueryQueries__Search = useQueryQueries__Search(
     (state) => state.invalidate,
   );
 
@@ -34,6 +38,7 @@ export default function Page() {
         name: "Untitled",
       });
       invalidateQueryQueries__View(); // TODO: Non avevo pensato allo scenario in cui la funzione non finisce in tempo, siam sicuri che continua lo stesso?
+      invalidateQueryQueries__Search();
 
       setIsFormPending(false);
     });

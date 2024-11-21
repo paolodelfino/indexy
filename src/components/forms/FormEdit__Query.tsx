@@ -8,6 +8,7 @@ import FieldText from "@/components/form_ui/FieldText";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormEdit__Query from "@/stores/forms/useFormEdit__Query";
+import useQueryQueries__Search from "@/stores/queries/useQueryQueries__Search";
 import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -26,6 +27,9 @@ export default function FormEdit__Query({
   const invalidateQueryQueries__View = useQueryQueries__View(
     (state) => state.invalidate,
   );
+  const invalidateQueryQueries__Search = useQueryQueries__Search(
+    (state) => state.invalidate,
+  );
 
   const [isDeleteFormPending, setIsDeleteFormPending] = useState(false);
   const [isEditFormPending, setIsEditFormPending] = useState(false);
@@ -39,6 +43,7 @@ export default function FormEdit__Query({
 
       await ActionEdit__Query(data.values, values);
       invalidateQueryQueries__View();
+      invalidateQueryQueries__Search();
 
       setIsEditFormPending(false);
     });
@@ -88,6 +93,7 @@ export default function FormEdit__Query({
                 values: data.values,
               });
               invalidateQueryQueries__View();
+              invalidateQueryQueries__Search();
 
               setIsDeleteFormPending(false);
 

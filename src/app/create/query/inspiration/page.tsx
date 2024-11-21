@@ -12,6 +12,7 @@ import FieldTextArea from "@/components/form_ui/FieldTextArea";
 import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormSearch__Inspiration from "@/stores/forms/useFormSearch__Inspiration";
+import useQueryQueries__Search from "@/stores/queries/useQueryQueries__Search";
 import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
 import { formValuesToString } from "@/utils/url";
 import { useRouter } from "next/navigation";
@@ -26,6 +27,9 @@ export default function Page() {
   const invalidateQueryQueries_View = useQueryQueries__View(
     (state) => state.invalidate,
   );
+  const invalidateQueryQueries_Search = useQueryQueries__Search(
+    (state) => state.invalidate,
+  );
 
   useEffect(() => {
     // TODO: Vedi se questo problema del cambio route si è risolto ora che non uso più quello schifo di query management
@@ -38,6 +42,7 @@ export default function Page() {
         name: "Untitled",
       });
       invalidateQueryQueries_View(); // TODO: Non avevo pensato allo scenario in cui la funzione non finisce in tempo, siam sicuri che continua lo stesso?
+      invalidateQueryQueries_Search();
 
       setIsFormPending(false);
     });
