@@ -71,7 +71,7 @@ export default function Page() {
           meta={form.fields.name.meta}
           setMeta={form.setMeta.bind(null, "name")}
           setValue={form.setValue.bind(null, "name")}
-          classNames={{ container: "w-full" }}
+          classNames={{ container: "w-full", input: "rounded-t-none" }}
         />
         {form.error !== undefined && (
           <Popover>
