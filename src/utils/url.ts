@@ -62,7 +62,7 @@ export function valuesFromSearchParams(searchParams: {
       else if (value.startsWith("___boolean"))
         return value.slice(10) === "true" ? true : false;
       else if (value.startsWith("___undefined")) return undefined;
-      else return value; // TODO: Qui, le stringhe dei valori sono decodate?
+      else return value; // TODO: Qui, le stringhe dei valori sono decodate? Mi sa che i searchParams non hanno nessun valore decodato. Vedere se non decoda nulla.
     }
 
     if (key.startsWith("___object")) {
@@ -76,4 +76,20 @@ export function valuesFromSearchParams(searchParams: {
   }
 
   return obj;
+}
+
+/**
+ * Make sure content is decoded, because when you get it from a dynamic route it is entirely treated as a name for an endpoint and therefore it gets encoded. Use `decodeURIComponent()`
+ */
+export function valuesFromSearchParamsString(searchParamsStr: string) {
+  const searchParams: {
+    [key: string]: string | string[] | undefined;
+  } = {};
+  for (const [key, value] of new URLSearchParams(searchParamsStr).entries()) {
+    if (searchParams[key] === undefined) searchParams[key] = value;
+    else if (typeof searchParams[key] === "string")
+      searchParams[key] = [searchParams[key], value];
+    else searchParams[key].push(value);
+  }
+  return valuesFromSearchParams(searchParams);
 }

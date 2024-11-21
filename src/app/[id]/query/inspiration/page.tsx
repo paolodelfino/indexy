@@ -3,38 +3,38 @@
 import UIInspiration from "@/components/db_ui/UIInspiration";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
 import schemaInspiration__Search from "@/schemas/schemaInspiration__Search";
-import useQueryInspirations__Search from "@/stores/queries/useQueryInspirations__Search";
 import useFormSearch__Inspiration from "@/stores/forms/useFormSearch__Inspiration";
-import { valuesFromSearchParams } from "@/utils/url";
+import useQueryInspirations__Search from "@/stores/queries/useQueryInspirations__Search";
+import { valuesFromSearchParamsString } from "@/utils/url";
 import { useEffect, useMemo } from "react";
 import { VList } from "virtua";
 
 // TODO: Possible server side first items injection
 
 export default function Page({
-  searchParams,
+  params: { id: valuesStr },
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: { id: string };
 }) {
   const values = useMemo(
     () =>
+      // TODO: Possiamo probabilmente evitare di parsare con zod qui
       schemaInspiration__Search.parse(
-        // TODO: Possiamo probabilmente evitare di parsare con zod qui
-        valuesFromSearchParams(searchParams),
+        valuesFromSearchParamsString(decodeURIComponent(valuesStr)),
       ),
-    [searchParams],
+    [valuesStr],
   );
 
   const query = useQueryInspirations__Search();
   const form = useFormSearch__Inspiration();
 
   useEffect(() => {
-    const values_str = JSON.stringify(searchParams);
-    if (values_str !== form.meta.lastValues) {
+    if (valuesStr !== form.meta.lastValues) {
       query.reset();
       query.active();
 
-      form.setFormMeta({ lastValues: values_str });
+      // NOTE: We leave values encoded here since we're not using it anywhere else
+      form.setFormMeta({ lastValues: valuesStr });
     }
   }, [values]);
 
