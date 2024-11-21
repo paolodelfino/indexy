@@ -68,7 +68,7 @@ export default async function Page({
         </h2>
 
         <VList
-          keepMounted={[inspirations.length - 1]}
+          keepMounted={[inspirations.length - 1]} // NOTE: Here we assume there we'll always be at least one entry
           className="pb-16 scrollbar-hidden"
         >
           {inspirations.map((it, i) => {

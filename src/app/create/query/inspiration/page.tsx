@@ -22,7 +22,7 @@ export default function Page() {
   const router = useRouter();
 
   const [isFormPending, setIsFormPending] = useState(false);
-  
+
   const invalidateQueryQueries_View = useQueryQueries__View(
     (state) => state.invalidate,
   );
@@ -67,6 +67,14 @@ export default function Page() {
         </Button>
 
         <Button
+          color="accent"
+          disabled={isFormPending || form.isInvalid}
+          onClick={form.submit}
+        >
+          {isFormPending ? "Creating..." : "Create"}
+        </Button>
+
+        <Button
           disabled={isFormPending || form.isInvalid}
           onClick={() =>
             router.push(
@@ -75,14 +83,6 @@ export default function Page() {
           }
         >
           Search
-        </Button>
-
-        <Button
-          color="accent"
-          disabled={isFormPending || form.isInvalid}
-          onClick={form.submit}
-        >
-          {isFormPending ? "Creating..." : "Create"}
         </Button>
       </div>
 

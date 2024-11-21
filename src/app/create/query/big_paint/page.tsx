@@ -63,6 +63,14 @@ export default function Page() {
         </Button>
 
         <Button
+          color="accent"
+          disabled={isFormPending || form.isInvalid}
+          onClick={form.submit}
+        >
+          {isFormPending ? "Creating..." : "Create"}
+        </Button>
+
+        <Button
           disabled={isFormPending || form.isInvalid}
           onClick={() =>
             router.push(
@@ -71,14 +79,6 @@ export default function Page() {
           }
         >
           Search
-        </Button>
-
-        <Button
-          color="accent"
-          disabled={isFormPending || form.isInvalid}
-          onClick={form.submit}
-        >
-          {isFormPending ? "Creating..." : "Create"}
         </Button>
       </div>
 

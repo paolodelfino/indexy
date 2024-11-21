@@ -56,15 +56,17 @@ export default function Page({
   return (
     <div className="flex h-full flex-col">
       <h2 className="p-4 text-lg font-medium">Result ({query.total})</h2>
-      <VList
-        keepMounted={[query.data.length - 1, query.data.length - 1 + 1]}
-        className="pb-16 scrollbar-hidden"
-      >
-        {query.data.map((it, i) => {
-          return <UIBigPaint key={it.id} data={it} id={`${id}_${it.id}`} />;
-        })}
-        {query.isFetching ? "loading..." : ""}
-      </VList>
+      {query.data.length > 0 && (
+        <VList
+          keepMounted={[query.data.length - 1, query.data.length - 1 + 1]}
+          className="pb-16 scrollbar-hidden"
+        >
+          {query.data.map((it, i) => {
+            return <UIBigPaint key={it.id} data={it} id={`${id}_${it.id}`} />;
+          })}
+          {query.isFetching ? "loading..." : ""}
+        </VList>
+      )}
     </div>
   );
 }

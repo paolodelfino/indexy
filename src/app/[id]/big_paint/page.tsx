@@ -41,7 +41,7 @@ export default async function Page({
         </h2>
 
         <VList
-          keepMounted={[bigPaints.length - 1]}
+          keepMounted={[bigPaints.length - 1]} // NOTE: Here we assume there we'll always be at least one entry
           className="pb-16 scrollbar-hidden"
         >
           {bigPaints.map((it, i) => {
