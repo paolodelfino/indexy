@@ -1,6 +1,6 @@
 import { fieldComparisonDate } from "@/components/form_ui/FieldComparisonDate";
-import { fieldSelect } from "@/components/form_ui/FieldSelect";
 import { fieldDynamicSelect } from "@/components/form_ui/FieldDynamicSelect";
+import { fieldSelect } from "@/components/form_ui/FieldSelect";
 import { fieldText } from "@/components/form_ui/FieldText";
 import schemaBigPaint__Search from "@/schemas/schemaBigPaint__Search";
 import { createForm } from "@/utils/form";
@@ -27,5 +27,8 @@ export default createForm(
     related_big_paints_ids: fieldDynamicSelect(),
     name: fieldText(),
   },
-  { lastValues: undefined as string | undefined },
+  {
+    lastValues: undefined as string | undefined,
+    queryName: fieldText("Untitled"),
+  },
 );

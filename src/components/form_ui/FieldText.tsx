@@ -1,5 +1,6 @@
 "use client";
-import { InformationCircle } from "@/components/icons";
+import Button from "@/components/Button";
+import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import { FormField } from "@/utils/form";
 import { ReactNode, useEffect } from "react";
@@ -38,6 +39,7 @@ export function fieldText(meta?: Meta): FieldText__Type {
  */
 export default function FieldText({
   meta,
+  defaultMeta,
   setMeta,
   setValue,
   error,
@@ -49,6 +51,7 @@ export default function FieldText({
 }: {
   acceptIndeterminate?: boolean;
   meta: Meta;
+  defaultMeta?: Meta; // TODO: Maybe make required
   setMeta: (meta: Meta) => void;
   setValue: (value: Value) => void;
   error: string | undefined;
@@ -104,6 +107,17 @@ export default function FieldText({
               {error}
             </PopoverContent>
           </Popover>
+        )}
+
+        {defaultMeta !== undefined && meta !== defaultMeta && (
+          <Button
+            title="Clear"
+            disabled={rest.disabled}
+            color="ghost"
+            onClick={() => setMeta(defaultMeta)}
+          >
+            <Cloud />
+          </Button>
         )}
       </div>
     </div>
