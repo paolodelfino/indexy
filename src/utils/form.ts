@@ -5,7 +5,10 @@ import { create } from "zustand";
 export type FormField<Value, Meta> = {
   meta: Meta;
   value: Value;
-  default: { meta: Meta; value: Value };
+  default: {
+    meta: Meta;
+    value: Value /* TODO: NOTE: Probably useless, because we assume that changing meta, changes value */;
+  };
   error: string | undefined;
 };
 
@@ -125,7 +128,7 @@ export function createForm<
             acc[key as keyof T] = {
               ...value,
               meta: value.default.meta,
-              value: value.default.value,
+              // value: value.default.value, NOTE: We assume that changing meta, changes value
             } as T[keyof T];
             return acc;
           }, {} as T),
