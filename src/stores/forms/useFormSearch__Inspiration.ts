@@ -1,13 +1,13 @@
 import { fieldCheckbox } from "@/components/form_ui/FieldCheckbox";
 import { fieldComparisonDate } from "@/components/form_ui/FieldComparisonDate";
-import { fieldSelect } from "@/components/form_ui/FieldSelect";
 import { fieldDynamicSelect } from "@/components/form_ui/FieldDynamicSelect";
+import { fieldSelect } from "@/components/form_ui/FieldSelect";
 import { fieldTextArea } from "@/components/form_ui/FieldTextArea";
-import schemaInspiration__Create from "@/schemas/schemaInspiration__Create";
+import schemaInspiration__Search from "@/schemas/schemaInspiration__Search";
 import { createForm } from "@/utils/form";
 
 export default createForm(
-  schemaInspiration__Create,
+  schemaInspiration__Search,
   {
     date: fieldComparisonDate(),
     orderBy: fieldSelect({

@@ -62,7 +62,7 @@ export function valuesFromSearchParams(searchParams: {
       else if (value.startsWith("___boolean"))
         return value.slice(10) === "true" ? true : false;
       else if (value.startsWith("___undefined")) return undefined;
-      else return value;
+      else return value; // TODO: Qui, le stringhe dei valori sono decodate?
     }
 
     if (key.startsWith("___object")) {

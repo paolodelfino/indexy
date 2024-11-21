@@ -59,7 +59,6 @@ export default function FormEdit__BigPaint({
     if (data.id !== form.meta.lastId) {
       form.setMetas({
         related_big_paints_ids: {
-          ...form.fields.related_big_paints_ids.default.meta,
           selectedItems: data.relatedBigPaints.map((it) => ({
             content: it.name,
             id: it.id,

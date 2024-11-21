@@ -10,7 +10,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   return (
     <React.Fragment>
       {isMonitor && <Toolbar variant="monitor" />}
-      {/* TODO: Maybe constrain to 100vh  */}
+      {/* TODO: Maybe constrain to 100vh. TODO: There is something strange with this height limits and padding isn't working as expected on pages  */}
       <main className="mx-auto h-auto min-h-[calc(100vh-4rem)] max-w-4xl flex-[3] monitor:min-h-screen">
         {children}
       </main>

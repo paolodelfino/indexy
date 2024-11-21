@@ -1,13 +1,13 @@
-import { ButtonLink } from "@/components/Button"
-import UIInspiration from "@/components/db_ui/UIInspiration"
-import { db } from "@/db/db"
-import { notFound } from "next/navigation"
-import { VList } from "virtua"
+import { ButtonLink } from "@/components/Button";
+import UIInspiration from "@/components/db_ui/UIInspiration";
+import { db } from "@/db/db";
+import { notFound } from "next/navigation";
+import { VList } from "virtua";
 
 export default async function Page({
-  id,
+  params: { id },
 }: {
-  id: string;
+  params: { id: string };
 }) {
   // TODO: Add query
 

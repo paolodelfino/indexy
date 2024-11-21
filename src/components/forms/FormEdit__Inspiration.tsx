@@ -1,7 +1,7 @@
 "use client";
 
-import  ActionDelete__Inspiration from "@/actions/ActionDelete__Inspiration";
-import  ActionEdit__Inspiration from "@/actions/ActionEdit__Inspiration";
+import ActionDelete__Inspiration from "@/actions/ActionDelete__Inspiration";
+import ActionEdit__Inspiration from "@/actions/ActionEdit__Inspiration";
 import ActionSearch__BigPaint from "@/actions/ActionSearch__BigPaint";
 import ActionSearch__Inspiration from "@/actions/ActionSearch__Inspiration";
 import Button from "@/components/Button";
@@ -59,14 +59,12 @@ export default function FormEdit__Inspiration({
     if (data.id !== form.meta.lastId) {
       form.setMetas({
         related_big_paints_ids: {
-          ...form.fields.related_big_paints_ids.default.meta,
           selectedItems: data.relatedBigPaints.map((it) => ({
             content: it.name,
             id: it.id,
           })),
         },
         related_inspirations_ids: {
-          ...form.fields.related_inspirations_ids.default.meta,
           selectedItems: data.relatedInspirations,
         },
         date: {

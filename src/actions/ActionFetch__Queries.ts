@@ -6,7 +6,7 @@ export default async function (offset: number, limit: number) {
   return {
     data: await db
       .selectFrom("query")
-      .orderBy("date")
+      .orderBy("date desc")
       .offset(offset)
       .limit(limit)
       .selectAll()

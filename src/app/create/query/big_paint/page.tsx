@@ -1,44 +1,41 @@
 "use client";
 
+import ActionCreate__Query from "@/actions/ActionCreate__Query";
 import ActionSearch__BigPaint from "@/actions/ActionSearch__BigPaint";
-import ActionSearch__Inspiration from "@/actions/ActionSearch__Inspiration";
-import ActionEdit__Query from "@/actions/ActionEdit__Query";
 import Button from "@/components/Button";
-import FieldCheckbox from "@/components/form_ui/FieldCheckbox";
 import FieldComparisonDate from "@/components/form_ui/FieldComparisonDate";
-import FieldSelect from "@/components/form_ui/FieldSelect";
 import FieldDynamicSelect from "@/components/form_ui/FieldDynamicSelect";
-import FieldTextArea from "@/components/form_ui/FieldTextArea";
+import FieldSelect from "@/components/form_ui/FieldSelect";
+import FieldText from "@/components/form_ui/FieldText";
 import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
+import useFormSearch__BigPaint from "@/stores/forms/useFormSearch__BigPaint";
 import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
-import useFormSearch__Inspiration from "@/stores/forms/useFormSearch__Inspiration";
 import { valuesToSearchParams } from "@/utils/url";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Page() {
-  const form = useFormSearch__Inspiration();
+  const form = useFormSearch__BigPaint();
   const router = useRouter();
-  const [isHistoryPending, setIsHistoryPending] = useState(false);
-  const invalidateQueryQueries_View = useQueryQueries__View(
+  const [isFormPending, setIsFormPending] = useState(false);
+  const invalidateQueryQueries__View = useQueryQueries__View(
     (state) => state.invalidate,
   );
 
   useEffect(() => {
     // TODO: Vedi se questo problema del cambio route si è risolto ora che non uso più quello schifo di query management
     form.setOnSubmit(async (form) => {
-      setIsHistoryPending(true);
+      setIsFormPending(true);
 
-      const values = valuesToSearchParams(form.values());
+      await ActionCreate__Query({
+        values: decodeURIComponent(valuesToSearchParams(form.values())),
+        category: "big_paint",
+        name: "Untitled",
+      });
+      invalidateQueryQueries__View(); // TODO: Non avevo pensato allo scenario in cui la funzione non finisce in tempo, siam sicuri che continua lo stesso?
 
-      await ActionEdit__Query({ values, date: new Date() });
-
-      invalidateQueryQueries_View(); // TODO: Non avevo pensato allo scenario in cui la funzione non finisce in tempo, siam sicuri che continua lo stesso?
-
-      setIsHistoryPending(false);
-
-      router.push(`/result/inspiration?${values}`);
+      setIsFormPending(false);
     });
   }, [form.setOnSubmit]);
 
@@ -58,7 +55,7 @@ export default function Page() {
 
         <Button
           title="Clear"
-          disabled={isHistoryPending}
+          disabled={isFormPending}
           color="ghost"
           onClick={form.reset}
         >
@@ -66,24 +63,35 @@ export default function Page() {
         </Button>
 
         <Button
+          disabled={isFormPending || form.isInvalid}
+          onClick={() =>
+            router.push(
+              `/result/big_paint?${valuesToSearchParams(form.values())}`,
+            )
+          }
+        >
+          Search
+        </Button>
+
+        <Button
           color="accent"
-          disabled={isHistoryPending || form.isInvalid}
+          disabled={isFormPending || form.isInvalid}
           onClick={form.submit}
         >
-          {isHistoryPending ? "Updating history..." : "Search"}
+          {isFormPending ? "Creating..." : "Create"}
         </Button>
       </div>
 
       <h1
-        data-disabled={isHistoryPending}
+        data-disabled={isFormPending}
         className="py-1 pl-4 text-2xl font-medium leading-[3rem] data-[disabled=true]:opacity-50"
       >
-        Search Inspiration
+        Search BigPaint
       </h1>
 
       <div>
         <h2
-          data-disabled={isHistoryPending}
+          data-disabled={isFormPending}
           className="py-1 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
         >
           Order
@@ -95,7 +103,7 @@ export default function Page() {
             meta={form.fields.orderBy.meta}
             setValue={form.setValue.bind(form, "orderBy")}
             setMeta={form.setMeta.bind(form, "orderBy")}
-            disabled={isHistoryPending}
+            disabled={isFormPending}
             error={form.fields.orderBy.error}
           />
 
@@ -104,25 +112,25 @@ export default function Page() {
             meta={form.fields.orderByDir.meta}
             setValue={form.setValue.bind(form, "orderByDir")}
             setMeta={form.setMeta.bind(form, "orderByDir")}
-            disabled={isHistoryPending}
+            disabled={isFormPending}
             error={form.fields.orderByDir.error}
           />
         </div>
       </div>
 
-      <FieldTextArea
-        label="Content"
-        meta={form.fields.content.meta}
-        setValue={form.setValue.bind(form, "content")}
-        setMeta={form.setMeta.bind(form, "content")}
-        disabled={isHistoryPending}
-        error={form.fields.content.error}
+      <FieldText
+        label="Name"
+        meta={form.fields.name.meta}
+        setValue={form.setValue.bind(form, "name")}
+        setMeta={form.setMeta.bind(form, "name")}
+        disabled={isFormPending}
+        error={form.fields.name.error}
         acceptIndeterminate
       />
 
       <div>
         <h2
-          data-disabled={isHistoryPending}
+          data-disabled={isFormPending}
           className="py-1 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
         >
           Date
@@ -133,27 +141,8 @@ export default function Page() {
           meta={form.fields.date.meta}
           setValue={form.setValue.bind(form, "date")}
           setMeta={form.setMeta.bind(form, "date")}
-          disabled={isHistoryPending}
+          disabled={isFormPending}
           error={form.fields.date.error}
-          acceptIndeterminate
-        />
-      </div>
-
-      <div>
-        <h2
-          data-disabled={isHistoryPending}
-          className="py-1 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
-        >
-          Highlight
-        </h2>
-
-        <FieldCheckbox
-          label="Highlight"
-          meta={form.fields.highlight.meta}
-          setValue={form.setValue.bind(form, "highlight")}
-          setMeta={form.setMeta.bind(form, "highlight")}
-          disabled={isHistoryPending}
-          error={form.fields.highlight.error}
           acceptIndeterminate
         />
       </div>
@@ -163,7 +152,7 @@ export default function Page() {
         meta={form.fields.related_big_paints_ids.meta}
         setValue={form.setValue.bind(form, "related_big_paints_ids")}
         setMeta={form.setMeta.bind(form, "related_big_paints_ids")}
-        disabled={isHistoryPending}
+        disabled={isFormPending}
         error={form.fields.related_big_paints_ids.error}
         acceptIndeterminate
         search={(prevState, { query }) =>
@@ -176,32 +165,6 @@ export default function Page() {
           }).then((res) =>
             res.data.map((item) => ({
               content: item.name,
-              id: item.id,
-            })),
-          )
-        }
-      />
-
-      <FieldDynamicSelect
-        title="Related Inspirations"
-        meta={form.fields.related_inspirations_ids.meta}
-        setValue={form.setValue.bind(form, "related_inspirations_ids")}
-        setMeta={form.setMeta.bind(form, "related_inspirations_ids")}
-        disabled={isHistoryPending}
-        error={form.fields.related_inspirations_ids.error}
-        acceptIndeterminate
-        search={(prevState, { query }) =>
-          ActionSearch__Inspiration(null, null, {
-            content: query,
-            orderBy: "date",
-            orderByDir: "asc",
-            date: undefined,
-            related_inspirations_ids: undefined,
-            related_big_paints_ids: undefined,
-            highlight: undefined,
-          }).then((res) =>
-            res.data.map((item) => ({
-              content: item.content,
               id: item.id,
             })),
           )
