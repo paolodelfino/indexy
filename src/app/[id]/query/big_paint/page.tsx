@@ -1,10 +1,13 @@
 "use client";
 
+import ActionEdit__Query from "@/actions/ActionEdit__Query";
 import UIBigPaint from "@/components/db_ui/UIBigPaint";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
 import schemaBigPaint__Search from "@/schemas/schemaBigPaint__Search";
 import useFormSearch__BigPaint from "@/stores/forms/useFormSearch__BigPaint";
 import useQueryBigPaints__Search from "@/stores/queries/useQueryBigPaints__Search";
+import useQueryQueries__Search from "@/stores/queries/useQueryQueries__Search";
+import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
 import { formValuesFromString } from "@/utils/url";
 import { useEffect, useMemo } from "react";
 import { VList } from "virtua";
@@ -26,10 +29,23 @@ export default function Page({
   const query = useQueryBigPaints__Search();
   const form = useFormSearch__BigPaint();
 
+  const invalidateQueryQueries__View = useQueryQueries__View(
+    (state) => state.invalidate,
+  );
+  const invalidateQueryQueries__Search = useQueryQueries__Search(
+    (state) => state.invalidate,
+  );
+
   useEffect(() => {
     if (valuesStr !== form.meta.lastValues) {
       query.reset();
       query.active();
+
+      ActionEdit__Query(valuesStr, { date: new Date() }).then(() => {
+        invalidateQueryQueries__View();
+        invalidateQueryQueries__Search();
+        // TODO: Furthemore I have to attach to an onRevalidate event, when useQueryBigPaints__Search gets invalidated it does another fetch, furthermore maybe I should also attach to useInfiniteQuery's callback. I should move this whole to callback and onrevalidate
+      });
 
       form.setFormMeta({ lastValues: valuesStr });
     }
