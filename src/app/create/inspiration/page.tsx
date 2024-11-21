@@ -1,23 +1,23 @@
 "use client";
 
-import ActionCreate__BigPaint from "@/actions/ActionCreate__Inspiration";
+import ActionCreate__Inspiration from "@/actions/ActionCreate__Inspiration";
 import Button from "@/components/Button";
 import FieldTextArea from "@/components/form_ui/FieldTextArea";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormCreate__Inspiration from "@/stores/forms/useFormCreate__Inspiration";
-import useInspirationSearchQuery from "@/stores/queries/useQueryInspirations__Search";
-import useInspirationViewQuery from "@/stores/queries/useQueryInspirations__View";
+import useQueryInspirations__Search from "@/stores/queries/useQueryInspirations__Search";
+import useQueryInspirations__View from "@/stores/queries/useQueryInspirations__View";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Page() {
   const router = useRouter();
 
-  const invalidateInspirationViewQuery = useInspirationViewQuery(
+  const invalidateQueryInspirations__View = useQueryInspirations__View(
     (state) => state.invalidate,
   );
-  const invalidateInspirationSearchQuery = useInspirationSearchQuery(
+  const invalidateQueryInspirations__Search = useQueryInspirations__Search(
     (state) => state.invalidate,
   );
 
@@ -28,10 +28,9 @@ export default function Page() {
     form.setOnSubmit(async (form) => {
       setIsCreateFormPending(true);
 
-      await ActionCreate__BigPaint(form.values());
-
-      invalidateInspirationViewQuery();
-      invalidateInspirationSearchQuery();
+      await ActionCreate__Inspiration(form.values());
+      invalidateQueryInspirations__View();
+      invalidateQueryInspirations__Search();
 
       form.reset();
 

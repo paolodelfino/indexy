@@ -47,7 +47,6 @@ export default function FormEdit__Inspiration({
       setIsEditFormPending(true);
 
       await ActionEdit__Inspiration(data.id, form.values());
-
       invalidateQueryInspirations__View();
       invalidateQueryInspirations__Search();
 
