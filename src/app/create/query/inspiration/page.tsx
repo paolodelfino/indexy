@@ -8,6 +8,7 @@ import FieldCheckbox from "@/components/form_ui/FieldCheckbox";
 import FieldComparisonDate from "@/components/form_ui/FieldComparisonDate";
 import FieldDynamicSelect from "@/components/form_ui/FieldDynamicSelect";
 import FieldSelect from "@/components/form_ui/FieldSelect";
+import FieldText from "@/components/form_ui/FieldText";
 import FieldTextArea from "@/components/form_ui/FieldTextArea";
 import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
@@ -17,6 +18,7 @@ import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
 import { formValuesToString } from "@/utils/url";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { z } from "zod";
 
 export default function Page() {
   const form = useFormSearch__Inspiration();
@@ -39,7 +41,7 @@ export default function Page() {
       await ActionCreate__Query({
         values: formValuesToString(form.values()),
         category: "inspiration",
-        name: "Untitled",
+        name: form.meta.queryName.value!,
       });
       invalidateQueryQueries_View(); // TODO: Non avevo pensato allo scenario in cui la funzione non finisce in tempo, siam sicuri che continua lo stesso?
       invalidateQueryQueries_Search();
@@ -73,7 +75,11 @@ export default function Page() {
 
         <Button
           color="accent"
-          disabled={isFormPending || form.isInvalid}
+          disabled={
+            isFormPending ||
+            form.isInvalid ||
+            form.meta.queryName.error !== undefined
+          }
           onClick={form.submit}
         >
           {isFormPending ? "Creating..." : "Create"}
@@ -97,6 +103,36 @@ export default function Page() {
       >
         Search Inspiration
       </h1>
+
+      <FieldText
+        label="Query Name"
+        meta={form.meta.queryName.meta}
+        defaultMeta={form.meta.queryName.default.meta}
+        setValue={(value) => {
+          const result = z.string().trim().min(1).safeParse(value);
+          const error = result.error?.flatten().formErrors[0];
+          if (result.success)
+            form.setFormMeta({
+              queryName: {
+                ...form.meta.queryName,
+                value: result.data,
+                error: error,
+              },
+            });
+          else {
+            form.setFormMeta({
+              queryName: { ...form.meta.queryName, error: error },
+            });
+          }
+        }}
+        setMeta={(value) =>
+          form.setFormMeta({
+            queryName: { ...form.meta.queryName, meta: value },
+          })
+        }
+        disabled={isFormPending}
+        error={form.meta.queryName.error}
+      />
 
       <div>
         <h2

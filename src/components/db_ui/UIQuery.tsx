@@ -1,11 +1,14 @@
 "use client";
 
-import { ButtonLink } from "@/components/Button";
-import { PencilEdit01 } from "@/components/icons";
+import ActionDelete__Query from "@/actions/ActionDelete__Query";
+import Button, { ButtonLink } from "@/components/Button";
+import { Delete01, PencilEdit01 } from "@/components/icons";
+import useQueryQueries__Search from "@/stores/queries/useQueryQueries__Search";
+import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
 import { dateToString } from "@/utils/date";
 import { Selectable } from "kysely";
 import { Query } from "kysely-codegen/dist/db";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 export default function UIQuery({
   data,
@@ -16,6 +19,15 @@ export default function UIQuery({
 }) {
   const date = useMemo(() => dateToString(data.date), [data.date]);
 
+  const [isDeleteFormPending, setIsDeleteFormPending] = useState(false);
+
+  const invalidateQueryQueries__View = useQueryQueries__View(
+    (state) => state.invalidate,
+  );
+  const invalidateQueryQueries__Search = useQueryQueries__Search(
+    (state) => state.invalidate,
+  );
+
   return (
     <div className="m-px flex flex-col ring-1 ring-neutral-600">
       <ButtonLink
@@ -25,6 +37,7 @@ export default function UIQuery({
         size="large"
         color="ghost"
         classNames={{ button: "py-5" }}
+        disabled={isDeleteFormPending}
       >
         {data.name !== null ? data.name : "Untitled"}
       </ButtonLink>
@@ -35,9 +48,29 @@ export default function UIQuery({
           href={`/edit/${data.values}/query`}
           color="ghost"
           size="large"
+          disabled={isDeleteFormPending}
         >
           <PencilEdit01 />
         </ButtonLink>
+        <Button
+          color="danger"
+          disabled={isDeleteFormPending}
+          onClick={async () => {
+            if (confirm("Are you sure?")) {
+              setIsDeleteFormPending(true);
+
+              await ActionDelete__Query({
+                values: data.values,
+              });
+              invalidateQueryQueries__View();
+              invalidateQueryQueries__Search();
+
+              setIsDeleteFormPending(false);
+            }
+          }}
+        >
+          <Delete01 />
+        </Button>
       </div>
     </div>
   );

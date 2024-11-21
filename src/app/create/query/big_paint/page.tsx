@@ -20,7 +20,9 @@ import { z } from "zod";
 export default function Page() {
   const form = useFormSearch__BigPaint();
   const router = useRouter();
+
   const [isFormPending, setIsFormPending] = useState(false);
+
   const invalidateQueryQueries__View = useQueryQueries__View(
     (state) => state.invalidate,
   );

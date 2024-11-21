@@ -2,6 +2,7 @@ import { fieldCheckbox } from "@/components/form_ui/FieldCheckbox";
 import { fieldComparisonDate } from "@/components/form_ui/FieldComparisonDate";
 import { fieldDynamicSelect } from "@/components/form_ui/FieldDynamicSelect";
 import { fieldSelect } from "@/components/form_ui/FieldSelect";
+import { fieldText } from "@/components/form_ui/FieldText";
 import { fieldTextArea } from "@/components/form_ui/FieldTextArea";
 import schemaInspiration__Search from "@/schemas/schemaInspiration__Search";
 import { createForm } from "@/utils/form";
@@ -30,5 +31,8 @@ export default createForm(
     highlight: fieldCheckbox(),
     related_inspirations_ids: fieldDynamicSelect(),
   },
-  { lastValues: undefined as string | undefined },
+  {
+    lastValues: undefined as string | undefined,
+    queryName: fieldText("Untitled"),
+  },
 );
