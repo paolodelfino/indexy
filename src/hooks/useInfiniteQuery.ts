@@ -55,7 +55,7 @@ export default function <T extends Array<any>>({
       observer.current?.disconnect();
       observer.current = null;
     };
-  }, [nextOffset, data, id, lastId, callback]);
+  }, [nextOffset]);
 
   return id;
 }

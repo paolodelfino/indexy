@@ -20,7 +20,9 @@ import { useEffect, useState } from "react";
 export default function Page() {
   const form = useFormSearch__Inspiration();
   const router = useRouter();
+
   const [isFormPending, setIsFormPending] = useState(false);
+  
   const invalidateQueryQueries_View = useQueryQueries__View(
     (state) => state.invalidate,
   );
