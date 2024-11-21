@@ -260,7 +260,10 @@ function SearchBar({
       setValue={(searchQueryValue) => {
         setMeta(validate(searchQueryValue!));
       }}
-      className={'mt-5 data-[is-result="true"]:!rounded-b-none'}
+      classNames={{
+        container: "mt-5",
+        input: 'data-[is-result="true"]:!rounded-b-none',
+      }}
       data-is-result={
         meta.searchResult.length > 0 &&
         !isSearching &&
