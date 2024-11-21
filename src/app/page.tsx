@@ -2,6 +2,7 @@
 
 import Button from "@/components/Button";
 import UIQuery from "@/components/db_ui/UIQuery";
+import FieldSelect from "@/components/form_ui/FieldSelect";
 import FieldText from "@/components/form_ui/FieldText";
 import { Cloud, InformationCircle, SearchSquare } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
@@ -51,8 +52,8 @@ export default function Page() {
       setIsFormPending(true);
 
       searchQuery.reset();
-      searchQuery.active();
-      searchQuery.fetch(form.values());
+      await searchQuery.active();
+      await searchQuery.fetch(form.values());
 
       setIsFormPending(false);
     });
@@ -72,6 +73,14 @@ export default function Page() {
           setMeta={form.setMeta.bind(null, "name")}
           setValue={form.setValue.bind(null, "name")}
           classNames={{ container: "w-full", input: "rounded-t-none" }}
+        />
+        <FieldSelect
+          disabled={isFormPending}
+          placeholder="Category"
+          error={form.fields.category.error}
+          meta={form.fields.category.meta}
+          setMeta={form.setMeta.bind(null, "category")}
+          setValue={form.setValue.bind(null, "category")}
         />
         {form.error !== undefined && (
           <Popover>
@@ -96,7 +105,7 @@ export default function Page() {
         </Button>
         <Button
           title="Search"
-          disabled={isFormPending}
+          disabled={isFormPending || form.isInvalid}
           onClick={form.submit}
           size="large"
           color="ghost"

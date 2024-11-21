@@ -12,9 +12,12 @@ export default async function ActionSearch__Query(
 ) {
   const offset = z.number().int().gte(0).parse(_offset); // TODO: Remove optional
   const limit = z.number().int().gte(0).parse(_limit); // TODO: Remove optional
-  const { name } = schemaQuery__Search.parse(values);
+  const { name, category } = schemaQuery__Search.parse(values);
 
-  const q = db.selectFrom("query").where("name", "~", name);
+  const q = db
+    .selectFrom("query")
+    .where("name", "~", name)
+    .where("category", "=", category);
 
   return {
     data: await q.selectAll().offset(offset).limit(limit).execute(),
