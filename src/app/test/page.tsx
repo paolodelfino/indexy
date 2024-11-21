@@ -1,7 +1,7 @@
 //  import Example from "@/app/test/Example"
-import { notFound } from "next/navigation";
 
 export default function Page() {
-  return notFound(); 
+  return <div></div>;
+  // return notFound();
   //  return <Example/>
 }
