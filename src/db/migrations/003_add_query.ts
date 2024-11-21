@@ -6,7 +6,7 @@ export async function up(db: Kysely<any>): Promise<void> {
       CREATE TYPE query_category AS ENUM ('inspiration', 'big_paint');
   
       CREATE TABLE query (
-        values                  TEXT            PRIMARY KEY CHECK (LENGTH(TRIM(values)) >= 3), -- TODO: Maybe readonly
+        values                  TEXT            PRIMARY KEY CHECK (LENGTH(TRIM(values)) >= 3), -- TODO: Maybe readonly -- TODO: Probabilmente il conflitto deve essere relativo anche a category
         date                    TIMESTAMPTZ     NOT NULL DEFAULT now() CHECK (date <= now()), -- TODO: Maybe save all dates
         name                    TEXT            NOT NULL DEFAULT 'Untitled' CHECK (LENGTH(TRIM(name)) >= 1),
         category                query_category  NOT NULL

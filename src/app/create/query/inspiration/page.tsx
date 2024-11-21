@@ -13,7 +13,7 @@ import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormSearch__Inspiration from "@/stores/forms/useFormSearch__Inspiration";
 import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
-import { valuesToSearchParams } from "@/utils/url";
+import { formValuesToString } from "@/utils/url";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -33,7 +33,7 @@ export default function Page() {
       setIsFormPending(true);
 
       await ActionCreate__Query({
-        values: decodeURIComponent(valuesToSearchParams(form.values())),
+        values: formValuesToString(form.values()),
         category: "inspiration",
         name: "Untitled",
       });
@@ -78,7 +78,7 @@ export default function Page() {
           disabled={isFormPending || form.isInvalid}
           onClick={() =>
             router.push(
-              `/${valuesToSearchParams(form.values())}/query/inspiration`,
+              `/${formValuesToString(form.values())}/query/inspiration`,
             )
           }
         >

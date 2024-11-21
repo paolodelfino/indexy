@@ -5,7 +5,7 @@ import useInfiniteQuery from "@/hooks/useInfiniteQuery";
 import schemaInspiration__Search from "@/schemas/schemaInspiration__Search";
 import useFormSearch__Inspiration from "@/stores/forms/useFormSearch__Inspiration";
 import useQueryInspirations__Search from "@/stores/queries/useQueryInspirations__Search";
-import { valuesFromSearchParamsString } from "@/utils/url";
+import { formValuesFromString } from "@/utils/url";
 import { useEffect, useMemo } from "react";
 import { VList } from "virtua";
 
@@ -19,9 +19,7 @@ export default function Page({
   const values = useMemo(
     () =>
       // TODO: Possiamo probabilmente evitare di parsare con zod qui
-      schemaInspiration__Search.parse(
-        valuesFromSearchParamsString(decodeURIComponent(valuesStr)),
-      ),
+      schemaInspiration__Search.parse(formValuesFromString(valuesStr)),
     [valuesStr],
   );
 
@@ -33,7 +31,6 @@ export default function Page({
       query.reset();
       query.active();
 
-      // NOTE: We leave values encoded here since we're not using it anywhere else
       form.setFormMeta({ lastValues: valuesStr });
     }
   }, [values]);
@@ -69,19 +66,20 @@ export default function Page({
           {query.isFetching ? "loading..." : ""}
         </VList>
       )} */}
-      
-        <VList
-          keepMounted={query.data.length > 0 ? [query.data.length - 1, query.data.length - 1 + 1] : [0]}
-          className="pb-16 scrollbar-hidden"
-        >
-          {query.data.map((it, i) => {
-            return (
-              <UIInspiration key={it.id} data={it} id={`${id}_${it.id}`} />
-            );
-          })}
-          {query.isFetching ? "loading..." : ""}
-        </VList>
-      
+
+      <VList
+        keepMounted={
+          query.data.length > 0
+            ? [query.data.length - 1, query.data.length - 1 + 1]
+            : [0]
+        }
+        className="pb-16 scrollbar-hidden"
+      >
+        {query.data.map((it, i) => {
+          return <UIInspiration key={it.id} data={it} id={`${id}_${it.id}`} />;
+        })}
+        {query.isFetching ? "loading..." : ""}
+      </VList>
     </div>
   );
 }

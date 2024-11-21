@@ -11,7 +11,7 @@ import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormSearch__BigPaint from "@/stores/forms/useFormSearch__BigPaint";
 import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
-import { valuesToSearchParams } from "@/utils/url";
+import { formValuesToString } from "@/utils/url";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -29,7 +29,7 @@ export default function Page() {
       setIsFormPending(true);
 
       await ActionCreate__Query({
-        values: decodeURIComponent(valuesToSearchParams(form.values())),
+        values: formValuesToString(form.values()),
         category: "big_paint",
         name: "Untitled",
       });
@@ -73,9 +73,7 @@ export default function Page() {
         <Button
           disabled={isFormPending || form.isInvalid}
           onClick={() =>
-            router.push(
-              `/${valuesToSearchParams(form.values())}/query/big_paint`,
-            )
+            router.push(`/${formValuesToString(form.values())}/query/big_paint`)
           }
         >
           Search

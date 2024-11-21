@@ -5,7 +5,7 @@ import useInfiniteQuery from "@/hooks/useInfiniteQuery";
 import schemaBigPaint__Search from "@/schemas/schemaBigPaint__Search";
 import useFormSearch__BigPaint from "@/stores/forms/useFormSearch__BigPaint";
 import useQueryBigPaints__Search from "@/stores/queries/useQueryBigPaints__Search";
-import { valuesFromSearchParamsString } from "@/utils/url";
+import { formValuesFromString } from "@/utils/url";
 import { useEffect, useMemo } from "react";
 import { VList } from "virtua";
 
@@ -19,9 +19,7 @@ export default function Page({
   const values = useMemo(
     () =>
       // TODO: Possiamo probabilmente evitare di parsare con zod qui
-      schemaBigPaint__Search.parse(
-        valuesFromSearchParamsString(decodeURIComponent(valuesStr)),
-      ),
+      schemaBigPaint__Search.parse(formValuesFromString(valuesStr)),
     [valuesStr],
   );
 
@@ -33,7 +31,6 @@ export default function Page({
       query.reset();
       query.active();
 
-      // NOTE: We leave values encoded here since we're not using it anywhere else
       form.setFormMeta({ lastValues: valuesStr });
     }
   }, [values]);
