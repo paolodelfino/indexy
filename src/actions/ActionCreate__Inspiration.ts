@@ -4,7 +4,7 @@ import { db } from "@/db/db";
 import schemaInspiration__Create from "@/schemas/schemaInspiration__Create";
 import { FormValues } from "@/utils/form";
 
-export default async function (
+export default async function ActionCreate__Inspiration(
   values: FormValues<typeof schemaInspiration__Create>,
 ) {
   const validated = schemaInspiration__Create.parse(values);

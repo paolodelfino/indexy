@@ -2,7 +2,7 @@
 
 import { db } from "@/db/db";
 
-export default async function (offset: number, limit: number) {
+export default async function ActionFetch__Queries(offset: number, limit: number) {
   return {
     data: await db
       .selectFrom("query")

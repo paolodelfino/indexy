@@ -4,7 +4,7 @@ import { db } from "@/db/db";
 import schemaInspiration__Edit from "@/schemas/schemaInspiration__Edit";
 import { FormValues } from "@/utils/form";
 
-export default async function (
+export default async function ActionEdit__Inspiration(
   id: string,
   values: FormValues<typeof schemaInspiration__Edit>,
 ) {

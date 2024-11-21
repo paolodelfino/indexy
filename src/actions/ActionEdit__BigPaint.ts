@@ -4,8 +4,8 @@ import { db } from "@/db/db";
 import schemaBigPaint__Edit from "@/schemas/schemaBigPaint__Edit";
 import { FormValues } from "@/utils/form";
 
-export default async function (
-  id: string, // TODO: Mettilo nel form (forse non conviene per il field)
+export default async function ActionEdit__BigPaint(
+  id: string, 
   values: FormValues<typeof schemaBigPaint__Edit>,
 ) {
   const validated = schemaBigPaint__Edit.parse(values);

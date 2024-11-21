@@ -7,7 +7,7 @@ import { sql } from "kysely";
 import { z } from "zod";
 
 // TODO: Maybe this can become fetch
-export default async function (
+export default async function ActionSearch__BigPaint(
   _offset: number | null, // TODO: Remove optional
   _limit: number | null, // TODO: Remove optional
   values: FormValues<typeof schemaBigPaint__Search>,

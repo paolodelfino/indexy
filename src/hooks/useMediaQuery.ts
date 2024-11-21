@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 /**
  * https://developer.mozilla.org/docs/Web/API/Window/matchMedia
  */
-export default function (
+export default function useMediaQuery(
   query: string,
   initialValue: boolean = false,
   initialCheckInEffect: boolean = true,

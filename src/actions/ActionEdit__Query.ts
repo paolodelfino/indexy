@@ -5,7 +5,7 @@ import schemaQuery__Edit from "@/schemas/schemaQuery__Edit";
 import { FormValues } from "@/utils/form";
 
 // TODO: Questo (ma non solo) non crasha quando metti un id non valido, probabilmente è per il where clause, comunque mi sa che dovrebbe crashare
-export default async function (
+export default async function ActionEdit__Query(
   id: string,
   values: FormValues<typeof schemaQuery__Edit>,
 ) {

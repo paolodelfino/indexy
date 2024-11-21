@@ -6,7 +6,7 @@ import { FormValues } from "@/utils/form";
 import { sql } from "kysely";
 import { z } from "zod";
 
-export default async function (
+export default async function ActionSearch__Inspiration(
   _offset: number | null, // TODO: Remove optional
   _limit: number | null, // TODO: Remove optional
   values: FormValues<typeof schemaInspiration__Search>,

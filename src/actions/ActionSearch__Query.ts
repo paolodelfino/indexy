@@ -5,7 +5,7 @@ import schemaQuery__Search from "@/schemas/schemaQuery__Search";
 import { FormValues } from "@/utils/form";
 import { z } from "zod";
 
-export default async function (
+export default async function ActionSearch__Query(
   _offset: number,
   _limit: number,
   values: FormValues<typeof schemaQuery__Search>,
