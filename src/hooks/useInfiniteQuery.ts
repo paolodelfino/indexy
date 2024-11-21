@@ -32,7 +32,7 @@ export default function useInfiniteQuery<T extends Array<any>>({
   }, [active, inactive]);
 
   useEffect(() => {
-    console.log(nextOffset, "callback", data, fetchIfNoData, id, lastId);
+    // console.log(nextOffset, "callback", data, fetchIfNoData, id, lastId);
     if (nextOffset !== undefined) {
       if (data === undefined) {
         if (fetchIfNoData) callback();
@@ -50,7 +50,7 @@ export default function useInfiniteQuery<T extends Array<any>>({
           const target = document.getElementById(`${id}_${lastId}`);
           if (target === null) {
             // TODO: Don't know
-            console.log(document.getElementById(id), id, lastId, nextOffset);
+            // console.log(document.getElementById(id), id, lastId, nextOffset);
           } else observer.current.observe(target!);
         }
       }
