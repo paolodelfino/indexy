@@ -59,16 +59,20 @@ export default function AEditor({
   meta,
   setMeta,
   setValue,
-  meta2,
-  setMeta2,
-  setValue2,
+  meta__FieldTextArea,
+  setMeta__FieldTextArea,
+  setValue__FieldTextArea,
 }: {
   meta: Meta;
   setMeta: (meta: Partial<Meta>) => void;
   setValue: (value: Value) => void;
-  meta2: FieldTextArea__Type["meta"];
-  setMeta2: (meta: Partial<FieldTextArea__Type["meta"]>) => void;
-  setValue2: (value: FieldTextArea__Type["value"]) => void;
+  meta__FieldTextArea: FieldTextArea__Type["meta"];
+  setMeta__FieldTextArea: (
+    ...args: Parameters<Parameters<typeof FieldTextArea>["0"]["setMeta"]>
+  ) => void;
+  setValue__FieldTextArea: (
+    ...args: Parameters<Parameters<typeof FieldTextArea>["0"]["setValue"]>
+  ) => void;
 }) {
   useEffect(() => {
     console.log(
@@ -251,10 +255,10 @@ export default function AEditor({
       </div>
 
       <FieldTextArea
-        meta={meta2}
-        setMeta={setMeta2}
+        meta={meta__FieldTextArea}
+        setMeta={setMeta__FieldTextArea}
         setValue={(value) => {
-          setValue2(value);
+          setValue__FieldTextArea(value);
 
           startTransition(() => {
             function isNumber(ch: number) {

@@ -1,8 +1,8 @@
 "use client";
 
 import ActionCreate__Inspiration from "@/actions/ActionCreate__Inspiration";
-import Button from "@/components/Button";
 import AEditor from "@/components/AEditor";
+import Button from "@/components/Button";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormCreate__Inspiration from "@/stores/forms/useFormCreate__Inspiration";
@@ -84,9 +84,9 @@ export default function Page() {
         meta={form.fields.resources.meta}
         setMeta={form.setMeta.bind(null, "resources")}
         setValue={form.setValue.bind(null, "resources")}
-        meta2={form.fields.content.meta}
-        setMeta2={form.setMeta.bind(null, "content")}
-        setValue2={form.setValue.bind(null, "content")}
+        meta__FieldTextArea={form.fields.content.meta}
+        setMeta__FieldTextArea={form.setMeta.bind(null, "content")}
+        setValue__FieldTextArea={form.setValue.bind(null, "content")}
       />
     </div>
   );
