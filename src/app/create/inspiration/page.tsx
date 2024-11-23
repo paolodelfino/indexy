@@ -84,9 +84,12 @@ export default function Page() {
         meta={form.fields.resources.meta}
         setMeta={form.setMeta.bind(null, "resources")}
         setValue={form.setValue.bind(null, "resources")}
+        error={form.fields.resources.error}
         meta__FieldTextArea={form.fields.content.meta}
         setMeta__FieldTextArea={form.setMeta.bind(null, "content")}
         setValue__FieldTextArea={form.setValue.bind(null, "content")}
+        error__FieldTextArea={form.fields.content.error}
+        disabled={isCreateFormPending}
       />
     </div>
   );

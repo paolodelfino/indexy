@@ -4,7 +4,8 @@ import Button from "@/components/Button";
 import FieldTextArea, {
   FieldTextArea__Type,
 } from "@/components/form_ui/FieldTextArea";
-import { BinaryCode } from "@/components/icons";
+import { BinaryCode, InformationCircle } from "@/components/icons";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import { cn } from "@/utils/cn";
 import { FormField } from "@/utils/form";
 import { Selectable } from "kysely";
@@ -59,13 +60,17 @@ export default function AEditor({
   meta,
   setMeta,
   setValue,
+  error,
   meta__FieldTextArea,
   setMeta__FieldTextArea,
   setValue__FieldTextArea,
+  error__FieldTextArea,
+  disabled,
 }: {
   meta: Meta;
   setMeta: (meta: Partial<Meta>) => void;
   setValue: (value: Value) => void;
+  error: string | undefined;
   meta__FieldTextArea: FieldTextArea__Type["meta"];
   setMeta__FieldTextArea: (
     ...args: Parameters<Parameters<typeof FieldTextArea>["0"]["setMeta"]>
@@ -73,6 +78,8 @@ export default function AEditor({
   setValue__FieldTextArea: (
     ...args: Parameters<Parameters<typeof FieldTextArea>["0"]["setValue"]>
   ) => void;
+  error__FieldTextArea: string | undefined;
+  disabled: boolean;
 }) {
   useEffect(() => {
     console.log(
@@ -106,9 +113,21 @@ export default function AEditor({
   return (
     <div className="space-y-2">
       <div className="flex items-end gap-2 overflow-x-auto">
+        {error !== undefined && (
+          <Popover>
+            <PopoverTrigger color="danger">
+              <InformationCircle />
+            </PopoverTrigger>
+            <PopoverContent className="rounded border bg-neutral-700 p-4 italic">
+              {error}
+            </PopoverContent>
+          </Popover>
+        )}
+
         <div>
           <input
             type="file"
+            disabled={disabled}
             hidden
             multiple
             onChange={async (e) => {
@@ -200,6 +219,7 @@ export default function AEditor({
               // TODO: Maybe store the blob url (you can probably manually revoke it when necessary)
               return (
                 <Button
+                  disabled={disabled}
                   classNames={{
                     button: cn(
                       "relative h-40 w-auto shrink-0 block p-0 overflow-hidden",
@@ -229,6 +249,7 @@ export default function AEditor({
               // TODO: Implement binary visualization
               return (
                 <Button
+                  disabled={disabled}
                   classNames={{
                     button: cn(
                       "relative h-20 w-20 shrink-0 block p-0 overflow-hidden",
@@ -295,8 +316,8 @@ export default function AEditor({
             // console.log(b);
           });
         }}
-        error={undefined}
-        disabled={false}
+        error={error__FieldTextArea}
+        disabled={disabled}
       />
     </div>
   );
