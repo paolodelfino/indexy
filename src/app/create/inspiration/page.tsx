@@ -2,7 +2,7 @@
 
 import ActionCreate__Inspiration from "@/actions/ActionCreate__Inspiration";
 import Button from "@/components/Button";
-import FieldTextArea from "@/components/form_ui/FieldTextArea";
+import FieldContentAndUploads from "@/components/form_ui/FieldContentAndUploads";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormCreate__Inspiration from "@/stores/forms/useFormCreate__Inspiration";
@@ -28,11 +28,18 @@ export default function Page() {
     form.setOnSubmit(async (form) => {
       setIsCreateFormPending(true);
 
-      await ActionCreate__Inspiration(form.values());
-      invalidateQueryInspirations__View();
-      invalidateQueryInspirations__Search();
+      // TODO: Qui assumiamo che il valore corrente di value è sempre associato al valore corrente di meta
+      const unused = form.fields.resources.meta.items.filter((it) => it.unused);
+      if (unused.length > 0) alert(`${unused.length} unused assets`);
+      else {
+        // console.log("form values", form.values());
+        // console.log("value direct", form.fields.resources.value);
+        await ActionCreate__Inspiration(form.values());
+        invalidateQueryInspirations__View();
+        invalidateQueryInspirations__Search();
 
-      form.reset();
+        form.reset();
+      }
 
       setIsCreateFormPending(false);
     });
@@ -73,12 +80,13 @@ export default function Page() {
       >
         Create Inspiration
       </h1>
-      <FieldTextArea
-        meta={form.fields.content.meta}
-        setMeta={form.setMeta.bind(form, "content")}
-        setValue={form.setValue.bind(form, "content")}
-        error={form.fields.content.error}
-        disabled={isCreateFormPending}
+      <FieldContentAndUploads
+        meta={form.fields.resources.meta}
+        setMeta={form.setMeta.bind(null, "resources")}
+        setValue={form.setValue.bind(null, "resources")}
+        meta2={form.fields.content.meta}
+        setMeta2={form.setMeta.bind(null, "content")}
+        setValue2={form.setValue.bind(null, "content")}
       />
     </div>
   );

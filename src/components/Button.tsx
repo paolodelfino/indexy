@@ -2,6 +2,7 @@ import Link, { LinkProps } from "next/link";
 import { ClassValue, tv, VariantProps } from "tailwind-variants";
 
 // TODO: Problema con il line clamp
+// TODO: Forse dovremmo giocare con una inner shadow/border, così da eliminare il problema del bordo che viene trimmato fuori
 export const styles = tv({
   slots: {
     button: "flex gap-2 text-start m-px",

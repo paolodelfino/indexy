@@ -8,5 +8,7 @@ export default async function ActionDelete__Inspiration(
   values: FormValues<typeof schemaInspiration__Delete>,
 ) {
   const validated = schemaInspiration__Delete.parse(values);
+
+  // TODO: Also delete associated resources
   await db.deleteFrom("inspiration").where("id", "=", validated.id).execute();
 }
