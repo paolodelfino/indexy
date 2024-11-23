@@ -64,7 +64,6 @@ export default function FieldContentAndUploads({
   meta2,
   setMeta2,
   setValue2,
-  acceptIndeterminate,
 }: {
   meta: Meta;
   setMeta: (meta: Partial<Meta>) => void;
@@ -72,34 +71,29 @@ export default function FieldContentAndUploads({
   meta2: FieldTextArea__Type["meta"];
   setMeta2: (meta: Partial<FieldTextArea__Type["meta"]>) => void;
   setValue2: (value: FieldTextArea__Type["value"]) => void;
-  acceptIndeterminate?: boolean;
 }) {
   useEffect(() => {
     console.log(
       "value",
-      meta.items.length <= 0 && acceptIndeterminate
-        ? undefined
-        : meta.items.map(
-            (it) =>
-              ({
-                sha256: it.sha256,
-                type: it.type,
-                buff: it.buff,
-              }) satisfies NonNullable<Value>[number],
-          ),
+      meta.items.map(
+        (it) =>
+          ({
+            sha256: it.sha256,
+            type: it.type,
+            buff: it.buff,
+          }) satisfies NonNullable<Value>[number],
+      ),
     );
 
     setValue(
-      meta.items.length <= 0 && acceptIndeterminate
-        ? undefined
-        : meta.items.map(
-            (it) =>
-              ({
-                sha256: it.sha256,
-                type: it.type,
-                buff: it.buff,
-              }) satisfies NonNullable<Value>[number],
-          ),
+      meta.items.map(
+        (it) =>
+          ({
+            sha256: it.sha256,
+            type: it.type,
+            buff: it.buff,
+          }) satisfies NonNullable<Value>[number],
+      ),
     );
 
     console.log("meta.items", meta.items);
