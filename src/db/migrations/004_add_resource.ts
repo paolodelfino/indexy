@@ -12,8 +12,6 @@ export async function up(db: Kysely<any>): Promise<void> {
         inspiration_id          UUID          NOT NULL REFERENCES inspiration(id) ON DELETE CASCADE,
         CONSTRAINT unique_resource UNIQUE (sha256, type)
       );
-
-      ALTER TABLE inspiration ADD COLUMN resources_ids UUID[] NOT NULL DEFAULT ARRAY[]::UUID[];
     `.execute(db);
 }
 
@@ -21,6 +19,5 @@ export async function down(db: Kysely<any>): Promise<void> {
   await sql`
       DROP TABLE resource;
       DROP TYPE resource_type;
-      ALTER TABLE inspiration DROP COLUMN resources_ids;
     `.execute(db);
 }
