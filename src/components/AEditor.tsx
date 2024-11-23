@@ -31,11 +31,9 @@ type Value =
     }[]
   | undefined;
 
-export type FieldContentAndUploads__Type = FormField<Value, Meta>;
+export type FieldAEditor__Type = FormField<Value, Meta>;
 
-export function fieldContentAndUploads(
-  meta?: Partial<Meta>,
-): FieldContentAndUploads__Type {
+export function fieldAEditor(meta?: Partial<Meta>): FieldAEditor__Type {
   return {
     meta: {
       items: [],
@@ -57,7 +55,7 @@ export function fieldContentAndUploads(
 
 // TODO: Fai il check dell'unused anche quando uploadi qualcosa di nuovo
 
-export default function FieldContentAndUploads({
+export default function AEditor({
   meta,
   setMeta,
   setValue,
