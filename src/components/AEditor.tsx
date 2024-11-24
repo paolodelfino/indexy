@@ -13,10 +13,7 @@ import { Resource } from "kysely-codegen/dist/db";
 import Image from "next/image";
 import { useEffect, useId, useMemo, useRef } from "react";
 
-type Item = {
-  sha256: string;
-  type: Selectable<Resource>["type"];
-  n: number;
+type Item = Pick<Selectable<Resource>, "n" | "sha256" | "type"> & {
   buff: ArrayBuffer;
   blob_url: string;
   unused: boolean;
@@ -28,20 +25,10 @@ type Meta = {
 };
 
 type Value =
-  | {
-      sha256: string;
-      type: Selectable<Resource>["type"];
+  | (Pick<Selectable<Resource>, "n" | "sha256" | "type"> & {
       buff: ArrayBuffer;
-      n: number;
-    }[]
+    })[]
   | undefined;
-
-// export const schemaFieldAEditor = z.object({
-//   sha256: schemares
-//   type: z.enum(["image", "binary"]),
-//   buff: z.instanceof(ArrayBuffer),
-//   n: z.number().gt(0),
-// });
 
 export type FieldAEditor__Type = FormField<Value, Meta>;
 

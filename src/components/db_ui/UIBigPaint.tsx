@@ -11,7 +11,7 @@ export default function UIBigPaint({
   data,
   id,
 }: {
-  data: Omit<Selectable<BigPaint>, "related_big_paints_ids">; // TODO: Do something about this ommited params
+  data: Pick<Selectable<BigPaint>, "name" | "date" | "id">; // TODO: Include omitted
   id?: string;
 }) {
   // TODO: date doesnt't get updated

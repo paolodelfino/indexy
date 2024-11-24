@@ -59,7 +59,7 @@ export default async function Page({
               sha256: it.sha256!,
               type: it.type!,
               n: it.n!,
-            }) satisfies Omit<Selectable<Resource>, "id" | "inspiration_id">,
+            }) satisfies Pick<Selectable<Resource>, "sha256" | "type" | "n">,
         ),
         relatedBigPaints,
         relatedInspirations,

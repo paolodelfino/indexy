@@ -66,7 +66,7 @@ export default function FieldCheckbox({
   classNames?: {
     [key in keyof ReturnType<typeof styles>]?: ClassValue;
   };
-} & Omit<VariantProps<typeof styles>, "multiple" | "checked">) {
+} & Pick<VariantProps<typeof styles>, "color" | "full" | "size">) {
   useEffect(() => {
     setValue(meta);
   }, [meta]);

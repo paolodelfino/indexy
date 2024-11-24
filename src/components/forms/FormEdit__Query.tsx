@@ -10,12 +10,15 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormEdit__Query from "@/stores/forms/useFormEdit__Query";
 import useQueryQueries__Search from "@/stores/queries/useQueryQueries__Search";
 import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
+import { Selectable } from "kysely";
+import { Query } from "kysely-codegen/dist/db";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function FormEdit__Query({
   data,
 }: {
+  a: Pick<Selectable<Query>, "values" | "date" | "name">;
   data: {
     values: string;
     name: string;

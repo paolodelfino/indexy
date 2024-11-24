@@ -12,16 +12,15 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormEdit__BigPaint from "@/stores/forms/useFormEdit__BigPaint";
 import useQueryBigPaints__Search from "@/stores/queries/useQueryBigPaints__Search";
 import useQueryBigPaints__View from "@/stores/queries/useQueryBigPaints__View";
+import { Selectable } from "kysely";
+import { BigPaint } from "kysely-codegen/dist/db";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function FormEdit__BigPaint({
   data,
 }: {
-  data: {
-    id: string;
-    name: string;
-    date: Date;
+  data: Pick<Selectable<BigPaint>, "id" | "date" | "name"> & {
     relatedBigPaints: { id: string; name: string }[];
   };
 }) {

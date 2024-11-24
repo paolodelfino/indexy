@@ -11,9 +11,9 @@ export default function UIInspiration({
   data,
   id,
 }: {
-  data: Omit<
+  data: Pick<
     Selectable<Inspiration>,
-    "related_big_paints_ids" | "related_inspirations_ids" // TODO: Do something about this ommited params
+    "id" | "content" | "date" | "highlight" // TODO: Include omitted
   >;
   id?: string;
 }) {

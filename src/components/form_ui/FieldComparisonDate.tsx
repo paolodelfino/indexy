@@ -36,7 +36,7 @@ export type FieldComparisonDate__Type = FormField<Value, Meta>;
 
 // We use undefined as the guard value assuming that undefined is equivalent to indeterminate state and nothing else for any field
 export function fieldComparisonDate(value?: {
-  comparison?: Omit<Parameters<typeof fieldSelect>[0], "items">;
+  comparison?: Pick<Parameters<typeof fieldSelect>[0], "selectedItem">;
   date?: Parameters<typeof fieldDate>[0];
   date2?: Parameters<typeof fieldDate>[0];
 }): FieldComparisonDate__Type {

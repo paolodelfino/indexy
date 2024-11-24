@@ -28,7 +28,7 @@ export default function FormEdit__Inspiration({
     content: string;
     highlight: boolean;
     date: Date;
-    resources: Omit<Selectable<Resource>, "id" | "inspiration_id">[];
+    resources: Pick<Selectable<Resource>, "n" | "sha256" | "type">[];
     relatedBigPaints: { id: string; name: string }[];
     relatedInspirations: { id: string; content: string }[];
   };
