@@ -1,14 +1,15 @@
-import schemaResource from "@/schemas/schemaResource";
+import schemaInspiration__DB from "@/schemas/schemaInspiration__DB";
+import schemaResource__DB from "@/schemas/schemaResource__DB";
 import { z } from "zod";
 
 // TODO: Extend this form
 export default z.object({
-  content: z.string().trim().min(1),
+  content: schemaInspiration__DB.shape.content,
   resources: z.array(
     z.object({
-      sha256: schemaResource.shape.sha256,
-      type: schemaResource.shape.type,
-      n: schemaResource.shape.n,
+      sha256: schemaResource__DB.shape.sha256,
+      type: schemaResource__DB.shape.type,
+      n: schemaResource__DB.shape.n,
       buff: z.instanceof(ArrayBuffer),
     }),
   ),

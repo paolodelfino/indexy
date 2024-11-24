@@ -1,6 +1,8 @@
+import schemaQuery__DB from "@/schemas/schemaQuery__DB";
 import { z } from "zod";
 
-export default z.object({
+const schemaQuery__Search = z.object({
   name: z.string().trim().min(1),
-  category: z.enum(["inspiration", "big_paint"]),
+  category: schemaQuery__DB.shape.category,
 });
+export default schemaQuery__Search;

@@ -1,4 +1,4 @@
-import schemaUUID from "@/schemas/schemaUUID";
+import schemaInspiration__DB from "@/schemas/schemaInspiration__DB";
 import { z } from "zod";
 
 export default z
@@ -20,8 +20,14 @@ export default z
       .optional(),
     content: z.string().trim().min(1).optional(),
     highlight: z.boolean().optional(),
-    related_big_paints_ids: z.array(schemaUUID).min(1).optional(),
-    related_inspirations_ids: z.array(schemaUUID).min(1).optional(),
+    related_big_paints_ids: z
+      .array(schemaInspiration__DB.shape.id)
+      .min(1)
+      .optional(),
+    related_inspirations_ids: z
+      .array(schemaInspiration__DB.shape.id)
+      .min(1)
+      .optional(),
     orderBy: z.enum(["date", "highlight", "content"]),
     orderByDir: z.enum(["desc", "asc"]),
   })

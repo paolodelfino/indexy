@@ -5,8 +5,8 @@ export async function up(db: Kysely<any>): Promise<void> {
     CREATE OR REPLACE FUNCTION check_self_reference()
     RETURNS TRIGGER AS $$
     DECLARE
-        related_ids UUID[];
-        removed_ids UUID[];
+        related_ids UUID[]; -- TODO: Can we
+        removed_ids UUID[]; -- remove?
     BEGIN
         IF TG_TABLE_NAME = 'big_paint' THEN
             IF (NEW.related_big_paints_ids IS NOT NULL AND NEW.id = ANY(NEW.related_big_paints_ids)) THEN

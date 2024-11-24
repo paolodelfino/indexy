@@ -1,7 +1,7 @@
 import schemaUUID from "@/schemas/schemaUUID";
 import { z } from "zod";
 
-const schemaResource = z.object({
+const schemaResource__DB = z.object({
   id: schemaUUID,
   sha256: z
     .string()
@@ -11,4 +11,4 @@ const schemaResource = z.object({
   n: z.number().gt(0),
   inspiration_id: schemaUUID,
 });
-export default schemaResource;
+export default schemaResource__DB;

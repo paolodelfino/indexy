@@ -1,4 +1,4 @@
-import schemaUUID from "@/schemas/schemaUUID";
+import schemaBigPaint__DB from "@/schemas/schemaBigPaint__DB";
 import { z } from "zod";
 
 export default z
@@ -19,7 +19,10 @@ export default z
       )
       .optional(),
     name: z.string().trim().min(1).optional(),
-    related_big_paints_ids: z.array(schemaUUID).min(1).optional(),
+    related_big_paints_ids: z
+      .array(schemaBigPaint__DB.shape.id)
+      .min(1)
+      .optional(),
     orderBy: z.enum(["date", "name"]),
     orderByDir: z.enum(["desc", "asc"]),
   })

@@ -1,5 +1,7 @@
+import schemaBigPaint__DB from "@/schemas/schemaBigPaint__DB";
 import { z } from "zod";
 
-export default z.object({
-  name: z.string().trim().min(1),
+const schemaBigPaint__Create = z.object({
+  name: schemaBigPaint__DB.shape.name,
 });
+export default schemaBigPaint__Create;

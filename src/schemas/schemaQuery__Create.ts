@@ -1,8 +1,9 @@
-import schemaId__Query from "@/schemas/schemaId__Query";
+import schemaQuery__DB from "@/schemas/schemaQuery__DB";
 import { z } from "zod";
 
-export default z.object({
-  values: schemaId__Query,
-  name: z.string().trim().min(1),
-  category: z.enum(["inspiration", "big_paint"]),
+const schemaQuery__Create = z.object({
+  values: schemaQuery__DB.shape.values,
+  name: schemaQuery__DB.shape.name,
+  category: schemaQuery__DB.shape.category,
 });
+export default schemaQuery__Create;

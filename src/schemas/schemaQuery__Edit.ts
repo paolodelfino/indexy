@@ -1,6 +1,8 @@
+import schemaQuery__DB from "@/schemas/schemaQuery__DB";
 import { z } from "zod";
 
-export default z.object({
-  name: z.string().trim().min(1).optional(),
-  date: z.date().optional(), // TODO: Add date range check
+const schemaQuery__Edit = z.object({
+  name: schemaQuery__DB.shape.name.optional(),
+  date: schemaQuery__DB.shape.date.optional(), // TODO: Add date range check
 });
+export default schemaQuery__Edit;
