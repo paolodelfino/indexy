@@ -1,4 +1,4 @@
-import schemaId__InspirationBigPaint from "@/schemas/schemaId__InspirationBigPaint";
+import schemaUUID from "@/schemas/schemaUUID";
 import { z } from "zod";
 
-export default z.object({ id: schemaId__InspirationBigPaint });
+export default z.object({ id: schemaUUID });

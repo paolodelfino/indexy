@@ -1,15 +1,13 @@
 import schemaResource from "@/schemas/schemaResource";
 import { z } from "zod";
 
-// TODO: Extend this form
-export default z.object({
-  content: z.string().trim().min(1),
+const schemaResource__InjectBuffer = z.object({
   resources: z.array(
     z.object({
       sha256: schemaResource.shape.sha256,
       type: schemaResource.shape.type,
       n: schemaResource.shape.n,
-      buff: z.instanceof(ArrayBuffer),
     }),
   ),
 });
+export default schemaResource__InjectBuffer;

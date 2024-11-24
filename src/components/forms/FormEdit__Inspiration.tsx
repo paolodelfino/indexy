@@ -2,7 +2,7 @@
 
 import ActionDelete__Inspiration from "@/actions/ActionDelete__Inspiration";
 import ActionEdit__Inspiration from "@/actions/ActionEdit__Inspiration";
-import ActionFetch__Resources from "@/actions/ActionFetch__Resources";
+import ActionInjectBuffer__Resource from "@/actions/ActionInjectBuffer__Resource";
 import ActionSearch__BigPaint from "@/actions/ActionSearch__BigPaint";
 import ActionSearch__Inspiration from "@/actions/ActionSearch__Inspiration";
 import AEditor from "@/components/AEditor";
@@ -15,6 +15,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormEdit__Inspiration from "@/stores/forms/useFormEdit__Inspiration";
 import useQueryInspirations__Search from "@/stores/queries/useQueryInspirations__Search";
 import useQueryInspirations__View from "@/stores/queries/useQueryInspirations__View";
+import { Selectable } from "kysely";
+import { Resource } from "kysely-codegen/dist/db";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -26,7 +28,7 @@ export default function FormEdit__Inspiration({
     content: string;
     highlight: boolean;
     date: Date;
-    resources: { sha256: string; type: "image" | "binary"; n: number }[];
+    resources: Omit<Selectable<Resource>, "id" | "inspiration_id">[];
     relatedBigPaints: { id: string; name: string }[];
     relatedInspirations: { id: string; content: string }[];
   };
@@ -66,14 +68,14 @@ export default function FormEdit__Inspiration({
       form.setFormMeta({ lastId: data.id });
 
       // TODO: Possible call inutile se l'array è vuoto
-      ActionFetch__Resources({ resources: data.resources }).then(
+      ActionInjectBuffer__Resource({ resources: data.resources }).then(
         (resources) => {
           const maxN = resources.reduce((max, value) => {
             return value.n > max ? value.n : max;
           }, 0);
           form.setMetas({
             resources: {
-              items: resources.map((it, index) => {
+              items: resources.map((it) => {
                 // console.log(it.buff);
                 return {
                   n: it.n,

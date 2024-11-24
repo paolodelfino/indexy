@@ -1,11 +1,13 @@
 "use server";
 
 import minioClient from "@/minio/minioClient";
+import schemaResource__InjectBuffer from "@/schemas/schemaResource__InjectBuffer";
+import { FormValues } from "@/utils/form";
 import { z } from "zod";
 
-export default async function ActionFetch__Resources(values: {
-  resources: { sha256: string; type: "image" | "binary"; n: number }[];
-}) {
+export default async function ActionInjectBuffer__Resource(
+  values: FormValues<typeof schemaResource__InjectBuffer>,
+) {
   const validated = z
     .object({
       resources: z.array(
@@ -21,9 +23,9 @@ export default async function ActionFetch__Resources(values: {
     })
     .parse(values);
   return await Promise.all(
-    validated.resources.map(async ({ sha256, type, n }) => {
+    validated.resources.map(async (it) => {
       const buffer = Buffer.concat(
-        await (await minioClient.getObject(type, sha256)).toArray(),
+        await (await minioClient.getObject(it.type, it.sha256)).toArray(),
       );
       // console.log("buffer", buffer);
       const t = buffer.buffer.slice(
@@ -31,9 +33,7 @@ export default async function ActionFetch__Resources(values: {
         buffer.byteOffset + buffer.byteLength,
       );
       return {
-        sha256,
-        type,
-        n,
+        ...it,
         buff:
           t instanceof SharedArrayBuffer ? new ArrayBuffer(t.byteLength) : t, // TODO: Is this bullshit necessary?
       };

@@ -1,4 +1,6 @@
 import { db } from "@/db/db";
+import { Selectable } from "kysely";
+import { Resource } from "kysely-codegen/dist/db";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 const FormEdit__Inspiration = dynamic(
@@ -50,12 +52,15 @@ export default async function Page({
         content: inspiration.content,
         date: inspiration.date,
         highlight: inspiration.highlight,
-        resources: inspiration.resources.filter(Boolean).map((it) => ({
-          // TODO: Questione null item
-          sha256: it.sha256!,
-          type: it.type!,
-          n: it.n!,
-        })),
+        resources: inspiration.resources.filter(Boolean).map(
+          (it) =>
+            ({
+              // TODO: Questione null item
+              sha256: it.sha256!,
+              type: it.type!,
+              n: it.n!,
+            }) satisfies Omit<Selectable<Resource>, "id" | "inspiration_id">,
+        ),
         relatedBigPaints,
         relatedInspirations,
       }}

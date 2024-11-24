@@ -9,30 +9,39 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import { cn } from "@/utils/cn";
 import { FormField } from "@/utils/form";
 import { Selectable } from "kysely";
-import { DB } from "kysely-codegen/dist/db";
+import { Resource } from "kysely-codegen/dist/db";
 import Image from "next/image";
 import { useEffect, useId, useMemo, useRef } from "react";
 
+type Item = {
+  sha256: string;
+  type: Selectable<Resource>["type"];
+  n: number;
+  buff: ArrayBuffer;
+  blob_url: string;
+  unused: boolean;
+};
+
 type Meta = {
-  items: {
-    sha256: string;
-    type: Selectable<DB["resource"]>["type"];
-    n: number;
-    buff: ArrayBuffer;
-    blob_url: string;
-    unused: boolean;
-  }[];
+  items: Item[];
   n: number;
 };
 
 type Value =
   | {
       sha256: string;
-      type: Selectable<DB["resource"]>["type"];
+      type: Selectable<Resource>["type"];
       buff: ArrayBuffer;
       n: number;
     }[]
   | undefined;
+
+// export const schemaFieldAEditor = z.object({
+//   sha256: schemares
+//   type: z.enum(["image", "binary"]),
+//   buff: z.instanceof(ArrayBuffer),
+//   n: z.number().gt(0),
+// });
 
 export type FieldAEditor__Type = FormField<Value, Meta>;
 
@@ -86,17 +95,6 @@ export default function AEditor({
   const timeout = useRef<NodeJS.Timeout | undefined>(undefined);
 
   useEffect(() => {
-    console.log(
-      meta.items.map(
-        (it) =>
-          ({
-            sha256: it.sha256,
-            type: it.type,
-            buff: it.buff,
-            n: it.n,
-          }) satisfies NonNullable<Value>[number],
-      ),
-    );
     setValue(
       meta.items.map(
         (it) =>
@@ -275,7 +273,7 @@ function UploadButton({
 
                     const ext = it.name.split(".").pop()?.toLowerCase(); // TODO: Try with magic number
 
-                    const type: Selectable<DB["resource"]>["type"] =
+                    const type: Selectable<Resource>["type"] =
                       ext === undefined
                         ? "binary"
                         : image.has(ext)
@@ -300,7 +298,7 @@ function UploadButton({
                       type: type,
                       n: ++n,
                       unused: true,
-                    };
+                    } satisfies Item;
                   }),
                 )
               ).filter((it) => it !== undefined),
@@ -354,7 +352,7 @@ function ImageView({
   setMeta,
   disabled,
 }: {
-  data: Meta["items"][number];
+  data: Item;
   meta: Meta;
   setMeta: (value: Partial<Meta>) => void;
   disabled: boolean;
@@ -395,7 +393,7 @@ function BinaryView({
   setMeta,
   disabled,
 }: {
-  data: Meta["items"][number];
+  data: Item;
   meta: Meta;
   setMeta: (value: Partial<Meta>) => void;
   disabled: boolean;
