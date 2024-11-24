@@ -55,8 +55,7 @@ export function fieldAEditor(meta?: Partial<Meta>): FieldAEditor__Type {
   };
 }
 
-// TODO: Fai il check dell'unused anche quando uploadi qualcosa di nuovo
-
+// TODO: Dovremmo fare il check dell'unused anche al submit (sopratutto per il delay aggiunto al check relativo al text field). Magari dovremmo aggiungere la possibilità di mettere più listeners sul form.onSubmit e dare la possibilità ai field di iscriversi
 export default function AEditor({
   meta,
   setMeta,
@@ -141,7 +140,12 @@ export default function AEditor({
           </Popover>
         )}
 
-        <UploadButton meta={meta} setMeta={setMeta} disabled={disabled} />
+        <UploadButton
+          meta={meta}
+          setMeta={setMeta}
+          meta__FieldTextArea={meta__FieldTextArea}
+          disabled={disabled}
+        />
 
         <div className="flex items-end gap-2">{itemsView}</div>
       </div>
@@ -201,10 +205,12 @@ export default function AEditor({
 function UploadButton({
   meta,
   setMeta,
+  meta__FieldTextArea,
   disabled,
 }: {
   meta: Meta;
   setMeta: (value: Partial<Meta>) => void;
+  meta__FieldTextArea: FieldTextArea__Type["meta"];
   disabled: boolean;
 }) {
   const id = useId();
@@ -218,74 +224,99 @@ function UploadButton({
         multiple
         onChange={async (e) => {
           if (e.target.files !== null) {
-            console.log("e.target.files", e.target.files);
+            // console.log("e.target.files", e.target.files);
             // TODO: Maybe use startTransition
             // TODO: Check for pre-existing resource (client and server)
             let n = meta.n;
-            setMeta({
-              items: [
-                ...meta.items,
-                ...(
-                  await Promise.all(
-                    Array.from(e.target.files).map(async (it) => {
-                      const sha256 = Array.from(
-                        new Uint8Array(
-                          await crypto.subtle.digest(
-                            { name: "SHA-256" },
-                            await it.arrayBuffer(),
-                          ),
+            const newItems = [
+              ...meta.items,
+              ...(
+                await Promise.all(
+                  Array.from(e.target.files).map(async (it) => {
+                    const sha256 = Array.from(
+                      new Uint8Array(
+                        await crypto.subtle.digest(
+                          { name: "SHA-256" },
+                          await it.arrayBuffer(),
                         ),
+                      ),
+                    )
+                      .map((byte) => byte.toString(16).padStart(2, "0"))
+                      .join("");
+
+                    const image = new Set([
+                      "jpg",
+                      "jpeg",
+                      "png",
+                      "gif",
+                      "bmp",
+                      "svg",
+                      "webp",
+                      "ico",
+                      "tif",
+                      "tiff",
+                    ]);
+
+                    const ext = it.name.split(".").pop()?.toLowerCase(); // TODO: Try with magic number
+
+                    const type: Selectable<DB["resource"]>["type"] =
+                      ext === undefined
+                        ? "binary"
+                        : image.has(ext)
+                          ? "image"
+                          : "binary";
+
+                    // TODO: Also do server-side check
+                    // TODO: Check più sicuri, perché, ad esempio, potrei essere connesso da più dispositivi
+                    if (
+                      meta.items.find(
+                        (it) => it.sha256 === sha256 && it.type === type,
                       )
-                        .map((byte) => byte.toString(16).padStart(2, "0"))
-                        .join("");
+                    ) {
+                      alert(`${it.name} is an already uploaded resource`);
+                      return undefined;
+                    }
 
-                      const image = new Set([
-                        "jpg",
-                        "jpeg",
-                        "png",
-                        "gif",
-                        "bmp",
-                        "svg",
-                        "webp",
-                        "ico",
-                        "tif",
-                        "tiff",
-                      ]);
+                    return {
+                      buff: await it.arrayBuffer(), // TODO: What's more performant?
+                      blob_url: URL.createObjectURL(
+                        new Blob([await it.arrayBuffer()]),
+                      ),
+                      sha256,
+                      type: type,
+                      n: ++n,
+                      unused: true,
+                    };
+                  }),
+                )
+              ).filter((it) => it !== undefined),
+            ];
 
-                      const ext = it.name.split(".").pop()?.toLowerCase(); // TODO: Try with magic number
+            let ups = newItems.map((it) => ({ ...it, unused: true }));
+            const text = meta__FieldTextArea; // TODO: Magari dovremmo usare il valore anche qui, oppure sempre il meta
+            for (let i = 0; i < text.length; ++i) {
+              if (text[i] === "$") {
+                let j: number;
+                for (
+                  j = i + 1;
+                  j < text.length && text[j] >= "0" && text[j] <= "9";
+                  ++j
+                ) {}
+                const n = parseInt(text.slice(i + 1, j));
+                if (!Number.isNaN(n)) {
+                  for (let j = 0; j < ups.length; ++j) {
+                    if (ups[j].n === n) {
+                      ups[j].unused = false;
+                      break;
+                    }
+                  }
+                }
+                i = j - 1;
+              }
+            }
 
-                      const type: Selectable<DB["resource"]>["type"] =
-                        ext === undefined
-                          ? "binary"
-                          : image.has(ext)
-                            ? "image"
-                            : "binary";
-
-                      // TODO: Also do server-side check
-                      // TODO: Check più sicuri, perché, ad esempio, potrei essere connesso da più dispositivi
-                      if (
-                        meta.items.find(
-                          (it) => it.sha256 === sha256 && it.type === type,
-                        )
-                      ) {
-                        alert(`${it.name} is an already uploaded resource`);
-                        return undefined;
-                      }
-
-                      return {
-                        buff: await it.arrayBuffer(), // TODO: What's more performant?
-                        blob_url: URL.createObjectURL(
-                          new Blob([await it.arrayBuffer()]),
-                        ),
-                        sha256,
-                        type: type,
-                        n: ++n,
-                        unused: true,
-                      };
-                    }),
-                  )
-                ).filter((it) => it !== undefined),
-              ],
+            setMeta({
+              items: ups,
               n: n,
             });
             e.target.value = "";
