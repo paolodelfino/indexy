@@ -26,7 +26,7 @@ export default function FormEdit__Inspiration({
     content: string;
     highlight: boolean;
     date: Date;
-    resources: { sha256: string; type: "image" | "binary" }[];
+    resources: { sha256: string; type: "image" | "binary"; n: number }[];
     relatedBigPaints: { id: string; name: string }[];
     relatedInspirations: { id: string; content: string }[];
   };
@@ -68,12 +68,15 @@ export default function FormEdit__Inspiration({
       // TODO: Possible call inutile se l'array è vuoto
       ActionFetch__Resources({ resources: data.resources }).then(
         (resources) => {
+          const maxN = resources.reduce((max, value) => {
+            return value.n > max ? value.n : max;
+          }, 0);
           form.setMetas({
             resources: {
               items: resources.map((it, index) => {
                 // console.log(it.buff);
                 return {
-                  n: index + 1,
+                  n: it.n,
                   sha256: it.sha256,
                   type: it.type,
                   unused: true,
@@ -81,7 +84,7 @@ export default function FormEdit__Inspiration({
                   blob_url: URL.createObjectURL(new Blob([it.buff])),
                 };
               }),
-              n: data.resources.length,
+              n: maxN,
             },
             related_big_paints_ids: {
               selectedItems: data.relatedBigPaints.map((it) => ({

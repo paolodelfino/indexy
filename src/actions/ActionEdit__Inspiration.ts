@@ -49,6 +49,7 @@ export default async function ActionEdit__Inspiration(
           newResources.map((it) => ({
             sha256: it.sha256,
             type: it.type,
+            n: it.n,
             inspiration_id: id,
           })),
         )

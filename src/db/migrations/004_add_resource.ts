@@ -9,6 +9,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         id                      UUID          PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
         sha256                  CHAR(64)      NOT NULL,
         type                    resource_type NOT NULL,
+        n                       INTEGER       NOT NULL CHECK (n > 0),
         inspiration_id          UUID          NOT NULL REFERENCES inspiration(id) ON DELETE CASCADE,
         CONSTRAINT unique_resource UNIQUE (sha256, type)
       );

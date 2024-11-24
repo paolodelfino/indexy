@@ -30,6 +30,7 @@ type Value =
       sha256: string;
       type: Selectable<DB["resource"]>["type"];
       buff: ArrayBuffer;
+      n: number;
     }[]
   | undefined;
 
@@ -85,6 +86,17 @@ export default function AEditor({
   const timeout = useRef<NodeJS.Timeout | undefined>(undefined);
 
   useEffect(() => {
+    console.log(
+      meta.items.map(
+        (it) =>
+          ({
+            sha256: it.sha256,
+            type: it.type,
+            buff: it.buff,
+            n: it.n,
+          }) satisfies NonNullable<Value>[number],
+      ),
+    );
     setValue(
       meta.items.map(
         (it) =>
@@ -92,6 +104,7 @@ export default function AEditor({
             sha256: it.sha256,
             type: it.type,
             buff: it.buff,
+            n: it.n,
           }) satisfies NonNullable<Value>[number],
       ),
     );

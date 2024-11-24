@@ -50,9 +50,11 @@ export default async function Page({
         content: inspiration.content,
         date: inspiration.date,
         highlight: inspiration.highlight,
-        resources: inspiration.resources.filter(Boolean).map((it) => ({ // TODO: Questione null item
+        resources: inspiration.resources.filter(Boolean).map((it) => ({
+          // TODO: Questione null item
           sha256: it.sha256!,
           type: it.type!,
+          n: it.n!,
         })),
         relatedBigPaints,
         relatedInspirations,

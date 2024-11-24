@@ -10,6 +10,7 @@ export default z.object({
         .trim()
         .regex(/^[a-f0-9]{64}$/i, "Invalid SHA-256 hash"),
       type: z.enum(["image", "binary"]),
+      n: z.number().gt(0),
       buff: z.instanceof(ArrayBuffer),
     }),
   ),
