@@ -11,7 +11,7 @@ import { FormField } from "@/utils/form";
 import { Selectable } from "kysely";
 import { DB } from "kysely-codegen/dist/db";
 import Image from "next/image";
-import { startTransition, useEffect, useId } from "react";
+import { useEffect, useId, useMemo, useRef } from "react";
 
 type Meta = {
   items: {
@@ -19,6 +19,7 @@ type Meta = {
     type: Selectable<DB["resource"]>["type"];
     n: number;
     buff: ArrayBuffer;
+    blob_url: string;
     unused: boolean;
   }[];
   n: number;
@@ -81,19 +82,9 @@ export default function AEditor({
   error__FieldTextArea: string | undefined;
   disabled: boolean;
 }) {
-  useEffect(() => {
-    console.log(
-      "value",
-      meta.items.map(
-        (it) =>
-          ({
-            sha256: it.sha256,
-            type: it.type,
-            buff: it.buff,
-          }) satisfies NonNullable<Value>[number],
-      ),
-    );
+  const timeout = useRef<NodeJS.Timeout | undefined>(undefined);
 
+  useEffect(() => {
     setValue(
       meta.items.map(
         (it) =>
@@ -104,11 +95,37 @@ export default function AEditor({
           }) satisfies NonNullable<Value>[number],
       ),
     );
+  }, [meta.items]); // TODO: Con il client-side routing si bugga il setValue?
 
-    console.log("meta.items", meta.items);
-  }, [meta.items]);
-
-  const id = useId();
+  // TODO: Vedere se il compiler fa questa ottimizazione. In caso contrario, è possibile che ci siano altre ottimizzazioni del genere da fare
+  const itemsView = useMemo(
+    () =>
+      meta.items.map((it) => {
+        if (it.type === "image")
+          // TODO: Is the revoke being handled? Has it to?
+          // TODO: Maybe store the blob url (you can probably manually revoke it when necessary)
+          return (
+            <ImageView
+              key={`${it.type}/${it.sha256}`}
+              data={it}
+              meta={meta}
+              setMeta={setMeta}
+              disabled={disabled}
+            />
+          );
+        else
+          return (
+            <BinaryView
+              key={`${it.type}/${it.sha256}`}
+              data={it}
+              meta={meta}
+              setMeta={setMeta}
+              disabled={disabled}
+            />
+          );
+      }),
+    [meta, disabled], // TODO: Con il client-side routing si bugga il setMeta?
+  );
 
   return (
     <div className="space-y-2">
@@ -124,155 +141,9 @@ export default function AEditor({
           </Popover>
         )}
 
-        <div>
-          <input
-            type="file"
-            disabled={disabled}
-            hidden
-            multiple
-            onChange={async (e) => {
-              if (e.target.files !== null) {
-                console.log("e.target.files", e.target.files);
-                // TODO: Maybe use startTransition
-                // TODO: Check for pre-existing resource (client and server)
-                let n = meta.n;
-                setMeta({
-                  items: [
-                    ...meta.items,
-                    ...(
-                      await Promise.all(
-                        Array.from(e.target.files).map(async (it) => {
-                          const sha256 = Array.from(
-                            new Uint8Array(
-                              await crypto.subtle.digest(
-                                { name: "SHA-256" },
-                                await it.arrayBuffer(),
-                              ),
-                            ),
-                          )
-                            .map((byte) => byte.toString(16).padStart(2, "0"))
-                            .join("");
+        <UploadButton meta={meta} setMeta={setMeta} disabled={disabled} />
 
-                          const image = new Set([
-                            "jpg",
-                            "jpeg",
-                            "png",
-                            "gif",
-                            "bmp",
-                            "svg",
-                            "webp",
-                            "ico",
-                            "tif",
-                            "tiff",
-                          ]);
-
-                          const ext = it.name.split(".").pop()?.toLowerCase(); // TODO: Try with magic number
-
-                          const type: Selectable<DB["resource"]>["type"] =
-                            ext === undefined
-                              ? "binary"
-                              : image.has(ext)
-                                ? "image"
-                                : "binary";
-
-                          // TODO: Also do server-side check
-                          // TODO: Check più sicuri, perché, ad esempio, potrei essere connesso da più dispositivi
-                          if (
-                            meta.items.find(
-                              (it) => it.sha256 === sha256 && it.type === type,
-                            )
-                          ) {
-                            alert(`${it.name} is an already uploaded resource`);
-                            return undefined;
-                          }
-
-                          return {
-                            buff: await it.arrayBuffer(), // TODO: What's more performant?
-                            sha256,
-                            type: type,
-                            n: ++n,
-                            unused: true,
-                          };
-                        }),
-                      )
-                    ).filter((it) => it !== undefined),
-                  ],
-                  n: n,
-                });
-                e.target.value = "";
-              }
-            }}
-            id={id}
-          />
-          <label
-            className="m-px flex w-min gap-2 whitespace-nowrap rounded-xl bg-neutral-800 px-2 py-1 text-start ring-1 ring-neutral-600 hover:cursor-pointer hover:bg-neutral-600 hover:ring-0 active:!bg-neutral-700 active:!ring-1 data-[disabled=true]:pointer-events-none data-[disabled=true]:text-neutral-500"
-            htmlFor={id}
-          >
-            Upload
-          </label>
-        </div>
-
-        <div className="flex items-end gap-2">
-          {meta.items.map((it) => {
-            if (it.type === "image") {
-              // TODO: Is the revoke being handled? Has it to?
-              // TODO: Maybe store the blob url (you can probably manually revoke it when necessary)
-              return (
-                <Button
-                  disabled={disabled}
-                  classNames={{
-                    button: cn(
-                      "relative h-40 w-auto shrink-0 block p-0 overflow-hidden",
-                      it.unused && "opacity-50",
-                    ),
-                  }}
-                  key={`${it.type}/${it.sha256}`}
-                  onClick={() =>
-                    setMeta({
-                      items: meta.items.filter((it2) => it2.n !== it.n),
-                    })
-                  }
-                >
-                  <Image
-                    width={160}
-                    height={160}
-                    src={URL.createObjectURL(new Blob([it.buff]))}
-                    alt={""}
-                    className="h-full w-full"
-                  />
-                  <p className="absolute bottom-1 right-1 rounded-full bg-black/40 px-2">
-                    {it.n}
-                  </p>
-                </Button>
-              );
-            } else {
-              // TODO: Implement binary visualization
-              return (
-                <Button
-                  disabled={disabled}
-                  classNames={{
-                    button: cn(
-                      "relative h-20 w-20 shrink-0 block p-0 overflow-hidden",
-                      it.unused && "opacity-50",
-                    ),
-                    text: "flex justify-center",
-                  }}
-                  key={`${it.type}/${it.sha256}`}
-                  onClick={() =>
-                    setMeta({
-                      items: meta.items.filter((it2) => it2.n !== it.n),
-                    })
-                  }
-                >
-                  <BinaryCode className="h-10 w-10" />
-                  <p className="absolute bottom-1 right-1 rounded-full bg-black/40 px-2">
-                    {it.n}
-                  </p>
-                </Button>
-              );
-            }
-          })}
-        </div>
+        <div className="flex items-end gap-2">{itemsView}</div>
       </div>
 
       <FieldTextArea
@@ -281,11 +152,8 @@ export default function AEditor({
         setValue={(value) => {
           setValue__FieldTextArea(value);
 
-          startTransition(() => {
-            function isNumber(ch: number) {
-              return ch >= "0".charCodeAt(0) && ch <= "9".charCodeAt(0);
-            }
-
+          clearTimeout(timeout.current);
+          timeout.current = setTimeout(() => {
             const uploads = meta.items;
 
             let ups = uploads.map((it) => ({ ...it, unused: true }));
@@ -297,28 +165,218 @@ export default function AEditor({
               // b += text[i];
               if (text[i] === "$") {
                 let j: number;
-                for (j = i + 1; j < text.length; ++j) {
-                  if (!isNumber(text.charCodeAt(j))) break;
+                for (
+                  j = i + 1;
+                  j < text.length && text[j] >= "0" && text[j] <= "9";
+                  ++j
+                ) {
+                  // if (!isNumber(text.charCodeAt(j))) break;
                 }
                 const n = parseInt(text.slice(i + 1, j));
                 if (!Number.isNaN(n)) {
                   // console.log(j, i, n);
-                  // ups[n] !== undefined && (ups[n].unused = false); TODO: Implement
                   for (let j = 0; j < ups.length; ++j) {
-                    if (ups[j].n === n) ups[j].unused = false;
+                    if (ups[j].n === n) {
+                      ups[j].unused = false;
+                      break;
+                    }
                   }
                 }
                 i = j - 1;
               }
             }
 
-            setMeta({ items: ups });
+            if (meta.items.some((it, i) => it.unused !== ups[i].unused))
+              setMeta({ items: ups });
             // console.log(b);
-          });
+          }, 250);
         }}
         error={error__FieldTextArea}
         disabled={disabled}
       />
     </div>
+  );
+}
+
+function UploadButton({
+  meta,
+  setMeta,
+  disabled,
+}: {
+  meta: Meta;
+  setMeta: (value: Partial<Meta>) => void;
+  disabled: boolean;
+}) {
+  const id = useId();
+
+  return (
+    <div>
+      <input
+        type="file"
+        disabled={disabled}
+        hidden
+        multiple
+        onChange={async (e) => {
+          if (e.target.files !== null) {
+            console.log("e.target.files", e.target.files);
+            // TODO: Maybe use startTransition
+            // TODO: Check for pre-existing resource (client and server)
+            let n = meta.n;
+            setMeta({
+              items: [
+                ...meta.items,
+                ...(
+                  await Promise.all(
+                    Array.from(e.target.files).map(async (it) => {
+                      const sha256 = Array.from(
+                        new Uint8Array(
+                          await crypto.subtle.digest(
+                            { name: "SHA-256" },
+                            await it.arrayBuffer(),
+                          ),
+                        ),
+                      )
+                        .map((byte) => byte.toString(16).padStart(2, "0"))
+                        .join("");
+
+                      const image = new Set([
+                        "jpg",
+                        "jpeg",
+                        "png",
+                        "gif",
+                        "bmp",
+                        "svg",
+                        "webp",
+                        "ico",
+                        "tif",
+                        "tiff",
+                      ]);
+
+                      const ext = it.name.split(".").pop()?.toLowerCase(); // TODO: Try with magic number
+
+                      const type: Selectable<DB["resource"]>["type"] =
+                        ext === undefined
+                          ? "binary"
+                          : image.has(ext)
+                            ? "image"
+                            : "binary";
+
+                      // TODO: Also do server-side check
+                      // TODO: Check più sicuri, perché, ad esempio, potrei essere connesso da più dispositivi
+                      if (
+                        meta.items.find(
+                          (it) => it.sha256 === sha256 && it.type === type,
+                        )
+                      ) {
+                        alert(`${it.name} is an already uploaded resource`);
+                        return undefined;
+                      }
+
+                      return {
+                        buff: await it.arrayBuffer(), // TODO: What's more performant?
+                        blob_url: URL.createObjectURL(
+                          new Blob([await it.arrayBuffer()]),
+                        ),
+                        sha256,
+                        type: type,
+                        n: ++n,
+                        unused: true,
+                      };
+                    }),
+                  )
+                ).filter((it) => it !== undefined),
+              ],
+              n: n,
+            });
+            e.target.value = "";
+          }
+        }}
+        id={id}
+      />
+      <label
+        className="m-px flex w-min gap-2 whitespace-nowrap rounded-xl bg-neutral-800 px-2 py-1 text-start ring-1 ring-neutral-600 hover:cursor-pointer hover:bg-neutral-600 hover:ring-0 active:!bg-neutral-700 active:!ring-1 data-[disabled=true]:pointer-events-none data-[disabled=true]:text-neutral-500"
+        htmlFor={id}
+      >
+        Upload
+      </label>
+    </div>
+  );
+}
+
+function ImageView({
+  data,
+  meta,
+  setMeta,
+  disabled,
+}: {
+  data: Meta["items"][number];
+  meta: Meta;
+  setMeta: (value: Partial<Meta>) => void;
+  disabled: boolean;
+}) {
+  return (
+    <Button
+      disabled={disabled}
+      classNames={{
+        button: cn(
+          "relative h-40 w-auto shrink-0 block p-0 overflow-hidden",
+          data.unused && "opacity-50",
+        ),
+      }}
+      key={`${data.type}/${data.sha256}`}
+      onClick={() =>
+        setMeta({
+          items: meta.items.filter((it) => it.n !== data.n),
+        })
+      }
+    >
+      <Image
+        width={160}
+        height={160}
+        // src={URL.createObjectURL(new Blob([data.buff]))}
+        src={data.blob_url}
+        alt={""}
+        className="h-full w-full"
+      />
+      <p className="absolute bottom-1 right-1 rounded-full bg-black/40 px-2">
+        {data.n}
+      </p>
+    </Button>
+  );
+}
+
+function BinaryView({
+  data,
+  meta,
+  setMeta,
+  disabled,
+}: {
+  data: Meta["items"][number];
+  meta: Meta;
+  setMeta: (value: Partial<Meta>) => void;
+  disabled: boolean;
+}) {
+  return (
+    <Button
+      disabled={disabled}
+      classNames={{
+        button: cn(
+          "relative h-20 w-20 shrink-0 block p-0 overflow-hidden",
+          data.unused && "opacity-50",
+        ),
+        text: "flex justify-center",
+      }}
+      key={`${data.type}/${data.sha256}`}
+      onClick={() =>
+        setMeta({
+          items: meta.items.filter((it) => it.n !== data.n),
+        })
+      }
+    >
+      <BinaryCode className="h-10 w-10" />
+      <p className="absolute bottom-1 right-1 rounded-full bg-black/40 px-2">
+        {data.n}
+      </p>
+    </Button>
   );
 }
