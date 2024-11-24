@@ -1,3 +1,4 @@
+import { fieldAEditor } from "@/components/AEditor";
 import { fieldCheckbox } from "@/components/form_ui/FieldCheckbox";
 import { fieldDate } from "@/components/form_ui/FieldDate";
 import { fieldDynamicSelect } from "@/components/form_ui/FieldDynamicSelect";
@@ -13,6 +14,7 @@ export default createForm(
     date: fieldDate(),
     related_big_paints_ids: fieldDynamicSelect(),
     content: fieldTextArea(),
+    resources: fieldAEditor(),
     highlight: fieldCheckbox(),
     related_inspirations_ids: fieldDynamicSelect(),
   },

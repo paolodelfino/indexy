@@ -14,9 +14,14 @@ export default async function Page({
 }) {
   const inspiration = await db
     .selectFrom("inspiration")
-    .where("id", "=", id)
-    .selectAll()
+    .where("inspiration.id", "=", id)
+    .leftJoin("resource", "inspiration.id", "resource.inspiration_id")
+    .selectAll("inspiration")
+    .select((eb) => eb.fn.jsonAgg("resource").as("resources")) // TODO: Select only necessary
+    .groupBy("inspiration.id") // Necessary when using aggregation
     .executeTakeFirst();
+
+  // console.log(inspiration);
 
   if (!inspiration) notFound();
 
@@ -45,6 +50,10 @@ export default async function Page({
         content: inspiration.content,
         date: inspiration.date,
         highlight: inspiration.highlight,
+        resources: inspiration.resources.filter(Boolean).map((it) => ({ // TODO: Questione null item
+          sha256: it.sha256!,
+          type: it.type!,
+        })),
         relatedBigPaints,
         relatedInspirations,
       }}

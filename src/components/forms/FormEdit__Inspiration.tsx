@@ -2,13 +2,14 @@
 
 import ActionDelete__Inspiration from "@/actions/ActionDelete__Inspiration";
 import ActionEdit__Inspiration from "@/actions/ActionEdit__Inspiration";
+import ActionFetch__Resources from "@/actions/ActionFetch__Resources";
 import ActionSearch__BigPaint from "@/actions/ActionSearch__BigPaint";
 import ActionSearch__Inspiration from "@/actions/ActionSearch__Inspiration";
+import AEditor from "@/components/AEditor";
 import Button from "@/components/Button";
 import FieldCheckbox from "@/components/form_ui/FieldCheckbox";
 import FieldDate from "@/components/form_ui/FieldDate";
 import FieldDynamicSelect from "@/components/form_ui/FieldDynamicSelect";
-import FieldTextArea from "@/components/form_ui/FieldTextArea";
 import { InformationCircle, Star } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormEdit__Inspiration from "@/stores/forms/useFormEdit__Inspiration";
@@ -25,6 +26,7 @@ export default function FormEdit__Inspiration({
     content: string;
     highlight: boolean;
     date: Date;
+    resources: { sha256: string; type: "image" | "binary" }[];
     relatedBigPaints: { id: string; name: string }[];
     relatedInspirations: { id: string; content: string }[];
   };
@@ -46,9 +48,14 @@ export default function FormEdit__Inspiration({
     form.setOnSubmit(async (form) => {
       setIsEditFormPending(true);
 
-      await ActionEdit__Inspiration(data.id, form.values());
-      invalidateQueryInspirations__View();
-      invalidateQueryInspirations__Search();
+      // TODO: Qui assumiamo che il valore corrente di value è sempre associato al valore corrente di meta
+      const unused = form.fields.resources.meta.items.filter((it) => it.unused);
+      if (unused.length > 0) alert(`${unused.length} unused assets`);
+      else {
+        await ActionEdit__Inspiration(data.id, form.values());
+        invalidateQueryInspirations__View();
+        invalidateQueryInspirations__Search();
+      }
 
       setIsEditFormPending(false);
     });
@@ -56,30 +63,49 @@ export default function FormEdit__Inspiration({
 
   useEffect(() => {
     if (data.id !== form.meta.lastId) {
-      form.setMetas({
-        related_big_paints_ids: {
-          selectedItems: data.relatedBigPaints.map((it) => ({
-            content: it.name,
-            id: it.id,
-          })),
-        },
-        related_inspirations_ids: {
-          selectedItems: data.relatedInspirations,
-        },
-        date: {
-          date: data.date,
-          time: {
-            hours: data.date.getHours(),
-            minutes: data.date.getMinutes(),
-            seconds: data.date.getSeconds(),
-            milliseconds: data.date.getMilliseconds(),
-          },
-        },
-        content: data.content,
-        highlight: data.highlight,
-      });
-
       form.setFormMeta({ lastId: data.id });
+
+      // TODO: Possible call inutile se l'array è vuoto
+      ActionFetch__Resources({ resources: data.resources }).then(
+        (resources) => {
+          form.setMetas({
+            resources: {
+              items: resources.map((it, index) => {
+                // console.log(it.buff);
+                return {
+                  n: index + 1,
+                  sha256: it.sha256,
+                  type: it.type,
+                  unused: true,
+                  buff: it.buff,
+                  blob_url: URL.createObjectURL(new Blob([it.buff])),
+                };
+              }),
+              n: data.resources.length,
+            },
+            related_big_paints_ids: {
+              selectedItems: data.relatedBigPaints.map((it) => ({
+                content: it.name,
+                id: it.id,
+              })),
+            },
+            related_inspirations_ids: {
+              selectedItems: data.relatedInspirations,
+            },
+            date: {
+              date: data.date,
+              time: {
+                hours: data.date.getHours(),
+                minutes: data.date.getMinutes(),
+                seconds: data.date.getSeconds(),
+                milliseconds: data.date.getMilliseconds(),
+              },
+            },
+            content: data.content,
+            highlight: data.highlight,
+          });
+        },
+      );
     }
   }, [data]);
 
@@ -125,11 +151,15 @@ export default function FormEdit__Inspiration({
         </Popover>
       )}
       <div>
-        <FieldTextArea
-          setValue={form.setValue.bind(form, "content")}
-          setMeta={form.setMeta.bind(form, "content")}
-          meta={form.fields.content.meta}
-          error={form.fields.content.error}
+        <AEditor
+          meta={form.fields.resources.meta}
+          setMeta={form.setMeta.bind(form, "resources")}
+          setValue={form.setValue.bind(form, "resources")}
+          error={form.fields.resources.error}
+          meta__FieldTextArea={form.fields.content.meta}
+          setMeta__FieldTextArea={form.setMeta.bind(form, "content")}
+          setValue__FieldTextArea={form.setValue.bind(form, "content")}
+          error__FieldTextArea={form.fields.content.error}
           disabled={isEditFormPending || isDeleteFormPending}
         />
         <div className="flex min-h-9 items-center justify-end pr-2">

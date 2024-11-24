@@ -55,6 +55,7 @@ export function fieldAEditor(meta?: Partial<Meta>): FieldAEditor__Type {
   };
 }
 
+// TODO: Problema del mismatch $n nel text field con l'n degli uploads quando ricarichi, tipo col edit form
 // TODO: Dovremmo fare il check dell'unused anche al submit (sopratutto per il delay aggiunto al check relativo al text field). Magari dovremmo aggiungere la possibilità di mettere più listeners sul form.onSubmit e dare la possibilità ai field di iscriversi
 export default function AEditor({
   meta,
@@ -233,6 +234,8 @@ function UploadButton({
               ...(
                 await Promise.all(
                   Array.from(e.target.files).map(async (it) => {
+                    // console.log("it", it)
+
                     const sha256 = Array.from(
                       new Uint8Array(
                         await crypto.subtle.digest(
@@ -278,10 +281,8 @@ function UploadButton({
                     }
 
                     return {
-                      buff: await it.arrayBuffer(), // TODO: What's more performant?
-                      blob_url: URL.createObjectURL(
-                        new Blob([await it.arrayBuffer()]),
-                      ),
+                      buff: await it.arrayBuffer(),
+                      blob_url: URL.createObjectURL(it),
                       sha256,
                       type: type,
                       n: ++n,
@@ -364,7 +365,6 @@ function ImageView({
       <Image
         width={160}
         height={160}
-        // src={URL.createObjectURL(new Blob([data.buff]))}
         src={data.blob_url}
         alt={""}
         className="h-full w-full"
