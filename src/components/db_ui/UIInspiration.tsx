@@ -1,11 +1,11 @@
 "use client";
+
 import Button, { ButtonLink } from "@/components/Button";
-import { PencilEdit01, Star } from "@/components/icons";
-import { cn } from "@/utils/cn";
+import { Dialog } from "@/components/Dialog";
+import { ArrowShrink, PencilEdit01 } from "@/components/icons";
 import { Selectable } from "kysely";
-import { Inspiration } from "kysely-codegen/dist/db";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { BigPaint, Inspiration, Resource } from "kysely-codegen/dist/db";
+import React, { ReactNode, useEffect, useState } from "react";
 
 export default function UIInspiration({
   data,
@@ -13,60 +13,151 @@ export default function UIInspiration({
 }: {
   data: Pick<
     Selectable<Inspiration>,
-    "id" | "content" | "date" | "highlight" // TODO: Include omitted
-  >;
+    "content" | "date" | "highlight" | "id"
+  > & {
+    resources: (Selectable<Resource> & { buff: ArrayBuffer })[];
+    relatedBigPaints: Selectable<BigPaint>[];
+    relatedInspirations: Selectable<Inspiration>[];
+  };
   id?: string;
 }) {
-  // TODO: date doesnt't get updated
-  const dateTimeFormat = new Intl.DateTimeFormat(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-  });
-  const [date, setDate] = useState("");
-  useEffect(() => setDate(dateTimeFormat.format(data.date)), []);
+  // TODO: Forse non si aggiornano dopo il primo edit e torni indietro. Si aggiorna dopo il secondo save edit
+  const [contentNodes, setContentNodes] = useState<ReactNode[]>([]);
 
-  const pathname = usePathname();
-  const isItsPage = pathname.endsWith(`/${data.id}/inspiration`);
+  useEffect(() => {
+    let key = 0;
+    let b: ReactNode[] = [];
+
+    for (let i = 0; i < data.content.length; ++i) {
+      if (data.content[i] === "$") {
+        if (data.content[i + 1] === "$") {
+          b.push(<span key={key++}>$</span>);
+          i++;
+        } else {
+          let j = i + 1;
+          while (
+            j < data.content.length &&
+            data.content[j] >= "0" &&
+            data.content[j] <= "9"
+          )
+            j++;
+          const n = parseInt(data.content.slice(i + 1, j));
+          if (!Number.isNaN(n)) {
+            const res = data.resources.find((u) => u.n === n);
+            if (res !== undefined) {
+              // TODO: Empty, invalid binary
+              if (res.type === "image")
+                b.push(<ImageView key={key++} data={res} />);
+              else b.push(<BinaryView key={key++} data={res} />);
+            } else b.push(<span key={key++}>{data.content.slice(i, j)}</span>);
+          } else {
+            b.push(<span key={key++}>$</span>);
+          }
+          i = j - 1;
+        }
+      } else {
+        let j = i;
+        while (j < data.content.length && data.content[j] !== "$") j++;
+        b.push(<span key={key++}>{data.content.slice(i, j)}</span>);
+        i = j - 1;
+      }
+    }
+
+    setContentNodes(b);
+  }, [data.content]);
 
   return (
-    <div id={id} className={cn(isItsPage && "border border-blue-500")}>
-      <p className="hyphens-auto break-words bg-neutral-700 p-4">
-        {data.content}
-      </p>
-      <div className="flex items-center justify-between pr-2">
-        <div className="flex">
-          <ButtonLink
-            color="ghost"
-            href={`/${data.id}/inspiration`}
-            disabled={isItsPage}
-            classNames={{
-              button: "text-neutral-300 size-9 justify-center items-center",
-            }}
-          >
-            ...
-          </ButtonLink>
-          <ButtonLink
-            color="ghost"
-            href={`/edit/${data.id}/inspiration`}
-            classNames={{ button: "size-9 justify-center items-center" }}
-          >
-            <PencilEdit01 className="text-neutral-300" />
-          </ButtonLink>
-        </div>
-        <div className="flex items-center">
-          <span className="text-neutral-500">{date}</span>
-          <Button
-            color="ghost"
-            aria-label="Toggle highlight"
-            classNames={{ button: "pl-4 text-neutral-300" }}
-          >
-            <Star className={cn(data.highlight && "fill-current")} />
-          </Button>
-        </div>
+    <div id={id} className="">
+      <div className="hyphens-auto whitespace-pre-wrap break-words border bg-neutral-700 p-4">
+        {contentNodes}
       </div>
+      <ButtonLink
+        color="ghost"
+        href={`/edit/${data.id}/inspiration`}
+        classNames={{ button: "size-9 justify-center items-center" }}
+      >
+        <PencilEdit01 className="text-neutral-300" />
+      </ButtonLink>
     </div>
+  );
+}
+
+function ImageView({
+  data,
+}: {
+  data: Selectable<Resource> & { buff: ArrayBuffer };
+}) {
+  const [base64, setBase64] = useState("");
+
+  useEffect(() => {
+    const bin = new Uint8Array(data.buff).reduce(
+      (bin, byte) => (bin += String.fromCharCode(byte)),
+      "",
+    );
+    setBase64(btoa(bin));
+  }, [data.buff]);
+
+  return (
+    <Dialog
+      trigger={(dialog) => (
+        <Button onClick={dialog.open} classNames={{ button: "inline" }}>
+          hello
+        </Button>
+      )}
+      className="bg-transparent"
+      content={(dialog) => (
+        <React.Fragment>
+          <Button
+            classNames={{ button: "ml-auto" }}
+            color="ghost"
+            onClick={dialog.close}
+          >
+            <ArrowShrink />
+          </Button>
+          <img src={`data:image/png;base64,${base64}`} />
+        </React.Fragment>
+      )}
+    />
+  );
+}
+
+function BinaryView({
+  data,
+}: {
+  data: Selectable<Resource> & { buff: ArrayBuffer };
+}) {
+  // TODO: Slow rendering with large data
+  const [bin, setBin] = useState("");
+
+  useEffect(() => {
+    const bin = new Uint8Array(data.buff).reduce(
+      (bin, byte) => (bin += String.fromCharCode(byte)),
+      "",
+    );
+    console.log(data.buff.slice(0, 20), bin.slice(0, 20));
+    setBin(bin);
+  }, [data.buff]);
+
+  return (
+    <Dialog
+      trigger={(dialog) => (
+        <Button onClick={dialog.open} classNames={{ button: "inline" }}>
+          hello
+        </Button>
+      )}
+      className="w-full max-w-4xl bg-transparent"
+      content={(dialog) => (
+        <React.Fragment>
+          <Button
+            classNames={{ button: "ml-auto" }}
+            color="ghost"
+            onClick={dialog.close}
+          >
+            <ArrowShrink />
+          </Button>
+          <p className="whitespace-pre-wrap bg-black text-white">{bin}</p>
+        </React.Fragment>
+      )}
+    />
   );
 }

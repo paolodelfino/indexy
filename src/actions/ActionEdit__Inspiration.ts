@@ -5,6 +5,7 @@ import minioClient from "@/minio/minioClient";
 import schemaInspiration__Edit from "@/schemas/schemaInspiration__Edit";
 import { FormValues } from "@/utils/form";
 
+// TODO: Problema della grandezza massima della richiesta
 export default async function ActionEdit__Inspiration(
   id: string,
   values: FormValues<typeof schemaInspiration__Edit>,
@@ -43,18 +44,20 @@ export default async function ActionEdit__Inspiration(
           eb.or(deletedResources.map((it) => eb("id", "=", it.id))),
         )
         .execute(),
-      db
-        .insertInto("resource")
-        .values(
-          newResources.map((it) => ({
-            sha256: it.sha256,
-            type: it.type,
-            n: it.n,
-            inspiration_id: id,
-          })),
-        )
-        .execute(),
-      newResources.map((it) =>
+      newResources.length > 0
+        ? db
+            .insertInto("resource")
+            .values(
+              newResources.map((it) => ({
+                sha256: it.sha256,
+                type: it.type,
+                n: it.n,
+                inspiration_id: id,
+              })),
+            )
+            .execute()
+        : undefined,
+      ...newResources.map((it) =>
         minioClient.putObject(it.type, it.sha256, Buffer.from(it.buff)),
       ),
     ]);

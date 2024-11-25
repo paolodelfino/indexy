@@ -1,6 +1,7 @@
 "use server";
 
 import { db } from "@/db/db";
+import minioClient from "@/minio/minioClient";
 import schemaInspiration__Search from "@/schemas/schemaInspiration__Search";
 import { FormValues } from "@/utils/form";
 import { sql } from "kysely";
@@ -55,13 +56,68 @@ export default async function ActionSearch__Inspiration(
 
   if (content !== undefined) q = q.where("content", "~", content);
 
+  const a = await q
+    .orderBy(orderBy, orderByDir)
+    .selectAll()
+    .$if(offset !== null, (qb) => qb.offset(offset!))
+    .$if(limit !== null, (qb) => qb.limit(limit!))
+    .execute();
+
+  const b = await Promise.all(
+    a.map(async (it) => {
+      const { related_big_paints_ids, related_inspirations_ids, ...rest } = it;
+
+      const [resources, relatedBigPaints, relatedInspirations] =
+        await Promise.all([
+          db
+            .selectFrom("resource")
+            .where("inspiration_id", "=", it.id)
+            .selectAll()
+            .execute(),
+          db
+            .selectFrom("big_paint")
+            .where((eb) =>
+              eb.or(it.related_big_paints_ids.map((it) => eb("id", "=", it))),
+            )
+            .selectAll()
+            .execute(),
+          db
+            .selectFrom("inspiration")
+            .where((eb) =>
+              eb.or(it.related_inspirations_ids.map((it) => eb("id", "=", it))),
+            )
+            .selectAll()
+            .execute(),
+        ]);
+
+      return {
+        ...rest,
+        resources: await Promise.all(
+          resources.map(async (it) => {
+            const buffer = Buffer.concat(
+              await (await minioClient.getObject(it.type, it.sha256)).toArray(),
+            );
+            const t = buffer.buffer.slice(
+              buffer.byteOffset,
+              buffer.byteOffset + buffer.byteLength,
+            );
+            return {
+              ...it,
+              buff:
+                t instanceof SharedArrayBuffer
+                  ? new ArrayBuffer(t.byteLength)
+                  : t, // TODO: Is this bullshit necessary?
+            };
+          }),
+        ),
+        relatedBigPaints,
+        relatedInspirations,
+      };
+    }),
+  );
+
   return {
-    data: await q
-      .orderBy(orderBy, orderByDir)
-      .select(["id", "content", "highlight", "date"])
-      .$if(offset !== null, (qb) => qb.offset(offset!)) // TODO: Remove optional
-      .$if(limit !== null, (qb) => qb.limit(limit!)) // TODO: Remove optional
-      .execute(),
+    data: b,
     total: Number(
       (
         await q

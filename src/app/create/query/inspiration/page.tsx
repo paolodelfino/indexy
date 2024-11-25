@@ -252,7 +252,7 @@ export default function Page() {
             related_inspirations_ids: undefined,
             related_big_paints_ids: undefined,
             highlight: undefined,
-          }).then((res) =>
+          }).then((res) => // TODO: Add select to avoid bloating responses and also remapping
             res.data.map((item) => ({
               content: item.content,
               id: item.id,

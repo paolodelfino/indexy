@@ -19,19 +19,20 @@ export default async function ActionCreate__Inspiration(
   ).id;
 
   await Promise.all([
-    db
-      .insertInto("resource")
-      .values(
-        validated.resources.map((it) => ({
-          sha256: it.sha256,
-          type: it.type,
-          n: it.n,
-          inspiration_id: id,
-        })),
-      )
-      .returning("id")
-      .execute(),
-    validated.resources.map((it) =>
+    validated.resources.length > 0
+      ? db
+          .insertInto("resource")
+          .values(
+            validated.resources.map((it) => ({
+              sha256: it.sha256,
+              type: it.type,
+              n: it.n,
+              inspiration_id: id,
+            })),
+          )
+          .execute()
+      : undefined,
+    ...validated.resources.map((it) =>
       // TODO: Forse dovremmo anche salvare l'estensione
       minioClient.putObject(it.type, it.sha256, Buffer.from(it.buff)),
     ),

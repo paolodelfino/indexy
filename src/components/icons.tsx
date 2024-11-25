@@ -1,4 +1,4 @@
-import type { SVGProps } from "react";
+import type { SVGProps } from "react"
 
 export function Star(props: SVGProps<SVGSVGElement>) {
   return (
@@ -368,6 +368,28 @@ export function BinaryCode(props: SVGProps<SVGSVGElement>) {
         strokeLinejoin="round"
         strokeWidth={1.5}
         d="M2 6c0-.943 0-1.414.293-1.707S3.057 4 4 4s1.414 0 1.707.293S6 5.057 6 6v2c0 .943 0 1.414-.293 1.707S4.943 10 4 10s-1.414 0-1.707-.293S2 8.943 2 8zm4.5 10c0-.943 0-1.414.293-1.707S7.557 14 8.5 14s1.414 0 1.707.293s.293.764.293 1.707v2c0 .943 0 1.414-.293 1.707S9.443 20 8.5 20s-1.414 0-1.707-.293S6.5 18.943 6.5 18zm7-10c0-.943 0-1.414.293-1.707S14.557 4 15.5 4s1.414 0 1.707.293s.293.764.293 1.707v2c0 .943 0 1.414-.293 1.707S16.443 10 15.5 10s-1.414 0-1.707-.293S13.5 8.943 13.5 8zm0 10c0-.943 0-1.414.293-1.707S14.557 14 15.5 14s1.414 0 1.707.293s.293.764.293 1.707v2c0 .943 0 1.414-.293 1.707S16.443 20 15.5 20s-1.414 0-1.707-.293S13.5 18.943 13.5 18zM9 5l1.5-1v6M2 15l1.5-1v6m17-15L22 4v6m-1.5 5l1.5-1v6"
+        color="currentColor"
+      ></path>
+    </svg>
+  );
+}
+
+export function ArrowShrink(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={24}
+      height={24}
+      fill="none"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1.5}
+        d="M14.23 17.995c-.01-.75-.526-3.234 0-3.76c.527-.527 3.01-.01 3.76 0M21 20.999l-6.385-6.383M9.77 17.995c.01-.75.526-3.234-.001-3.76c-.527-.527-3.01-.01-3.759 0M3 20.999l6.385-6.383M6.008 9.761c.75.01 3.233.522 3.759-.005s.006-3.01-.006-3.76m-.384 3.371L3.002 3.002m14.99 6.759c-.75.01-3.234.522-3.76-.005s-.005-3.01.006-3.76m.384 3.371l6.375-6.365"
         color="currentColor"
       ></path>
     </svg>

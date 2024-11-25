@@ -218,7 +218,7 @@ export default function FormEdit__Inspiration({
         error={form.fields.related_inspirations_ids.error}
         disabled={isEditFormPending || isDeleteFormPending}
         search={(_, { query }) =>
-          ActionSearch__Inspiration(null, null, {
+          ActionSearch__Inspiration(null, null, { // TODO: Add select to avoid bloating responses and also remapping
             content: query,
             orderBy: "date",
             orderByDir: "asc",
