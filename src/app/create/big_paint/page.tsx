@@ -7,16 +7,12 @@ import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormCreate__BigPaint from "@/stores/forms/useFormCreate__BigPaint";
 import useQueryBigPaints__Search from "@/stores/queries/useQueryBigPaints__Search";
-import useQueryBigPaints__View from "@/stores/queries/useQueryBigPaints__View";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Page() {
   const router = useRouter();
 
-  const invalidateQueryBigPaints__View = useQueryBigPaints__View(
-    (state) => state.invalidate,
-  );
   const invalidateQueryBigPaints__Search = useQueryBigPaints__Search(
     (state) => state.invalidate,
   );
@@ -29,7 +25,6 @@ export default function Page() {
       setIsCreateFormPending(true);
 
       await ActionCreate__BigPaint(form.values());
-      invalidateQueryBigPaints__View();
       invalidateQueryBigPaints__Search();
 
       form.reset();

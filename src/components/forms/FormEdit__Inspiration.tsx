@@ -14,7 +14,6 @@ import { InformationCircle, Star } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormEdit__Inspiration from "@/stores/forms/useFormEdit__Inspiration";
 import useQueryInspirations__Search from "@/stores/queries/useQueryInspirations__Search";
-import useQueryInspirations__View from "@/stores/queries/useQueryInspirations__View";
 import { Selectable } from "kysely";
 import { Resource } from "kysely-codegen/dist/db";
 import { useRouter } from "next/navigation";
@@ -38,9 +37,6 @@ export default function FormEdit__Inspiration({
   const [isDeleteFormPending, setIsDeleteFormPending] = useState(false);
   const [isEditFormPending, setIsEditFormPending] = useState(false);
 
-  const invalidateQueryInspirations__View = useQueryInspirations__View(
-    (state) => state.invalidate,
-  );
   const invalidateQueryInspirations__Search = useQueryInspirations__Search(
     (state) => state.invalidate,
   );
@@ -55,7 +51,6 @@ export default function FormEdit__Inspiration({
       if (unused.length > 0) alert(`${unused.length} unused assets`);
       else {
         await ActionEdit__Inspiration(data.id, form.values());
-        invalidateQueryInspirations__View();
         invalidateQueryInspirations__Search();
       }
 
@@ -124,7 +119,6 @@ export default function FormEdit__Inspiration({
 
               await ActionDelete__Inspiration({ id: data.id });
 
-              invalidateQueryInspirations__View();
               invalidateQueryInspirations__Search();
 
               setIsDeleteFormPending(false);
@@ -218,7 +212,8 @@ export default function FormEdit__Inspiration({
         error={form.fields.related_inspirations_ids.error}
         disabled={isEditFormPending || isDeleteFormPending}
         search={(_, { query }) =>
-          ActionSearch__Inspiration(null, null, { // TODO: Add select to avoid bloating responses and also remapping
+          ActionSearch__Inspiration(null, null, {
+            // TODO: Add select to avoid bloating responses and also remapping
             content: query,
             orderBy: "date",
             orderByDir: "asc",

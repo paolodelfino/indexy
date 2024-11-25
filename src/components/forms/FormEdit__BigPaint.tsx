@@ -11,7 +11,6 @@ import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormEdit__BigPaint from "@/stores/forms/useFormEdit__BigPaint";
 import useQueryBigPaints__Search from "@/stores/queries/useQueryBigPaints__Search";
-import useQueryBigPaints__View from "@/stores/queries/useQueryBigPaints__View";
 import { Selectable } from "kysely";
 import { BigPaint } from "kysely-codegen/dist/db";
 import { useRouter } from "next/navigation";
@@ -26,9 +25,6 @@ export default function FormEdit__BigPaint({
 }) {
   const router = useRouter();
 
-  const invalidateQueryBigPaints__View = useQueryBigPaints__View(
-    (state) => state.invalidate,
-  );
   const invalidateQueryBigPaints__Search = useQueryBigPaints__Search(
     (state) => state.invalidate,
   );
@@ -43,7 +39,6 @@ export default function FormEdit__BigPaint({
 
       // await (await import("@/actions/ActionEdit__BigPaint")).ActionEdit__BigPaint(data.id, form.values())
       await ActionEdit__BigPaint(data.id, form.values());
-      invalidateQueryBigPaints__View();
       invalidateQueryBigPaints__Search();
 
       setIsEditFormPending(false);
@@ -98,7 +93,6 @@ export default function FormEdit__BigPaint({
 
               await ActionDelete__BigPaint({ id: data.id });
 
-              invalidateQueryBigPaints__View();
               invalidateQueryBigPaints__Search();
 
               setIsDeleteFormPending(false);

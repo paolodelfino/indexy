@@ -7,16 +7,12 @@ import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormCreate__Inspiration from "@/stores/forms/useFormCreate__Inspiration";
 import useQueryInspirations__Search from "@/stores/queries/useQueryInspirations__Search";
-import useQueryInspirations__View from "@/stores/queries/useQueryInspirations__View";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Page() {
   const router = useRouter();
 
-  const invalidateQueryInspirations__View = useQueryInspirations__View(
-    (state) => state.invalidate,
-  );
   const invalidateQueryInspirations__Search = useQueryInspirations__Search(
     (state) => state.invalidate,
   );
@@ -35,7 +31,6 @@ export default function Page() {
         // console.log("form values", form.values());
         // console.log("value direct", form.fields.resources.value);
         await ActionCreate__Inspiration(form.values());
-        invalidateQueryInspirations__View();
         invalidateQueryInspirations__Search();
 
         form.reset();

@@ -134,7 +134,6 @@ function BinaryView({
       (bin, byte) => (bin += String.fromCharCode(byte)),
       "",
     );
-    console.log(data.buff.slice(0, 20), bin.slice(0, 20));
     setBin(bin);
   }, [data.buff]);
 
