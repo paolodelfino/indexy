@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 // TODO: Problema con le richieste in parallelo (ad esempio, quello dello state isFetching)
+// TODO: Implementa meccanismo per bloccare fetch simultanei
 
 export interface QueryState<Fn extends (...args: any) => any> {
   data: Awaited<ReturnType<Fn>> | undefined;

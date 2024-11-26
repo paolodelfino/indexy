@@ -7,6 +7,7 @@ import { Selectable } from "kysely";
 import { BigPaint, Inspiration, Resource } from "kysely-codegen/dist/db";
 import React, { ReactNode, useEffect, useState } from "react";
 
+// TODO: Complete
 export default function UIInspiration({
   data,
   id,
