@@ -127,7 +127,8 @@ export default function AEditor({
 
   return (
     <div className="space-y-2">
-      <div className="flex items-end gap-2 overflow-x-auto">
+      {/* TODO: Sticky doesn't work on iphone, I think because it scrolls the window */}
+      <div className="sticky top-0 flex items-end gap-2 overflow-x-auto bg-black">
         {error !== undefined && (
           <Popover>
             <PopoverTrigger color="danger">

@@ -44,6 +44,7 @@ export function fieldDate(meta?: Partial<Meta>): FieldDate__Type {
   };
 }
 
+// TODO: Usa il dialog su schermi piccoli (fai riferimento alla grandezza massima del picker)
 export default function FieldDate({
   meta,
   setMeta,
