@@ -1,11 +1,21 @@
 "use client";
 
 import Button, { ButtonLink } from "@/components/Button";
+import UIBigPaint from "@/components/db_ui/UIBigPaint";
 import { Dialog } from "@/components/Dialog";
-import { ArrowShrink, PencilEdit01 } from "@/components/icons";
+import {
+  ArrowShrink,
+  BinaryCode,
+  InkStroke20Filled,
+  PencilEdit01,
+  Square,
+  Star,
+} from "@/components/icons";
+import { cn } from "@/utils/cn";
+import { dateToString } from "@/utils/date";
 import { Selectable } from "kysely";
 import { BigPaint, Inspiration, Resource } from "kysely-codegen/dist/db";
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useMemo, useState } from "react";
 
 // TODO: Complete
 export default function UIInspiration({
@@ -22,7 +32,6 @@ export default function UIInspiration({
   };
   id?: string;
 }) {
-  // TODO: Forse non si aggiornano dopo il primo edit e torni indietro. Si aggiorna dopo il secondo save edit
   const [contentNodes, setContentNodes] = useState<ReactNode[]>([]);
 
   useEffect(() => {
@@ -67,18 +76,108 @@ export default function UIInspiration({
     setContentNodes(b);
   }, [data.content]);
 
+  const date = useMemo(() => dateToString(data.date), [data.date]);
+
   return (
-    <div id={id} className="">
-      <div className="hyphens-auto whitespace-pre-wrap break-words border bg-neutral-700 p-4">
+    /* TODO: Sarebbe meglio se fosse la lista ad aggiungere lo spacing tra gli elementi */
+    <div id={id} className="my-2">
+      <div className="hyphens-auto whitespace-pre-wrap break-words rounded-t bg-neutral-700 p-4">
         {contentNodes}
       </div>
-      <ButtonLink
-        color="ghost"
-        href={`/edit/${data.id}/inspiration`}
-        classNames={{ button: "size-9 justify-center items-center" }}
-      >
-        <PencilEdit01 className="text-neutral-300" />
-      </ButtonLink>
+
+      <div className="flex h-16 items-center gap-2 overflow-x-auto rounded-b bg-neutral-900 px-2">
+        <p className="shrink-0 text-neutral-500">{date}</p>
+
+        <p>{<Star className={cn(data.highlight && "fill-current")} />}</p>
+
+        <div className="ml-2 flex">
+          {/* TODO: Lasciare qualcosa per la memoria visiva e muscolare */}
+          {data.relatedBigPaints.length > 0 && (
+            <Dialog
+              trigger={(dialog) => (
+                <Button
+                  classNames={{ button: "max-w-32" }}
+                  onClick={dialog.open}
+                  color="ghost"
+                  size="large"
+                >
+                  <Square />
+                </Button>
+              )}
+              className="w-full max-w-4xl bg-transparent backdrop:bg-neutral-900/95"
+              content={(dialog) => {
+                return (
+                  <React.Fragment>
+                    <Button
+                      onClick={dialog.close}
+                      classNames={{ button: "ml-auto" }}
+                      color="ghost"
+                    >
+                      <ArrowShrink />
+                    </Button>
+
+                    {/* TODO: Virtualization */}
+                    {/* TODO: Resta sempre la questione di star passando troppo, immagina 1000 big paints per qualche motivo */}
+                    <ul className="bg-black">
+                      {data.relatedBigPaints.map((it) => (
+                        <UIBigPaint key={it.id} data={it} />
+                      ))}
+                    </ul>
+                  </React.Fragment>
+                );
+              }}
+            />
+          )}
+
+          {/* TODO: Lasciare qualcosa per la memoria visiva e muscolare */}
+          {data.relatedInspirations.length > 0 && (
+            <Dialog
+              trigger={(dialog) => (
+                <Button
+                  classNames={{ button: "max-w-32" }}
+                  onClick={dialog.open}
+                  color="ghost"
+                  size="large"
+                >
+                  <InkStroke20Filled />
+                </Button>
+              )}
+              className="w-full max-w-4xl bg-transparent backdrop:bg-neutral-900/95"
+              content={(dialog) => {
+                return (
+                  <React.Fragment>
+                    <Button
+                      onClick={dialog.close}
+                      classNames={{ button: "ml-auto" }}
+                      color="ghost"
+                    >
+                      <ArrowShrink />
+                    </Button>
+
+                    {/* TODO: Virtualization */}
+                    {/* TODO: Resta sempre la questione di star passando troppo, immagina 1000 big paints per qualche motivo */}
+                    <ul className="bg-black">
+                      {/* TODO: Implement */}
+                      {/* TODO: Loadable related (lazy I mean of course) */}
+                      {data.relatedInspirations.map((it) => (
+                        <li key={it.id}>{it.content}</li>
+                      ))}
+                    </ul>
+                  </React.Fragment>
+                );
+              }}
+            />
+          )}
+
+          <ButtonLink
+            color="ghost"
+            href={`/edit/${data.id}/inspiration`}
+            size="large"
+          >
+            <PencilEdit01 className="text-neutral-300" />
+          </ButtonLink>
+        </div>
+      </div>
     </div>
   );
 }
@@ -101,9 +200,11 @@ function ImageView({
   return (
     <Dialog
       trigger={(dialog) => (
-        <Button onClick={dialog.open} classNames={{ button: "inline" }}>
-          hello
-        </Button>
+        <img
+          className="inline w-12 hover:cursor-pointer"
+          src={`data:image;base64,${base64}`}
+          onClick={dialog.open}
+        />
       )}
       className="bg-transparent"
       content={(dialog) => (
@@ -115,7 +216,7 @@ function ImageView({
           >
             <ArrowShrink />
           </Button>
-          <img src={`data:image/png;base64,${base64}`} />
+          <img src={`data:image;base64,${base64}`} />
         </React.Fragment>
       )}
     />
@@ -142,7 +243,7 @@ function BinaryView({
     <Dialog
       trigger={(dialog) => (
         <Button onClick={dialog.open} classNames={{ button: "inline" }}>
-          hello
+          <BinaryCode />
         </Button>
       )}
       className="w-full max-w-4xl bg-transparent"
