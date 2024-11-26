@@ -66,13 +66,16 @@ export default function Page({
 
   if (query.data === undefined) return <span>loading no cache</span>;
 
-  // TODO: Problema del doppio fetch (revalidation e next page) a causa della vlist che col client-side routing qui mostra solo gli ultimo due elementi mentre aggiorniamo e la guardia attiva il fetch alla prossima pagina
   return (
     <div className="flex h-full flex-col">
       <h2 className="p-4 text-lg font-medium">Result ({query.total})</h2>
       {query.data.length > 0 && (
         <VList
-          keepMounted={[query.data.length - 1, query.data.length - 1 + 1]}
+          keepMounted={
+            query.isFetching
+              ? []
+              : [query.data.length - 1, query.data.length - 1 + 1]
+          }
           className="pb-16 scrollbar-hidden"
         >
           {query.data.map((it, i) => {
