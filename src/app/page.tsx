@@ -127,10 +127,11 @@ export default function Page() {
         searchQuery.data.length > 0 && (
           <VList
             // ssrCount={}
-            keepMounted={[
-              searchQuery.data.length - 1,
-              searchQuery.data.length - 1 + 1,
-            ]}
+            keepMounted={
+              searchQuery.isFetching
+                ? []
+                : [searchQuery.data.length - 1, searchQuery.data.length - 1 + 1]
+            }
             className="pb-16 scrollbar-hidden"
             id={idSearch}
           >
@@ -150,7 +151,11 @@ export default function Page() {
       {!form.meta.showSearch && (
         <VList
           // ssrCount={}
-          keepMounted={[query.data.length - 1, query.data.length - 1 + 1]}
+          keepMounted={
+            query.isFetching
+              ? []
+              : [query.data.length - 1, query.data.length - 1 + 1]
+          }
           className="pb-16 scrollbar-hidden"
         >
           {query.data.map((it) => {
