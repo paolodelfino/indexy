@@ -5,9 +5,9 @@ import { notFound } from "next/navigation";
 // TODO: History (using versioning)
 
 export default async function Page({
-  params: { id: values },
+  params: { values },
 }: {
-  params: { id: string };
+  params: { values: string };
 }) {
   const entry = await db
     .selectFrom("query")

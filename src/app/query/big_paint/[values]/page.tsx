@@ -1,7 +1,7 @@
 "use client";
 
 import ActionEdit__Query from "@/actions/ActionEdit__Query";
-import UIBigPaint from "@/components/db_ui/UIBigPaint2";
+import UIBigPaint from "@/components/db_ui/UIBigPaint";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
 import schemaBigPaint__Query from "@/schemas/schemaBigPaint__Query";
 import useFormQuery__BigPaint from "@/stores/forms/useFormQuery__BigPaint";

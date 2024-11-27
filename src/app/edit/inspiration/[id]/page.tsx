@@ -2,9 +2,8 @@
 
 import ActionDelete__Inspiration from "@/actions/ActionDelete__Inspiration";
 import ActionEdit__Inspiration from "@/actions/ActionEdit__Inspiration";
-import ActionInjectBuffer__Resource from "@/actions/ActionInjectBuffer__Resource";
-import ActionSearch__BigPaint from "@/actions/ActionSearch__BigPaint";
-import ActionSearch__Inspiration from "@/actions/ActionSearch__Inspiration";
+import ActionQuery__BigPaint from "@/actions/ActionQuery__BigPaint";
+import ActionQuery__Inspiration from "@/actions/ActionQuery__Inspiration";
 import AEditor from "@/components/AEditor";
 import Button from "@/components/Button";
 import FieldCheckbox from "@/components/form_ui/FieldCheckbox";
@@ -12,32 +11,88 @@ import FieldDate from "@/components/form_ui/FieldDate";
 import FieldDynamicSelect from "@/components/form_ui/FieldDynamicSelect";
 import { InformationCircle, Star } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
+import schemaInspiration__Edit__Params from "@/schemas/schemaInspiration__Edit__Params";
 import useFormEdit__Inspiration from "@/stores/forms/useFormEdit__Inspiration";
-import useQueryInspirations__Search from "@/stores/queries/useQueryInspirations__Search";
-import { Selectable } from "kysely";
-import { Resource } from "kysely-codegen/dist/db";
+import useQueryBigPaint__Query from "@/stores/queries/useQueryBigPaint__Query";
+import useQueryInspiration__Edit from "@/stores/queries/useQueryInspiration__Edit";
+import useQueryInspiration__Query from "@/stores/queries/useQueryInspiration__Query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function FormEdit__Inspiration({
-  data,
-}: {
-  data: {
-    id: string;
-    content: string;
-    highlight: boolean;
-    date: Date;
-    resources: Pick<Selectable<Resource>, "n" | "sha256" | "type">[];
-    relatedBigPaints: { id: string; name: string }[];
-    relatedInspirations: { id: string; content: string }[];
-  };
-}) {
+// TODO: Vedi che succede quando visiti un'inspiration che non ci sta (anche in client-side routing) e cosa succede quando elimini una
+
+export default function Page({ params }: { params: { id: string } }) {
+  const { id } = schemaInspiration__Edit__Params.parse(params);
+
   const router = useRouter();
+  const query = useQueryInspiration__Edit();
+
+  useEffect(() => {
+    query.active();
+    return () => query.inactive();
+  }, []);
+
+  useEffect(() => {
+    if (id !== form.meta.lastId) {
+      form.setFormMeta({ lastId: id });
+
+      query.fetch(id);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    console.log("probably query.data has changed", query.data);
+
+    if (query.data !== undefined) {
+      const maxN = query.data.resources.reduce((max, value) => {
+        return value.n > max ? value.n : max;
+      }, 0);
+      form.setMetas({
+        resources: {
+          items: query.data.resources.map((it) => {
+            // console.log(it.buff);
+            return {
+              n: it.n,
+              sha256: it.sha256,
+              type: it.type,
+              unused: true,
+              buff: it.buff,
+              blob_url: URL.createObjectURL(new Blob([it.buff])),
+            };
+          }),
+          n: maxN,
+        },
+        related_big_paints_ids: {
+          selectedItems: query.data.relatedBigPaints.map((it) => ({
+            content: it.name,
+            id: it.id,
+          })),
+        },
+        related_inspirations_ids: {
+          selectedItems: query.data.relatedInspirations,
+        },
+        date: {
+          date: query.data.date,
+          time: {
+            hours: query.data.date.getHours(),
+            minutes: query.data.date.getMinutes(),
+            seconds: query.data.date.getSeconds(),
+            milliseconds: query.data.date.getMilliseconds(),
+          },
+        },
+        content: query.data.content,
+        highlight: query.data.highlight,
+      });
+    }
+  }, [query.data]);
 
   const [isDeleteFormPending, setIsDeleteFormPending] = useState(false);
-  const [isEditFormPending, setIsEditFormPending] = useState(false);
+  const [isEditFormPending, setIsEditFormPending] = useState(false); // TODO: Implement form.isPending
 
-  const invalidateQueryInspirations__Search = useQueryInspirations__Search(
+  const invalidateQueryInspiration__Query = useQueryInspiration__Query(
+    (state) => state.invalidate,
+  );
+  const invalidateQueryBigPaint__Query = useQueryBigPaint__Query(
     (state) => state.invalidate,
   );
 
@@ -50,64 +105,15 @@ export default function FormEdit__Inspiration({
       const unused = form.fields.resources.meta.items.filter((it) => it.unused);
       if (unused.length > 0) alert(`${unused.length} unused assets`);
       else {
-        await ActionEdit__Inspiration(data.id, form.values());
-        invalidateQueryInspirations__Search();
+        await ActionEdit__Inspiration(id, form.values());
+
+        invalidateQueryInspiration__Query();
+        invalidateQueryBigPaint__Query();
       }
 
       setIsEditFormPending(false);
     });
-  }, [form.setOnSubmit, data]);
-
-  useEffect(() => {
-    if (data.id !== form.meta.lastId) {
-      form.setFormMeta({ lastId: data.id });
-
-      // TODO: Possible call inutile se l'array è vuoto
-      ActionInjectBuffer__Resource({ resources: data.resources }).then(
-        (resources) => {
-          const maxN = resources.reduce((max, value) => {
-            return value.n > max ? value.n : max;
-          }, 0);
-          form.setMetas({
-            resources: {
-              items: resources.map((it) => {
-                // console.log(it.buff);
-                return {
-                  n: it.n,
-                  sha256: it.sha256,
-                  type: it.type,
-                  unused: true,
-                  buff: it.buff,
-                  blob_url: URL.createObjectURL(new Blob([it.buff])),
-                };
-              }),
-              n: maxN,
-            },
-            related_big_paints_ids: {
-              selectedItems: data.relatedBigPaints.map((it) => ({
-                content: it.name,
-                id: it.id,
-              })),
-            },
-            related_inspirations_ids: {
-              selectedItems: data.relatedInspirations,
-            },
-            date: {
-              date: data.date,
-              time: {
-                hours: data.date.getHours(),
-                minutes: data.date.getMinutes(),
-                seconds: data.date.getSeconds(),
-                milliseconds: data.date.getMilliseconds(),
-              },
-            },
-            content: data.content,
-            highlight: data.highlight,
-          });
-        },
-      );
-    }
-  }, [data]);
+  }, [form.setOnSubmit, id]);
 
   return (
     <div className="space-y-6 pb-16">
@@ -117,9 +123,10 @@ export default function FormEdit__Inspiration({
             if (confirm("Are you sure?")) {
               setIsDeleteFormPending(true);
 
-              await ActionDelete__Inspiration({ id: data.id });
+              await ActionDelete__Inspiration({ id: id });
 
-              invalidateQueryInspirations__Search();
+              invalidateQueryInspiration__Query();
+              invalidateQueryBigPaint__Query();
 
               setIsDeleteFormPending(false);
 
@@ -190,7 +197,7 @@ export default function FormEdit__Inspiration({
         error={form.fields.related_big_paints_ids.error}
         disabled={isEditFormPending || isDeleteFormPending}
         search={(_, { query }) =>
-          ActionSearch__BigPaint(null, null, {
+          ActionQuery__BigPaint(null, null, {
             name: query,
             orderBy: "date",
             orderByDir: "asc",
@@ -212,8 +219,8 @@ export default function FormEdit__Inspiration({
         error={form.fields.related_inspirations_ids.error}
         disabled={isEditFormPending || isDeleteFormPending}
         search={(_, { query }) =>
-          ActionSearch__Inspiration(null, null, {
-            // TODO: Add select to avoid bloating responses and also remapping
+          ActionQuery__Inspiration(null, null, {
+            // TODO: Add select to avoid bloating responses and also remapping oppure usa un'altra action
             content: query,
             orderBy: "date",
             orderByDir: "asc",
@@ -228,7 +235,7 @@ export default function FormEdit__Inspiration({
             })),
           )
         }
-        blacklist={[data.id]}
+        blacklist={[id]}
       />
     </div>
   );

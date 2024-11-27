@@ -1,58 +1,65 @@
 "use client";
+
 import { ButtonLink } from "@/components/Button";
-import { PencilEdit01 } from "@/components/icons";
-import { cn } from "@/utils/cn";
+import { InkStroke20Filled, PencilEdit01, Square } from "@/components/icons";
+import { dateToString } from "@/utils/date";
 import { Selectable } from "kysely";
 import { BigPaint } from "kysely-codegen/dist/db";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
+
+// TODO: Supa double click to edit
 
 export default function UIBigPaint({
   data,
   id,
 }: {
-  data: Pick<Selectable<BigPaint>, "name" | "date" | "id">; // TODO: Include omitted
+  data: Pick<Selectable<BigPaint>, "name" | "date" | "id"> & {
+    num_related_inspirations: string | null;
+    num_related_big_paints: string | null;
+  };
   id?: string;
 }) {
-  // TODO: date doesnt't get updated
-  const dateTimeFormat = new Intl.DateTimeFormat(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-  });
-  const [date, setDate] = useState("");
-  useEffect(() => setDate(dateTimeFormat.format(data.date)), []);
-
-  const pathname = usePathname();
-  const isItsPage = pathname.endsWith(`${data.id}/big_paint`);
+  const date = useMemo(() => dateToString(data.date), [data.date]);
 
   return (
-    <div id={id} className={cn(isItsPage && "border border-blue-500")}>
-      <p className="hyphens-auto break-words bg-neutral-700 p-4">{data.name}</p>
-      <div className="flex items-center justify-between pr-2">
-        <div className="flex">
+    /* TODO: Sarebbe meglio se fosse la lista ad aggiungere lo spacing tra gli elementi */
+    <div id={id} className="my-2">
+      <p className="hyphens-auto whitespace-pre-wrap break-words rounded-t bg-neutral-700 p-4">
+        {data.name}
+      </p>
+
+      <div className="flex h-16 items-center gap-2 overflow-x-auto rounded-b bg-neutral-900 px-2">
+        <p className="shrink-0 text-neutral-500">{date}</p>
+
+        <div className="ml-2 flex">
           <ButtonLink
             color="ghost"
-            href={`/${data.id}/big_paint`}
-            disabled={isItsPage}
-            classNames={{
-              button: "text-neutral-300 size-9 justify-center items-center",
-            }}
+            href={`/pool/NOT YET IMPLEMENTED`}
+            size="large"
+            disabled={data.num_related_big_paints! <= "0"}
+            classNames={{ button: "data-[disabled=false]:text-neutral-300" }}
           >
-            ...
+            <Square />
           </ButtonLink>
+
           <ButtonLink
             color="ghost"
-            href={`/edit/${data.id}/big_paint`}
-            classNames={{ button: "size-9 justify-center items-center" }}
+            href={`/pool/NOT YET IMPLEMENTED`}
+            size="large"
+            disabled={data.num_related_inspirations! <= "0"}
+            classNames={{ button: "data-[disabled=false]:text-neutral-300" }}
           >
-            <PencilEdit01 className="text-neutral-300" />
+            <InkStroke20Filled />
           </ButtonLink>
-        </div>
-        <div className="flex">
-          <span className="text-neutral-500">{date}</span>
+
+          <ButtonLink
+            color="ghost"
+            href={`/edit/${data.id}/inspiration`}
+            size="large"
+            classNames={{ button: "data-[disabled=false]:text-neutral-300" }}
+          >
+            <PencilEdit01 />
+          </ButtonLink>
         </div>
       </div>
     </div>

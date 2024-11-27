@@ -1,7 +1,7 @@
 "use client";
 
 import ActionEdit__Query from "@/actions/ActionEdit__Query";
-import UIInspiration from "@/components/db_ui/UIInspiration2";
+import UIInspiration from "@/components/db_ui/UIInspiration";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
 import schemaInspiration__Query from "@/schemas/schemaInspiration__Query";
 import useFormQuery__Inspiration from "@/stores/forms/useFormQuery__Inspiration";

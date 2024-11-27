@@ -11,6 +11,7 @@ export default createForm(
   {
     date: fieldDate(),
     related_big_paints_ids: fieldDynamicSelect(),
+    related_inspirations_ids: fieldDynamicSelect(),
     name: fieldText(),
   },
   {

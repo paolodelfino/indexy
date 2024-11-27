@@ -80,4 +80,26 @@ console.log(
     .compile().sql,
 );
 
+console.log(
+  db
+    .selectFrom("inspiration_relations as ir")
+    .where((eb) =>
+      eb.or([
+        eb("ir.inspiration1_id", "=", id),
+        eb("ir.inspiration2_id", "=", id),
+      ]),
+    )
+    .leftJoin("inspiration as i", (jc) =>
+      jc.on((eb) =>
+        eb.or([
+          eb("i.id", "=", sql<string>`"ir"."inspiration1_id"`),
+          eb("i.id", "=", sql<string>`"ir"."inspiration2_id"`),
+        ]),
+      ),
+    )
+    .where("i.id", "!=", id)
+    .select(["i.id", "i.content"])
+    .compile().sql,
+);
+
 await db.destroy();

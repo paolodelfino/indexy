@@ -1,10 +1,7 @@
 "use client";
 
-import Button, { ButtonLink } from "@/components/Button";
-import UIBigPaint from "@/components/db_ui/UIBigPaint";
-import { Dialog } from "@/components/Dialog";
+import { ButtonLink } from "@/components/Button";
 import {
-  ArrowShrink,
   BinaryCode,
   InkStroke20Filled,
   PencilEdit01,
@@ -14,21 +11,25 @@ import {
 import { cn } from "@/utils/cn";
 import { dateToString } from "@/utils/date";
 import { Selectable } from "kysely";
-import { BigPaint, Inspiration, Resource } from "kysely-codegen/dist/db";
-import React, { ReactNode, useEffect, useMemo, useState } from "react";
+import { Inspiration, Resource } from "kysely-codegen/dist/db";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 
 // TODO: Supa double click to edit
+// TODO: Maybe fetch resources on mount (when visible). Use query for caching and revalidation (o si usa un Set senza modificare la lib oppure si modifica la lib o una semplice estensione)
+
 export default function UIInspiration({
   data,
   id,
 }: {
   data: Pick<
     Selectable<Inspiration>,
-    "content" | "date" | "highlight" | "id"
+    "content" | "date" | "id" | "highlight"
   > & {
-    resources: (Selectable<Resource> & { buff: ArrayBuffer })[];
-    relatedBigPaints: Selectable<BigPaint>[];
-    relatedInspirations: Selectable<Inspiration>[];
+    resources: (Pick<Selectable<Resource>, "id" | "type" | "sha256" | "n"> & {
+      buff: ArrayBuffer;
+    })[];
+    num_related_inspirations: string | null;
+    num_related_big_paints: string | null;
   };
   id?: string;
 }) {
@@ -55,10 +56,15 @@ export default function UIInspiration({
           if (!Number.isNaN(n)) {
             const res = data.resources.find((u) => u.n === n);
             if (res !== undefined) {
-              // TODO: Empty, invalid binary
+              // TODO: Handle empty, invalid binary
               if (res.type === "image")
-                b.push(<ImageView key={key++} data={res} />);
-              else b.push(<BinaryView key={key++} data={res} />);
+                b.push(
+                  <ImageView
+                    key={key++}
+                    data={{ buff: res.buff, id: res.id }}
+                  />,
+                );
+              else b.push(<BinaryView key={key++} data={{ id: res.id }} />);
             } else b.push(<span key={key++}>{data.content.slice(i, j)}</span>);
           } else {
             b.push(<span key={key++}>$</span>);
@@ -91,90 +97,33 @@ export default function UIInspiration({
         <p>{<Star className={cn(data.highlight && "fill-current")} />}</p>
 
         <div className="ml-2 flex">
-          {/* TODO: Lasciare qualcosa per la memoria visiva e muscolare */}
-          {data.relatedBigPaints.length > 0 && (
-            <Dialog
-              trigger={(dialog) => (
-                <Button
-                  classNames={{ button: "max-w-32" }}
-                  onClick={dialog.open}
-                  color="ghost"
-                  size="large"
-                >
-                  <Square />
-                </Button>
-              )}
-              className="w-full max-w-4xl bg-transparent backdrop:bg-neutral-900/95"
-              content={(dialog) => {
-                return (
-                  <React.Fragment>
-                    <Button
-                      onClick={dialog.close}
-                      classNames={{ button: "ml-auto" }}
-                      color="ghost"
-                    >
-                      <ArrowShrink />
-                    </Button>
+          <ButtonLink
+            color="ghost"
+            href={`/pool/NOT YET IMPLEMENTED`}
+            size="large"
+            disabled={data.num_related_big_paints! <= "0"}
+            classNames={{ button: "data-[disabled=false]:text-neutral-300" }}
+          >
+            <Square />
+          </ButtonLink>
 
-                    {/* TODO: Virtualization */}
-                    {/* TODO: Resta sempre la questione di star passando troppo, immagina 1000 big paints per qualche motivo */}
-                    <ul className="bg-black">
-                      {data.relatedBigPaints.map((it) => (
-                        <UIBigPaint key={it.id} data={it} />
-                      ))}
-                    </ul>
-                  </React.Fragment>
-                );
-              }}
-            />
-          )}
-
-          {/* TODO: Lasciare qualcosa per la memoria visiva e muscolare */}
-          {data.relatedInspirations.length > 0 && (
-            <Dialog
-              trigger={(dialog) => (
-                <Button
-                  classNames={{ button: "max-w-32" }}
-                  onClick={dialog.open}
-                  color="ghost"
-                  size="large"
-                >
-                  <InkStroke20Filled />
-                </Button>
-              )}
-              className="w-full max-w-4xl bg-transparent backdrop:bg-neutral-900/95"
-              content={(dialog) => {
-                return (
-                  <React.Fragment>
-                    <Button
-                      onClick={dialog.close}
-                      classNames={{ button: "ml-auto" }}
-                      color="ghost"
-                    >
-                      <ArrowShrink />
-                    </Button>
-
-                    {/* TODO: Virtualization */}
-                    {/* TODO: Resta sempre la questione di star passando troppo, immagina 1000 big paints per qualche motivo */}
-                    <ul className="bg-black">
-                      {/* TODO: Implement */}
-                      {/* TODO: Loadable related (lazy I mean of course) */}
-                      {data.relatedInspirations.map((it) => (
-                        <li key={it.id}>{it.content}</li>
-                      ))}
-                    </ul>
-                  </React.Fragment>
-                );
-              }}
-            />
-          )}
+          <ButtonLink
+            color="ghost"
+            href={`/pool/NOT YET IMPLEMENTED`}
+            size="large"
+            disabled={data.num_related_inspirations! <= "0"}
+            classNames={{ button: "data-[disabled=false]:text-neutral-300" }}
+          >
+            <InkStroke20Filled />
+          </ButtonLink>
 
           <ButtonLink
             color="ghost"
             href={`/edit/${data.id}/inspiration`}
             size="large"
+            classNames={{ button: "data-[disabled=false]:text-neutral-300" }}
           >
-            <PencilEdit01 className="text-neutral-300" />
+            <PencilEdit01 />
           </ButtonLink>
         </div>
       </div>
@@ -182,10 +131,13 @@ export default function UIInspiration({
   );
 }
 
+// TODO: Add intercepting route
+// TODO: Optimization type based (for example, BinaryView doesn't currently need the buffer)
+
 function ImageView({
   data,
 }: {
-  data: Selectable<Resource> & { buff: ArrayBuffer };
+  data: Pick<Selectable<Resource>, "id"> & { buff: ArrayBuffer };
 }) {
   const [base64, setBase64] = useState("");
 
@@ -198,67 +150,24 @@ function ImageView({
   }, [data.buff]);
 
   return (
-    <Dialog
-      trigger={(dialog) => (
-        <img
-          className="inline w-12 hover:cursor-pointer"
-          src={`data:image;base64,${base64}`}
-          onClick={dialog.open}
-        />
-      )}
-      className="bg-transparent"
-      content={(dialog) => (
-        <React.Fragment>
-          <Button
-            classNames={{ button: "ml-auto" }}
-            color="ghost"
-            onClick={dialog.close}
-          >
-            <ArrowShrink />
-          </Button>
-          <img src={`data:image;base64,${base64}`} />
-        </React.Fragment>
-      )}
-    />
+    <ButtonLink
+      href={`/res/${data.id}`}
+      target="_blank"
+      classNames={{ button: "w-max p-0 m-0 inline-flex" }}
+    >
+      <img src={`data:image;base64,${base64}`} width={48} className="inline" />
+    </ButtonLink>
   );
 }
 
-function BinaryView({
-  data,
-}: {
-  data: Selectable<Resource> & { buff: ArrayBuffer };
-}) {
-  // TODO: Slow rendering with large data
-  const [bin, setBin] = useState("");
-
-  useEffect(() => {
-    const bin = new Uint8Array(data.buff).reduce(
-      (bin, byte) => (bin += String.fromCharCode(byte)),
-      "",
-    );
-    setBin(bin);
-  }, [data.buff]);
-
+function BinaryView({ data }: { data: Pick<Selectable<Resource>, "id"> }) {
   return (
-    <Dialog
-      trigger={(dialog) => (
-        <Button onClick={dialog.open} classNames={{ button: "inline" }}>
-          <BinaryCode />
-        </Button>
-      )}
-      className="w-full max-w-4xl bg-transparent"
-      content={(dialog) => (
-        <React.Fragment>
-          <Button
-            classNames={{ button: "ml-auto" }}
-            color="ghost"
-            onClick={dialog.close}
-          >
-            <ArrowShrink />
-          </Button>
-          <p className="whitespace-pre-wrap bg-black text-white">{bin}</p>
-        </React.Fragment>
-      )}
-    />
+    <ButtonLink
+      href={`/res/${data.id}`}
+      target="_blank"
+      classNames={{ button: "inline-flex", text: "inline" }}
+    >
+      <BinaryCode />
+    </ButtonLink>
   );
 }
