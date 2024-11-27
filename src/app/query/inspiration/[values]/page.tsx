@@ -1,33 +1,31 @@
 "use client";
 
 import ActionEdit__Query from "@/actions/ActionEdit__Query";
-import UIInspiration from "@/components/db_ui/UIInspiration";
+import UIInspiration from "@/components/db_ui/UIInspiration2";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
-import schemaInspiration__Search from "@/schemas/schemaInspiration__Search";
-import useFormSearch__Inspiration from "@/stores/forms/useFormSearch__Inspiration";
-import useQueryInspirations__Search from "@/stores/queries/useQueryInspirations__Search";
+import schemaInspiration__Query from "@/schemas/schemaInspiration__Query";
+import useFormQuery__Inspiration from "@/stores/forms/useFormQuery__Inspiration";
+import useQueryInspiration__Query from "@/stores/queries/useQueryInspiration__Query";
 import useQueryQueries__Search from "@/stores/queries/useQueryQueries__Search";
 import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
 import { formValuesFromString } from "@/utils/url";
 import { useEffect, useMemo } from "react";
 import { VList } from "virtua";
 
-// TODO: Possible server side first items injection
-
 export default function Page({
-  params: { id: valuesStr },
+  params: { values: valuesStr },
 }: {
-  params: { id: string };
+  params: { values: string };
 }) {
   const values = useMemo(
     () =>
       // TODO: Possiamo probabilmente evitare di parsare con zod qui
-      schemaInspiration__Search.parse(formValuesFromString(valuesStr)),
+      schemaInspiration__Query.parse(formValuesFromString(valuesStr)),
     [valuesStr],
   );
 
-  const query = useQueryInspirations__Search();
-  const form = useFormSearch__Inspiration();
+  const query = useQueryInspiration__Query();
+  const form = useFormQuery__Inspiration();
 
   const invalidateQueryQueries__View = useQueryQueries__View(
     (state) => state.invalidate,
@@ -57,7 +55,6 @@ export default function Page({
     getId(item) {
       return item.id;
     },
-    // callback: () => query.fetch(query.lastArgs![0]),
     callback: () => query.fetch(values),
     fetchIfNoData: true,
     active: query.active,

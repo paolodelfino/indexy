@@ -2,12 +2,12 @@ import { fieldComparisonDate } from "@/components/form_ui/FieldComparisonDate";
 import { fieldDynamicSelect } from "@/components/form_ui/FieldDynamicSelect";
 import { fieldSelect } from "@/components/form_ui/FieldSelect";
 import { fieldText } from "@/components/form_ui/FieldText";
-import schemaBigPaint__Search from "@/schemas/schemaBigPaint__Search";
+import schemaBigPaint__Query from "@/schemas/schemaBigPaint__Query";
 import { createForm } from "@/utils/form";
 
 // TODO: There are other predicates to play with like limit, maybe offset
-export default createForm(
-  schemaBigPaint__Search,
+const useFormQuery__BigPaint = createForm(
+  schemaBigPaint__Query,
   {
     date: fieldComparisonDate(),
     orderBy: fieldSelect({
@@ -25,6 +25,7 @@ export default createForm(
       selectedItem: { content: "Asc", id: "asc" },
     }),
     related_big_paints_ids: fieldDynamicSelect(),
+    related_inspirations_ids: fieldDynamicSelect(),
     name: fieldText(),
   },
   {
@@ -32,3 +33,4 @@ export default createForm(
     queryName: fieldText("Untitled"),
   },
 );
+export default useFormQuery__BigPaint;

@@ -2,15 +2,15 @@
 
 import { db } from "@/db/db";
 import minioClient from "@/minio/minioClient";
-import schemaInspiration__Search from "@/schemas/schemaInspiration__Search";
+import schemaInspiration__Query from "@/schemas/schemaInspiration__Query";
 import { FormValues } from "@/utils/form";
 import { sql } from "kysely";
 import { z } from "zod";
 
-export default async function ActionSearch__Inspiration(
+export default async function ActionQuery__Inspiration(
   _offset: number | null, // TODO: Remove optional
   _limit: number | null, // TODO: Remove optional
-  values: FormValues<typeof schemaInspiration__Search>,
+  values: FormValues<typeof schemaInspiration__Query>,
 ) {
   const offset = z.number().int().gte(0).nullable().parse(_offset); // TODO: Remove optional
   const limit = z.number().int().gte(0).nullable().parse(_limit); // TODO: Remove optional
@@ -22,7 +22,7 @@ export default async function ActionSearch__Inspiration(
     related_inspirations_ids,
     orderBy,
     orderByDir,
-  } = schemaInspiration__Search.parse(values);
+  } = schemaInspiration__Query.parse(values);
 
   let q = db.selectFrom("inspiration");
 
@@ -34,18 +34,50 @@ export default async function ActionSearch__Inspiration(
   if (highlight !== undefined) q = q.where("highlight", "=", highlight);
 
   if (related_big_paints_ids !== undefined)
-    q = q.where(
-      "related_big_paints_ids",
-      "@>",
-      sql<typeof related_big_paints_ids>`${related_big_paints_ids}::uuid[]`,
-    );
+    q = q
+      .innerJoin(
+        "big_paint_inspiration_relations",
+        "inspiration.id",
+        "big_paint_inspiration_relations.inspiration_id",
+      )
+      .where(
+        "big_paint_inspiration_relations.big_paint_id",
+        "in",
+        related_big_paints_ids,
+      );
 
   if (related_inspirations_ids !== undefined)
-    q = q.where(
-      "related_inspirations_ids",
-      "@>",
-      sql<typeof related_inspirations_ids>`${related_inspirations_ids}::uuid[]`,
-    );
+    q = q
+      .innerJoin("inspiration_relations", (jb) =>
+        jb.on((eb) =>
+          eb.or([
+            eb(
+              "inspiration.id",
+              "=",
+              sql<string>`"inspiration_relations"."inspiration1_id"`,
+            ),
+            eb(
+              "inspiration.id",
+              "=",
+              sql<string>`"inspiration_relations"."inspiration2_id"`,
+            ),
+          ]),
+        ),
+      )
+      .where((eb) =>
+        eb.or([
+          eb(
+            "inspiration_relations.inspiration1_id",
+            "in",
+            related_inspirations_ids,
+          ),
+          eb(
+            "inspiration_relations.inspiration2_id",
+            "in",
+            related_inspirations_ids,
+          ),
+        ]),
+      );
 
   // if (content !== undefined)
   //   if (content.mode === "CaseInsensitive")

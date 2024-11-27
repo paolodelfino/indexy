@@ -1,33 +1,31 @@
 "use client";
 
 import ActionEdit__Query from "@/actions/ActionEdit__Query";
-import UIBigPaint from "@/components/db_ui/UIBigPaint";
+import UIBigPaint from "@/components/db_ui/UIBigPaint2";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
-import schemaBigPaint__Search from "@/schemas/schemaBigPaint__Search";
-import useFormSearch__BigPaint from "@/stores/forms/useFormSearch__BigPaint";
-import useQueryBigPaints__Search from "@/stores/queries/useQueryBigPaints__Search";
+import schemaBigPaint__Query from "@/schemas/schemaBigPaint__Query";
+import useFormQuery__BigPaint from "@/stores/forms/useFormQuery__BigPaint";
+import useQueryBigPaint__Query from "@/stores/queries/useQueryBigPaint__Query";
 import useQueryQueries__Search from "@/stores/queries/useQueryQueries__Search";
 import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
 import { formValuesFromString } from "@/utils/url";
 import { useEffect, useMemo } from "react";
 import { VList } from "virtua";
 
-// TODO: Possible server side first items injection
-
 export default function Page({
-  params: { id: valuesStr },
+  params: { values: valuesStr },
 }: {
-  params: { id: string };
+  params: { values: string };
 }) {
   const values = useMemo(
     () =>
       // TODO: Possiamo probabilmente evitare di parsare con zod qui
-      schemaBigPaint__Search.parse(formValuesFromString(valuesStr)),
+      schemaBigPaint__Query.parse(formValuesFromString(valuesStr)),
     [valuesStr],
   );
 
-  const query = useQueryBigPaints__Search();
-  const form = useFormSearch__BigPaint();
+  const query = useQueryBigPaint__Query();
+  const form = useFormQuery__BigPaint();
 
   const invalidateQueryQueries__View = useQueryQueries__View(
     (state) => state.invalidate,
@@ -41,11 +39,10 @@ export default function Page({
       query.reset();
       query.active();
 
-      // TODO: If query is not a saved query?
       ActionEdit__Query(valuesStr, { date: new Date() }).then(() => {
         invalidateQueryQueries__View();
         invalidateQueryQueries__Search();
-        // TODO: Furthemore I have to attach to an onRevalidate event, when useQueryBigPaints__Search gets invalidated it does another fetch, furthermore maybe I should also attach to useInfiniteQuery's callback. I should move this whole to callback and onrevalidate
+        // TODO: Furthemore I have to attach to an onRevalidate event, when useQueryInspirations__Search gets invalidated it does another fetch, furthermore maybe I should also attach to useInfiniteQuery's callback. I should move this whole to callback and onrevalidate
       });
 
       form.setFormMeta({ lastValues: valuesStr });
@@ -58,7 +55,6 @@ export default function Page({
     getId(item) {
       return item.id;
     },
-    // callback: () => query.fetch(query.lastArgs![0]),
     callback: () => query.fetch(values),
     fetchIfNoData: true,
     active: query.active,

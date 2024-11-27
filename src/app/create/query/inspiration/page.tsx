@@ -1,8 +1,8 @@
 "use client";
 
 import ActionCreate__Query from "@/actions/ActionCreate__Query";
-import ActionSearch__BigPaint from "@/actions/ActionSearch__BigPaint";
-import ActionSearch__Inspiration from "@/actions/ActionSearch__Inspiration";
+import ActionQuery__BigPaint from "@/actions/ActionQuery__BigPaint";
+import ActionQuery__Inspiration from "@/actions/ActionQuery__Inspiration";
 import Button from "@/components/Button";
 import FieldCheckbox from "@/components/form_ui/FieldCheckbox";
 import FieldComparisonDate from "@/components/form_ui/FieldComparisonDate";
@@ -12,7 +12,7 @@ import FieldText from "@/components/form_ui/FieldText";
 import FieldTextArea from "@/components/form_ui/FieldTextArea";
 import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
-import useFormSearch__Inspiration from "@/stores/forms/useFormSearch__Inspiration";
+import useFormQuery__Inspiration from "@/stores/forms/useFormQuery__Inspiration";
 import useQueryQueries__Search from "@/stores/queries/useQueryQueries__Search";
 import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
 import { formValuesToString } from "@/utils/url";
@@ -21,7 +21,7 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 
 export default function Page() {
-  const form = useFormSearch__Inspiration();
+  const form = useFormQuery__Inspiration();
   const router = useRouter();
 
   const [isFormPending, setIsFormPending] = useState(false);
@@ -220,7 +220,7 @@ export default function Page() {
         error={form.fields.related_big_paints_ids.error}
         acceptIndeterminate
         search={(prevState, { query }) =>
-          ActionSearch__BigPaint(null, null, {
+          ActionQuery__BigPaint(null, null, {
             name: query,
             orderBy: "date",
             orderByDir: "asc",
@@ -244,7 +244,7 @@ export default function Page() {
         error={form.fields.related_inspirations_ids.error}
         acceptIndeterminate
         search={(prevState, { query }) =>
-          ActionSearch__Inspiration(null, null, {
+          ActionQuery__Inspiration(null, null, {
             content: query,
             orderBy: "date",
             orderByDir: "asc",
@@ -252,11 +252,14 @@ export default function Page() {
             related_inspirations_ids: undefined,
             related_big_paints_ids: undefined,
             highlight: undefined,
-          }).then((res) => // TODO: Add select to avoid bloating responses and also remapping
-            res.data.map((item) => ({
-              content: item.content,
-              id: item.id,
-            })),
+          }).then(
+            (
+              res, // TODO: Add select to avoid bloating responses and also remapping
+            ) =>
+              res.data.map((item) => ({
+                content: item.content,
+                id: item.id,
+              })),
           )
         }
       />

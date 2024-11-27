@@ -1,21 +1,27 @@
 "use server";
 
 import { db } from "@/db/db";
-import schemaBigPaint__Search from "@/schemas/schemaBigPaint__Search";
+import schemaBigPaint__Query from "@/schemas/schemaBigPaint__Query";
 import { FormValues } from "@/utils/form";
 import { sql } from "kysely";
 import { z } from "zod";
 
 // TODO: Maybe this can become fetch
-export default async function ActionSearch__BigPaint(
+export default async function ActionQuery__BigPaint(
   _offset: number | null, // TODO: Remove optional
   _limit: number | null, // TODO: Remove optional
-  values: FormValues<typeof schemaBigPaint__Search>,
+  values: FormValues<typeof schemaBigPaint__Query>,
 ) {
   const offset = z.number().int().gte(0).nullable().parse(_offset); // TODO: Remove optional
   const limit = z.number().int().gte(0).nullable().parse(_limit); // TODO: Remove optional
-  const { name, date, related_big_paints_ids, orderBy, orderByDir } =
-    schemaBigPaint__Search.parse(values);
+  const {
+    name,
+    date,
+    related_big_paints_ids,
+    related_inspirations_ids,
+    orderBy,
+    orderByDir,
+  } = schemaBigPaint__Query.parse(values);
 
   let q = db.selectFrom("big_paint");
 
@@ -25,11 +31,42 @@ export default async function ActionSearch__BigPaint(
     else q = q.where("date", date.comparison, date.date);
 
   if (related_big_paints_ids !== undefined)
-    q = q.where(
-      "related_big_paints_ids",
-      "@>",
-      sql<typeof related_big_paints_ids>`${related_big_paints_ids}::uuid[]`,
-    );
+    q = q
+      .innerJoin("big_paint_relations", (jb) =>
+        jb.on((eb) =>
+          eb.or([
+            eb(
+              "big_paint.id",
+              "=",
+              sql<string>`"big_paint_relations"."big_paint1_id"`,
+            ),
+            eb(
+              "big_paint.id",
+              "=",
+              sql<string>`"big_paint_relations"."big_paint2_id"`,
+            ),
+          ]),
+        ),
+      )
+      .where((eb) =>
+        eb.or([
+          eb("big_paint_relations.big_paint1_id", "in", related_big_paints_ids),
+          eb("big_paint_relations.big_paint2_id", "in", related_big_paints_ids),
+        ]),
+      );
+
+  if (related_inspirations_ids !== undefined)
+    q = q
+      .innerJoin(
+        "big_paint_inspiration_relations",
+        "big_paint.id",
+        "big_paint_inspiration_relations.big_paint_id",
+      )
+      .where(
+        "big_paint_inspiration_relations.inspiration_id",
+        "in",
+        related_inspirations_ids,
+      );
 
   if (name !== undefined) q = q.where("name", "~", name);
 

@@ -1,7 +1,8 @@
+import schemaBigPaint__DB from "@/schemas/schemaBigPaint__DB";
 import schemaInspiration__DB from "@/schemas/schemaInspiration__DB";
 import { z } from "zod";
 
-export default z
+const schemaInspiration__Query = z
   .object({
     date: z
       .object({
@@ -21,7 +22,7 @@ export default z
     content: z.string().trim().min(1).optional(),
     highlight: z.boolean().optional(),
     related_big_paints_ids: z
-      .array(schemaInspiration__DB.shape.id)
+      .array(schemaBigPaint__DB.shape.id)
       .min(1)
       .optional(),
     related_inspirations_ids: z
@@ -37,3 +38,4 @@ export default z
       2, // Update accordingly with above props
     "A predicate must be provided",
   );
+export default schemaInspiration__Query;

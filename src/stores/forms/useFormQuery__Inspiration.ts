@@ -4,11 +4,11 @@ import { fieldDynamicSelect } from "@/components/form_ui/FieldDynamicSelect";
 import { fieldSelect } from "@/components/form_ui/FieldSelect";
 import { fieldText } from "@/components/form_ui/FieldText";
 import { fieldTextArea } from "@/components/form_ui/FieldTextArea";
-import schemaInspiration__Search from "@/schemas/schemaInspiration__Search";
+import schemaInspiration__Query from "@/schemas/schemaInspiration__Query";
 import { createForm } from "@/utils/form";
 
-export default createForm(
-  schemaInspiration__Search,
+const useFormQuery__Inspiration = createForm(
+  schemaInspiration__Query,
   {
     date: fieldComparisonDate(),
     orderBy: fieldSelect({
@@ -36,3 +36,4 @@ export default createForm(
     queryName: fieldText("Untitled"),
   },
 );
+export default useFormQuery__Inspiration;
