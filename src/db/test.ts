@@ -1,4 +1,4 @@
-import { Kysely, PostgresDialect } from "kysely";
+import { Kysely, PostgresDialect, sql } from "kysely";
 import { DB } from "kysely-codegen/dist/db";
 import { Pool } from "pg";
 
@@ -12,17 +12,72 @@ const db = new Kysely<DB>({
   }),
 });
 
-await db
-  .insertInto("query")
-  .values(
-    Array.from({ length: 50 })
-      .fill(0)
-      .map((_, i) => ({
-        values: i + "mbm",
-        category: "inspiration",
-        name: "test" + i,
-      })),
-  )
-  .execute();
+console.log(
+  db
+    .selectFrom("inspiration_relations")
+    .select(
+      db.fn
+        .coalesce(db.fn.countAll(), sql<number>`0`)
+        .$castTo<string>()
+        .$notNull()
+        .as("num_related_inspirations"),
+    )
+    .whereRef("inspiration_relations.inspiration1_id", "=", "id")
+    .whereRef("inspiration_relations.inspiration2_id", "=", "id")
+    .compile().sql,
+);
+
+console.log(
+  db
+    .selectFrom("inspiration_relations")
+    .select(
+      db.fn
+        .coalesce(db.fn.countAll(), sql<number>`0`)
+        .$castTo<string>()
+        .$notNull()
+        .as("num_related_inspirations"),
+    )
+    .where("inspiration_relations.inspiration1_id", "=", "id")
+    .where("inspiration_relations.inspiration2_id", "=", "id")
+    .compile().sql,
+);
+
+console.log(
+  db
+    .selectFrom("inspiration_relations")
+    .select(
+      db.fn
+        .coalesce(db.fn.countAll(), sql<number>`0`)
+        .$castTo<string>()
+        .$notNull()
+        .as("num_related_inspirations"),
+    )
+    .where((eb) =>
+      eb.or([
+        eb("inspiration_relations.inspiration1_id", "=", "id"),
+        eb("inspiration_relations.inspiration2_id", "=", "id"),
+      ]),
+    )
+    .compile().sql,
+);
+
+console.log(
+  db
+    .selectFrom("inspiration_relations")
+    .select(
+      db.fn
+        .coalesce(db.fn.countAll(), sql<number>`0`)
+        .$castTo<string>()
+        .$notNull()
+        .as("num_related_inspirations"),
+    )
+    .where((eb) =>
+      eb.or([
+        eb("inspiration_relations.inspiration1_id", "=", sql<string>`"id"`),
+        eb("inspiration_relations.inspiration2_id", "=", sql<string>`"id"`),
+      ]),
+    )
+    .compile().sql,
+);
 
 await db.destroy();
