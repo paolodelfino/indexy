@@ -29,8 +29,8 @@ export default async function ActionFetch__BigPaint(
       .innerJoin("big_paint as b", (jc) =>
         jc.on((eb) =>
           eb.or([
-            eb("b.id", "=", sql<string>`"ir"."big_paint1_id"`),
-            eb("b.id", "=", sql<string>`"ir"."big_paint2_id"`),
+            eb("b.id", "=", sql<string>`"br"."big_paint1_id"`),
+            eb("b.id", "=", sql<string>`"br"."big_paint2_id"`),
           ]),
         ),
       )
