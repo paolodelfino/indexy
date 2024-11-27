@@ -10,6 +10,6 @@ export default createForm(
     date: fieldDate(),
   },
   {
-    lastId: undefined as string | undefined,
+    lastValues: undefined as string | undefined,
   },
 );

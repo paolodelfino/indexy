@@ -8,11 +8,13 @@ export default async function Page({
   params: { id: string };
 }) {
   const { id } = schemaResource__View.parse(values);
+  
   const { sha256, type } = await db
     .selectFrom("resource")
     .where("id", "=", id)
     .select(["type", "sha256"])
     .executeTakeFirstOrThrow();
+    
   const a = Buffer.concat(
     await (await minioClient.getObject(type, sha256)).toArray(),
   );

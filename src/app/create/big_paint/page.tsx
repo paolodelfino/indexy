@@ -6,14 +6,17 @@ import FieldText from "@/components/form_ui/FieldText";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormCreate__BigPaint from "@/stores/forms/useFormCreate__BigPaint";
-import useQueryBigPaints__Search from "@/stores/queries/useQueryBigPaints__Search";
+import useQueryBigPaint__Query from "@/stores/queries/useQueryBigPaint__Query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Page() {
   const router = useRouter();
 
-  const invalidateQueryBigPaints__Search = useQueryBigPaints__Search(
+  // const invalidateQueryInspiration__Query = useQueryInspiration__Query(
+  //   (state) => state.invalidate,
+  // );
+  const invalidateQueryBigPaint__Query = useQueryBigPaint__Query(
     (state) => state.invalidate,
   );
 
@@ -25,7 +28,9 @@ export default function Page() {
       setIsCreateFormPending(true);
 
       await ActionCreate__BigPaint(form.values());
-      invalidateQueryBigPaints__Search();
+
+      // invalidateQueryInspiration__Query();
+      invalidateQueryBigPaint__Query();
 
       form.reset();
 

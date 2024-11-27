@@ -6,16 +6,19 @@ import Button from "@/components/Button";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormCreate__Inspiration from "@/stores/forms/useFormCreate__Inspiration";
-import useQueryInspirations__Search from "@/stores/queries/useQueryInspirations__Search";
+import useQueryInspiration__Query from "@/stores/queries/useQueryInspiration__Query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Page() {
   const router = useRouter();
 
-  const invalidateQueryInspirations__Search = useQueryInspirations__Search(
+  const invalidateQueryInspiration__Query = useQueryInspiration__Query(
     (state) => state.invalidate,
   );
+  // const invalidateQueryBigPaint__Query = useQueryBigPaint__Query(
+  //   (state) => state.invalidate,
+  // );
 
   const [isCreateFormPending, setIsCreateFormPending] = useState(false);
 
@@ -31,7 +34,9 @@ export default function Page() {
         // console.log("form values", form.values());
         // console.log("value direct", form.fields.resources.value);
         await ActionCreate__Inspiration(form.values());
-        invalidateQueryInspirations__Search();
+
+        invalidateQueryInspiration__Query();
+        // invalidateQueryBigPaint__Query();
 
         form.reset();
       }

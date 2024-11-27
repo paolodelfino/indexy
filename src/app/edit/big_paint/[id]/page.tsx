@@ -16,12 +16,15 @@ import useQueryBigPaint__Edit from "@/stores/queries/useQueryBigPaint__Edit";
 import useQueryBigPaint__Query from "@/stores/queries/useQueryBigPaint__Query";
 import useQueryInspiration__Query from "@/stores/queries/useQueryInspiration__Query";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 // TODO: Vedi che succede quando visiti un'inspiration che non ci sta (anche in client-side routing) e cosa succede quando elimini una
 
 export default function Page({ params }: { params: { id: string } }) {
-  const { id } = schemaBigPaint__Edit__Params.parse(params);
+  const { id } = useMemo(
+    () => schemaBigPaint__Edit__Params.parse(params),
+    [params],
+  );
 
   const router = useRouter();
   const query = useQueryBigPaint__Edit();

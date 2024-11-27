@@ -1,21 +1,155 @@
-import FormEdit__Query from "@/components/forms/FormEdit__Query";
-import { db } from "@/db/db";
-import { notFound } from "next/navigation";
+"use client";
 
-// TODO: History (using versioning)
+import ActionDelete__Query from "@/actions/ActionDelete__Query";
+import ActionEdit__Query from "@/actions/ActionEdit__Query";
+import Button from "@/components/Button";
+import FieldDate from "@/components/form_ui/FieldDate";
+import FieldText from "@/components/form_ui/FieldText";
+import { InformationCircle } from "@/components/icons";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
+import schemaQuery__Edit__Params from "@/schemas/schemaQuery__Edit__Params";
+import useFormEdit__Query from "@/stores/forms/useFormEdit__Query";
+import useQueryQueries__Search from "@/stores/queries/useQueryQueries__Search";
+import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
+import useQueryQuery__Edit from "@/stores/queries/useQueryQuery__Edit";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
-export default async function Page({
-  params: { values },
+export default function FormEdit__Query({
+  params,
 }: {
   params: { values: string };
 }) {
-  const entry = await db
-    .selectFrom("query")
-    .where("values", "=", values)
-    .select(["values", "name", "date"])
-    .executeTakeFirst();
+  const { values: valuesStr } = useMemo(
+    () => schemaQuery__Edit__Params.parse(params),
+    [params],
+  );
 
-  if (!entry) notFound();
+  const query = useQueryQuery__Edit();
+  const form = useFormEdit__Query();
+  const router = useRouter();
 
-  return <FormEdit__Query data={entry} />;
+  useEffect(() => {
+    query.active();
+    return query.inactive();
+  }, []);
+
+  useEffect(() => {
+    if (valuesStr !== form.meta.lastValues) {
+      form.setFormMeta({ lastValues: valuesStr });
+
+      query.fetch(valuesStr);
+    }
+  }, [valuesStr]);
+
+  useEffect(() => {
+    if (query.data !== undefined)
+      form.setMetas({
+        name: query.data.name,
+        date: {
+          date: query.data.date,
+          time: {
+            hours: query.data.date.getHours(),
+            minutes: query.data.date.getMinutes(),
+            seconds: query.data.date.getSeconds(),
+            milliseconds: query.data.date.getMilliseconds(),
+          },
+        },
+      });
+  }, [query.data]);
+
+  const invalidateQueryQueries__View = useQueryQueries__View(
+    (state) => state.invalidate,
+  );
+  const invalidateQueryQueries__Search = useQueryQueries__Search(
+    (state) => state.invalidate,
+  );
+
+  const [isDeleteFormPending, setIsDeleteFormPending] = useState(false);
+  const [isEditFormPending, setIsEditFormPending] = useState(false);
+
+  useEffect(() => {
+    form.setOnSubmit(async (form) => {
+      setIsEditFormPending(true);
+
+      const values = form.values();
+
+      await ActionEdit__Query(valuesStr, values);
+      invalidateQueryQueries__View();
+      invalidateQueryQueries__Search();
+
+      setIsEditFormPending(false);
+    });
+  }, [form.setOnSubmit, valuesStr]);
+
+  return (
+    <div className="space-y-6 pb-16">
+      <div className="flex items-center justify-end gap-4 p-4">
+        {form.error !== undefined && (
+          <Popover>
+            <PopoverTrigger color="danger">
+              <InformationCircle />
+            </PopoverTrigger>
+            <PopoverContent className="rounded border bg-neutral-700 p-4 italic">
+              {form.error}
+            </PopoverContent>
+          </Popover>
+        )}
+        <Button
+          onClick={async () => {
+            if (confirm("Are you sure?")) {
+              setIsDeleteFormPending(true);
+
+              await ActionDelete__Query({
+                values: valuesStr,
+              });
+              invalidateQueryQueries__View();
+              invalidateQueryQueries__Search();
+
+              setIsDeleteFormPending(false);
+
+              router.back();
+            }
+          }}
+          disabled={isDeleteFormPending || isEditFormPending}
+          color="danger"
+        >
+          {isDeleteFormPending ? "Deleting..." : "Delete"}
+        </Button>
+        <Button
+          type="submit"
+          color="accent"
+          disabled={isEditFormPending || isDeleteFormPending || form.isInvalid}
+          onClick={form.submit}
+        >
+          {isEditFormPending ? "Saving..." : "Save"}
+        </Button>
+      </div>
+      <FieldText
+        label="Name"
+        setValue={form.setValue.bind(form, "name")}
+        setMeta={form.setMeta.bind(form, "name")}
+        meta={form.fields.name.meta}
+        error={form.fields.name.error}
+        disabled={isEditFormPending || isDeleteFormPending}
+      />
+      <div>
+        <h2
+          data-disabled={isEditFormPending || isDeleteFormPending}
+          className="py-1 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
+        >
+          Date
+        </h2>
+
+        <FieldDate
+          placeholder="Date"
+          setValue={form.setValue.bind(form, "date")}
+          setMeta={form.setMeta.bind(form, "date")}
+          meta={form.fields.date.meta!}
+          error={form.fields.date.error}
+          disabled={isEditFormPending || isDeleteFormPending}
+        />
+      </div>
+    </div>
+  );
 }
