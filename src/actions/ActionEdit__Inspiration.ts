@@ -45,9 +45,9 @@ export default async function ActionEdit__Inspiration(
         (eb) =>
           eb
             .case()
-            .when("inspiration1_id", "in", related_inspirations_ids)
+            .when("inspiration1_id", "!=", id)
             .then("inspiration1_id")
-            .when("inspiration2_id", "in", related_inspirations_ids)
+            .when("inspiration2_id", "!=", id)
             .then("inspiration2_id")
             .endCase()
             .$notNull()

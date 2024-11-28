@@ -108,7 +108,7 @@ export default async function ActionQuery__BigPaint(
       .$if(offset !== null, (qb) => qb.offset(offset!)) // TODO: Remove optional
       .$if(limit !== null, (qb) => qb.limit(limit!)) // TODO: Remove optional
       .execute(),
-    total: Number(
+    total: Number( // TODO: Convert to string
       (
         await q
           .select((eb) => eb.fn.countAll().as("total"))

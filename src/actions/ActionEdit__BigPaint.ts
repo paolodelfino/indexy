@@ -37,9 +37,9 @@ export default async function ActionEdit__BigPaint(
         (eb) =>
           eb
             .case()
-            .when("big_paint1_id", "in", related_big_paints_ids)
+            .when("big_paint1_id", "!=", id)
             .then("big_paint1_id")
-            .when("big_paint2_id", "in", related_big_paints_ids)
+            .when("big_paint2_id", "!=", id)
             .then("big_paint2_id")
             .endCase()
             .$notNull()
