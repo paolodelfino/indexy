@@ -38,3 +38,5 @@ next-env.d.ts
 a.txt
 
 certificates
+
+/test/
