@@ -89,7 +89,7 @@ export default function Page() {
           disabled={isFormPending || form.isInvalid}
           onClick={() =>
             router.push(
-              `/${formValuesToString(form.values())}/query/inspiration`,
+              `/query/inspiration/${formValuesToString(form.values())}`,
             )
           }
         >

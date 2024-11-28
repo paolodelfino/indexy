@@ -86,7 +86,7 @@ export default function Page() {
         <Button
           disabled={isFormPending || form.isInvalid}
           onClick={() =>
-            router.push(`/${formValuesToString(form.values())}/query/big_paint`)
+            router.push(`/query/big_paint/${formValuesToString(form.values())}`)
           }
         >
           Search
