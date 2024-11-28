@@ -99,7 +99,7 @@ export default function UIInspiration({
         <div className="ml-2 flex">
           <ButtonLink
             color="ghost"
-            href={`/pool/NOT YET IMPLEMENTED`}
+            href={`/pool/inspiration/${data.id}`}
             size="large"
             disabled={data.num_related_big_paints! <= "0"}
             classNames={{ button: "data-[disabled=false]:text-neutral-300" }}
@@ -109,7 +109,7 @@ export default function UIInspiration({
 
           <ButtonLink
             color="ghost"
-            href={`/pool/NOT YET IMPLEMENTED`}
+            href={`/pool/inspiration/${data.id}`}
             size="large"
             disabled={data.num_related_inspirations! <= "0"}
             classNames={{ button: "data-[disabled=false]:text-neutral-300" }}
@@ -119,7 +119,7 @@ export default function UIInspiration({
 
           <ButtonLink
             color="ghost"
-            href={`/edit/${data.id}/inspiration`}
+            href={`/edit/inspiration/${data.id}`}
             size="large"
             classNames={{ button: "data-[disabled=false]:text-neutral-300" }}
           >
