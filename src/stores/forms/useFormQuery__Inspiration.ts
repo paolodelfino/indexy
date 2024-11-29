@@ -7,7 +7,7 @@ import { fieldTextArea } from "@/components/form_ui/FieldTextArea";
 import schemaInspiration__Query from "@/schemas/schemaInspiration__Query";
 import { createForm } from "@/utils/form";
 
-const useFormCreate__InspirationQuery = createForm(
+const useFormQuery__Inspiration = createForm(
   schemaInspiration__Query,
   {
     date: fieldComparisonDate(),
@@ -36,4 +36,4 @@ const useFormCreate__InspirationQuery = createForm(
     queryName: fieldText("Untitled"),
   },
 );
-export default useFormCreate__InspirationQuery;
+export default useFormQuery__Inspiration;

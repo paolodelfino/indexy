@@ -10,7 +10,7 @@ import FieldSelect from "@/components/form_ui/FieldSelect";
 import FieldText from "@/components/form_ui/FieldText";
 import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
-import useFormCreate__BigPaintQuery from "@/stores/forms/useFormCreate__BigPaintQuery";
+import useFormQuery__BigPaint from "@/stores/forms/useFormQuery__BigPaint";
 import useQueryQuery__Query from "@/stores/queries/useQueryQuery__Query";
 import useQueryQuery__View from "@/stores/queries/useQueryQuery__View";
 import { formValuesToString } from "@/utils/url";
@@ -19,15 +19,15 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 
 export default function Page() {
-  const form = useFormCreate__BigPaintQuery();
+  const form = useFormQuery__BigPaint();
   const router = useRouter();
 
   const [isFormPending, setIsFormPending] = useState(false);
 
-  const invalidateQueryQueries__View = useQueryQuery__View(
+  const invalidate__QueryQuery__View = useQueryQuery__View(
     (state) => state.invalidate,
   );
-  const invalidateQueryQueries__Search = useQueryQuery__Query(
+  const invalidate__QueryQuery__Query = useQueryQuery__Query(
     (state) => state.invalidate,
   );
 
@@ -41,8 +41,9 @@ export default function Page() {
         category: "big_paint",
         name: form.meta.queryName.value!,
       });
-      invalidateQueryQueries__View(); // TODO: Non avevo pensato allo scenario in cui la funzione non finisce in tempo, siam sicuri che continua lo stesso?
-      invalidateQueryQueries__Search();
+
+      invalidate__QueryQuery__View();
+      invalidate__QueryQuery__Query();
 
       setIsFormPending(false);
     });

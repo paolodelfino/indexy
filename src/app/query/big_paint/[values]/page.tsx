@@ -4,7 +4,7 @@ import ActionEdit__Query from "@/actions/ActionEdit__Query";
 import UIBigPaint from "@/components/db_ui/UIBigPaint";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
 import schemaBigPaint__Query from "@/schemas/schemaBigPaint__Query";
-import useFormCreate__BigPaintQuery from "@/stores/forms/useFormCreate__BigPaintQuery";
+import useFormQuery__BigPaint from "@/stores/forms/useFormQuery__BigPaint";
 import useQueryBigPaint__Query from "@/stores/queries/useQueryBigPaint__Query";
 import useQueryQuery__Query from "@/stores/queries/useQueryQuery__Query";
 import useQueryQuery__View from "@/stores/queries/useQueryQuery__View";
@@ -25,12 +25,12 @@ export default function Page({
   );
 
   const query = useQueryBigPaint__Query();
-  const form = useFormCreate__BigPaintQuery();
+  const form = useFormQuery__BigPaint();
 
-  const invalidateQueryQueries__View = useQueryQuery__View(
+  const invalidate__QueryQuery__View = useQueryQuery__View(
     (state) => state.invalidate,
   );
-  const invalidateQueryQueries__Search = useQueryQuery__Query(
+  const invalidate__QueryQuery__Query = useQueryQuery__Query(
     (state) => state.invalidate,
   );
 
@@ -40,8 +40,8 @@ export default function Page({
       query.active();
 
       ActionEdit__Query(valuesStr, { date: new Date() }).then(() => {
-        invalidateQueryQueries__View();
-        invalidateQueryQueries__Search();
+        invalidate__QueryQuery__View();
+        invalidate__QueryQuery__Query();
         // TODO: Furthemore I have to attach to an onRevalidate event, when useQueryInspirations__Search gets invalidated it does another fetch, furthermore maybe I should also attach to useInfiniteQuery's callback. I should move this whole to callback and onrevalidate
       });
 

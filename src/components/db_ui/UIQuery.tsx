@@ -3,6 +3,7 @@
 import ActionDelete__Query from "@/actions/ActionDelete__Query";
 import Button, { ButtonLink } from "@/components/Button";
 import { Delete01, PencilEdit01 } from "@/components/icons";
+import useQueryQuery__Edit from "@/stores/queries/useQueryQuery__Edit";
 import useQueryQuery__Query from "@/stores/queries/useQueryQuery__Query";
 import useQueryQuery__View from "@/stores/queries/useQueryQuery__View";
 import { dateToString } from "@/utils/date";
@@ -21,10 +22,13 @@ export default function UIQuery({
 
   const [isDeleteFormPending, setIsDeleteFormPending] = useState(false);
 
-  const invalidateQueryQueries__View = useQueryQuery__View(
+  const invalidate__QueryQuery__Edit = useQueryQuery__Edit(
     (state) => state.invalidate,
   );
-  const invalidateQueryQueries__Search = useQueryQuery__Query(
+  const invalidate__QueryQuery__View = useQueryQuery__View(
+    (state) => state.invalidate,
+  );
+  const invalidate__QueryQuery__Query = useQueryQuery__Query(
     (state) => state.invalidate,
   );
 
@@ -62,8 +66,10 @@ export default function UIQuery({
               await ActionDelete__Query({
                 values: data.values,
               });
-              invalidateQueryQueries__View();
-              invalidateQueryQueries__Search();
+
+              invalidate__QueryQuery__Edit();
+              invalidate__QueryQuery__View();
+              invalidate__QueryQuery__Query();
 
               setIsDeleteFormPending(false);
             }

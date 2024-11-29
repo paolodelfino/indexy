@@ -6,17 +6,26 @@ import FieldText from "@/components/form_ui/FieldText";
 import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormCreate__BigPaint from "@/stores/forms/useFormCreate__BigPaint";
+import useQueryBigPaint__Pool from "@/stores/queries/useQueryBigPaint__Pool";
 import useQueryBigPaint__Query from "@/stores/queries/useQueryBigPaint__Query";
+import useQueryInspiration__Pool from "@/stores/queries/useQueryInspiration__Pool";
+import useQueryInspiration__Query from "@/stores/queries/useQueryInspiration__Query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Page() {
   const router = useRouter();
 
-  // const invalidateQueryInspiration__Query = useQueryInspiration__Query(
-  //   (state) => state.invalidate,
-  // );
-  const invalidateQueryBigPaint__Query = useQueryBigPaint__Query(
+  const invalidate__QueryBigPaint__Pool = useQueryBigPaint__Pool(
+    (state) => state.invalidate,
+  );
+  const invalidate__QueryBigPaint__Query = useQueryBigPaint__Query(
+    (state) => state.invalidate,
+  );
+  const invalidate__QueryInspiration__Pool = useQueryInspiration__Pool(
+    (state) => state.invalidate,
+  );
+  const invalidate__QueryInspiration__Query = useQueryInspiration__Query(
     (state) => state.invalidate,
   );
 
@@ -29,8 +38,10 @@ export default function Page() {
 
       await ActionCreate__BigPaint(form.values());
 
-      // invalidateQueryInspiration__Query();
-      invalidateQueryBigPaint__Query();
+      invalidate__QueryBigPaint__Pool();
+      invalidate__QueryBigPaint__Query();
+      invalidate__QueryInspiration__Pool();
+      invalidate__QueryInspiration__Query();
 
       form.reset();
 

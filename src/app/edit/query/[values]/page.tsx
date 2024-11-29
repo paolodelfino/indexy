@@ -58,10 +58,13 @@ export default function FormEdit__Query({
       });
   }, [query.data]);
 
-  const invalidateQueryQueries__View = useQueryQuery__View(
+  const invalidate__QueryQuery__Edit = useQueryQuery__Edit(
     (state) => state.invalidate,
   );
-  const invalidateQueryQueries__Search = useQueryQuery__Query(
+  const invalidate__QueryQuery__View = useQueryQuery__View(
+    (state) => state.invalidate,
+  );
+  const invalidate__QueryQuery__Query = useQueryQuery__Query(
     (state) => state.invalidate,
   );
 
@@ -75,8 +78,9 @@ export default function FormEdit__Query({
       const values = form.values();
 
       await ActionEdit__Query(valuesStr, values);
-      invalidateQueryQueries__View();
-      invalidateQueryQueries__Search();
+
+      invalidate__QueryQuery__View();
+      invalidate__QueryQuery__Query();
 
       setIsEditFormPending(false);
     });
@@ -103,8 +107,10 @@ export default function FormEdit__Query({
               await ActionDelete__Query({
                 values: valuesStr,
               });
-              invalidateQueryQueries__View();
-              invalidateQueryQueries__Search();
+
+              invalidate__QueryQuery__Edit();
+              invalidate__QueryQuery__View();
+              invalidate__QueryQuery__Query();
 
               setIsDeleteFormPending(false);
 

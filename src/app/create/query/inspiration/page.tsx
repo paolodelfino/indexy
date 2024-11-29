@@ -12,7 +12,7 @@ import FieldText from "@/components/form_ui/FieldText";
 import FieldTextArea from "@/components/form_ui/FieldTextArea";
 import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
-import useFormCreate__InspirationQuery from "@/stores/forms/useFormCreate__InspirationQuery";
+import useFormQuery__Inspiration from "@/stores/forms/useFormQuery__Inspiration";
 import useQueryQuery__Query from "@/stores/queries/useQueryQuery__Query";
 import useQueryQuery__View from "@/stores/queries/useQueryQuery__View";
 import { formValuesToString } from "@/utils/url";
@@ -21,15 +21,15 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 
 export default function Page() {
-  const form = useFormCreate__InspirationQuery();
+  const form = useFormQuery__Inspiration();
   const router = useRouter();
 
   const [isFormPending, setIsFormPending] = useState(false);
 
-  const invalidateQueryQueries_View = useQueryQuery__View(
+  const invalidate__QueryQuery__View = useQueryQuery__View(
     (state) => state.invalidate,
   );
-  const invalidateQueryQueries_Search = useQueryQuery__Query(
+  const invalidate__QueryQuery__Query = useQueryQuery__Query(
     (state) => state.invalidate,
   );
 
@@ -43,8 +43,10 @@ export default function Page() {
         category: "inspiration",
         name: form.meta.queryName.value!,
       });
-      invalidateQueryQueries_View(); // TODO: Non avevo pensato allo scenario in cui la funzione non finisce in tempo, siam sicuri che continua lo stesso?
-      invalidateQueryQueries_Search();
+
+      // TODO: Non avevo pensato allo scenario in cui la funzione non finisce in tempo, siam sicuri che continua lo stesso?
+      invalidate__QueryQuery__View();
+      invalidate__QueryQuery__Query();
 
       setIsFormPending(false);
     });

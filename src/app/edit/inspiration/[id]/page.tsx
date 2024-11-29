@@ -13,8 +13,11 @@ import { InformationCircle, Star } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import schemaInspiration__Edit__Params from "@/schemas/schemaInspiration__Edit__Params";
 import useFormEdit__Inspiration from "@/stores/forms/useFormEdit__Inspiration";
+import useQueryBigPaint__Edit from "@/stores/queries/useQueryBigPaint__Edit";
+import useQueryBigPaint__Pool from "@/stores/queries/useQueryBigPaint__Pool";
 import useQueryBigPaint__Query from "@/stores/queries/useQueryBigPaint__Query";
 import useQueryInspiration__Edit from "@/stores/queries/useQueryInspiration__Edit";
+import useQueryInspiration__Pool from "@/stores/queries/useQueryInspiration__Pool";
 import useQueryInspiration__Query from "@/stores/queries/useQueryInspiration__Query";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -45,7 +48,7 @@ export default function Page({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     // TODO: Ok, ho fatto il check e, come pensavo, react, al mount, chiama di nuovo tutti gli effect e il re-mount avviene ovviamente anche col cambio route client-side. Quindi dobbiamo mettere un guard (anche da altre parti)
-    
+
     console.log("probably query.data has changed", query.data); // TODO: Take a look (anche per /edit/query)
 
     if (query.data !== undefined) {
@@ -94,10 +97,22 @@ export default function Page({ params }: { params: { id: string } }) {
   const [isDeleteFormPending, setIsDeleteFormPending] = useState(false);
   const [isEditFormPending, setIsEditFormPending] = useState(false); // TODO: Implement form.isPending
 
-  const invalidateQueryInspiration__Query = useQueryInspiration__Query(
+  const invalidate__QueryBigPaint__Edit = useQueryBigPaint__Edit(
     (state) => state.invalidate,
   );
-  const invalidateQueryBigPaint__Query = useQueryBigPaint__Query(
+  const invalidate__QueryInspiration__Edit = useQueryInspiration__Edit(
+    (state) => state.invalidate,
+  );
+  const invalidate__QueryBigPaint__Pool = useQueryBigPaint__Pool(
+    (state) => state.invalidate,
+  );
+  const invalidate__QueryBigPaint__Query = useQueryBigPaint__Query(
+    (state) => state.invalidate,
+  );
+  const invalidate__QueryInspiration__Pool = useQueryInspiration__Pool(
+    (state) => state.invalidate,
+  );
+  const invalidate__QueryInspiration__Query = useQueryInspiration__Query(
     (state) => state.invalidate,
   );
 
@@ -112,8 +127,12 @@ export default function Page({ params }: { params: { id: string } }) {
       else {
         await ActionEdit__Inspiration(id, form.values());
 
-        invalidateQueryInspiration__Query();
-        invalidateQueryBigPaint__Query();
+        invalidate__QueryBigPaint__Edit();
+        invalidate__QueryInspiration__Edit();
+        invalidate__QueryBigPaint__Pool();
+        invalidate__QueryBigPaint__Query();
+        invalidate__QueryInspiration__Pool();
+        invalidate__QueryInspiration__Query();
       }
 
       setIsEditFormPending(false);
@@ -130,8 +149,12 @@ export default function Page({ params }: { params: { id: string } }) {
 
               await ActionDelete__Inspiration({ id: id });
 
-              invalidateQueryInspiration__Query();
-              invalidateQueryBigPaint__Query();
+              invalidate__QueryBigPaint__Edit();
+              invalidate__QueryInspiration__Edit();
+              invalidate__QueryBigPaint__Pool();
+              invalidate__QueryBigPaint__Query();
+              invalidate__QueryInspiration__Pool();
+              invalidate__QueryInspiration__Query();
 
               setIsDeleteFormPending(false);
 
