@@ -78,11 +78,10 @@ export default function Page({
           data-disabled={query__BigPaint.isFetching}
           className="bg-neutral-800 py-4 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
         >
-          BigPaints
+          BigPaints{" "}
+          {!query__BigPaint.isFetching && `(${query__BigPaint.total})`}
         </h2>
         {query__BigPaint.data === undefined && <p>loading no cache</p>}
-        {query__BigPaint.data !== undefined &&
-          query__BigPaint.data.length <= 0 && <p>empty</p>}
         {query__BigPaint.data !== undefined &&
           query__BigPaint.data.length > 0 && (
             <VList
@@ -115,11 +114,10 @@ export default function Page({
           data-disabled={query__Inspiration.isFetching}
           className="bg-neutral-800 py-4 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
         >
-          Inspirations
+          Inspirations{" "}
+          {!query__Inspiration.isFetching && `(${query__Inspiration.total})`}
         </h2>
         {query__Inspiration.data === undefined && <p>loading no cache</p>}
-        {query__Inspiration.data !== undefined &&
-          query__Inspiration.data.length <= 0 && <p>empty</p>}
         {query__Inspiration.data !== undefined &&
           query__Inspiration.data.length > 0 && (
             <VList
