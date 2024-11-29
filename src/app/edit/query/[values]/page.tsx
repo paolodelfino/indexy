@@ -58,9 +58,6 @@ export default function FormEdit__Query({
       });
   }, [query.data]);
 
-  const invalidate__QueryQuery__Edit = useQueryQuery__Edit(
-    (state) => state.invalidate,
-  );
   const invalidate__QueryQuery__View = useQueryQuery__View(
     (state) => state.invalidate,
   );
@@ -79,6 +76,7 @@ export default function FormEdit__Query({
 
       await ActionEdit__Query(valuesStr, values);
 
+      // invalidate__QueryQuery__Edit(); // NOTE: Questo avrebbe senso se avessi più pagine aperte e fossero connesse
       invalidate__QueryQuery__View();
       invalidate__QueryQuery__Query();
 
@@ -108,7 +106,7 @@ export default function FormEdit__Query({
                 values: valuesStr,
               });
 
-              invalidate__QueryQuery__Edit();
+              // invalidate__QueryQuery__Edit(); // NOTE: Questo avrebbe più senso se avessi più pagine aperte e fossero connesse o se usassi useQueryQuery__Edit da altre parti
               invalidate__QueryQuery__View();
               invalidate__QueryQuery__Query();
 

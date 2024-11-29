@@ -75,9 +75,6 @@ export default function Page({ params }: { params: { id: string } }) {
   const [isDeleteFormPending, setIsDeleteFormPending] = useState(false);
   const [isEditFormPending, setIsEditFormPending] = useState(false); // TODO: Implement form.isPending
 
-  const invalidate__QueryBigPaint__Edit = useQueryBigPaint__Edit(
-    (state) => state.invalidate,
-  );
   const invalidate__QueryInspiration__Edit = useQueryInspiration__Edit(
     (state) => state.invalidate,
   );
@@ -101,7 +98,7 @@ export default function Page({ params }: { params: { id: string } }) {
 
       await ActionEdit__BigPaint(id, form.values());
 
-      invalidate__QueryBigPaint__Edit();
+      // invalidate__QueryBigPaint__Edit(); // NOTE: Questo avrebbe senso se avessi più pagine aperte e fossero connesse
       invalidate__QueryInspiration__Edit();
       invalidate__QueryBigPaint__Pool();
       invalidate__QueryBigPaint__Query();
@@ -122,7 +119,7 @@ export default function Page({ params }: { params: { id: string } }) {
 
               await ActionDelete__BigPaint({ id: id });
 
-              invalidate__QueryBigPaint__Edit();
+              // invalidate__QueryBigPaint__Edit(); // NOTE: Questo avrebbe più senso se avessi più pagine aperte e fossero connesse o se usassi useQueryBigPaint__Edit da altre parti
               invalidate__QueryInspiration__Edit();
               invalidate__QueryBigPaint__Pool();
               invalidate__QueryBigPaint__Query();

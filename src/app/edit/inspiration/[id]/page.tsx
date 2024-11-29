@@ -100,9 +100,6 @@ export default function Page({ params }: { params: { id: string } }) {
   const invalidate__QueryBigPaint__Edit = useQueryBigPaint__Edit(
     (state) => state.invalidate,
   );
-  const invalidate__QueryInspiration__Edit = useQueryInspiration__Edit(
-    (state) => state.invalidate,
-  );
   const invalidate__QueryBigPaint__Pool = useQueryBigPaint__Pool(
     (state) => state.invalidate,
   );
@@ -128,7 +125,7 @@ export default function Page({ params }: { params: { id: string } }) {
         await ActionEdit__Inspiration(id, form.values());
 
         invalidate__QueryBigPaint__Edit();
-        invalidate__QueryInspiration__Edit();
+        // invalidate__QueryInspiration__Edit(); // NOTE: Questo avrebbe senso se avessi più pagine aperte e fossero connesse
         invalidate__QueryBigPaint__Pool();
         invalidate__QueryBigPaint__Query();
         invalidate__QueryInspiration__Pool();
@@ -150,7 +147,7 @@ export default function Page({ params }: { params: { id: string } }) {
               await ActionDelete__Inspiration({ id: id });
 
               invalidate__QueryBigPaint__Edit();
-              invalidate__QueryInspiration__Edit();
+              // invalidate__QueryInspiration__Edit(); // NOTE: Questo avrebbe più senso se avessi più pagine aperte e fossero connesse o se usassi useQueryInspiration__Edit da altre parti
               invalidate__QueryBigPaint__Pool();
               invalidate__QueryBigPaint__Query();
               invalidate__QueryInspiration__Pool();
