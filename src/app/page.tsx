@@ -13,6 +13,8 @@ import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
 import { useEffect, useState } from "react";
 import { VList } from "virtua";
 
+// TODO: Possibilità di route tra le ricerche
+
 export default function Page() {
   const query = useQueryQueries__View();
   // TODO: Maybe form.isDirty instead of form.meta.showSearch

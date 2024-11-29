@@ -7,6 +7,7 @@ const schemaResource__InjectBuffer = z.object({
       sha256: schemaResource__DB.shape.sha256,
       type: schemaResource__DB.shape.type,
       n: schemaResource__DB.shape.n,
+      id: schemaResource__DB.shape.id,
     }),
   ),
 });

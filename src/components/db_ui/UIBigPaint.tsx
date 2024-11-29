@@ -1,7 +1,7 @@
 "use client";
 
 import { ButtonLink } from "@/components/Button";
-import { InkStroke20Filled, PencilEdit01, Square } from "@/components/icons";
+import { MoreHorizontalSquare02, PencilEdit01 } from "@/components/icons";
 import { dateToString } from "@/utils/date";
 import { Selectable } from "kysely";
 import { BigPaint } from "kysely-codegen/dist/db";
@@ -36,13 +36,26 @@ export default function UIBigPaint({
             color="ghost"
             href={`/pool/big_paint/${data.id}`}
             size="large"
+            disabled={
+              data.num_related_big_paints! <= "0" &&
+              data.num_related_inspirations! <= "0"
+            }
+            classNames={{ button: "data-[disabled=false]:text-neutral-300" }}
+          >
+            <MoreHorizontalSquare02 />
+          </ButtonLink>
+
+          {/* <ButtonLink
+            color="ghost"
+            href={`/pool/big_paint/${data.id}`}
+            size="large"
             disabled={data.num_related_big_paints! <= "0"}
             classNames={{ button: "data-[disabled=false]:text-neutral-300" }}
           >
             <Square />
-          </ButtonLink>
+          </ButtonLink> */}
 
-          <ButtonLink
+          {/* <ButtonLink
             color="ghost"
             href={`/pool/big_paint/${data.id}`}
             size="large"
@@ -50,7 +63,7 @@ export default function UIBigPaint({
             classNames={{ button: "data-[disabled=false]:text-neutral-300" }}
           >
             <InkStroke20Filled />
-          </ButtonLink>
+          </ButtonLink> */}
 
           <ButtonLink
             color="ghost"

@@ -44,7 +44,7 @@ export default function Page({ params }: { params: { id: string } }) {
   }, [id]);
 
   useEffect(() => {
-    console.log("probably query.data has changed", query.data);
+    console.log("probably query.data has changed", query.data); // TODO: Take a look
 
     if (query.data !== undefined) {
       const maxN = query.data.resources.reduce((max, value) => {

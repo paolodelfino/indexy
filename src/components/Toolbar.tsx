@@ -110,43 +110,6 @@ export default function Toolbar({
               </PopoverContent>
             </Popover>
           </PopoverContent>
-          <Popover placement="left-start">
-            <PopoverTrigger
-              role="listitem"
-              color="ghost"
-              size="large"
-              classNames={{ button: "py-5", text: "text-neutral-300" }}
-              startContent={<SearchSquare />}
-              full={variant === "monitor"}
-            >
-              Search
-            </PopoverTrigger>
-            <PopoverContent
-              className="z-20 flex min-w-16 max-w-[160px] flex-col"
-              role="list"
-            >
-              <ButtonLink
-                classNames={{ text: "text-neutral-300" }}
-                full
-                href="/create/query/big_paint"
-                role="listitem"
-                size="large"
-                startContent={<Square />}
-              >
-                BigPaint
-              </ButtonLink>
-              <ButtonLink
-                classNames={{ text: "text-neutral-300" }}
-                full
-                href="/create/query/inspiration"
-                role="listitem"
-                size="large"
-                startContent={<InkStroke20Filled />}
-              >
-                Inspiration
-              </ButtonLink>
-            </PopoverContent>
-          </Popover>
         </Popover>
       </ul>
     </nav>

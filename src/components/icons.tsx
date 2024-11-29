@@ -1,4 +1,4 @@
-import type { SVGProps } from "react"
+import type { SVGProps } from "react";
 
 export function Star(props: SVGProps<SVGSVGElement>) {
   return (
@@ -390,6 +390,28 @@ export function ArrowShrink(props: SVGProps<SVGSVGElement>) {
         strokeLinejoin="round"
         strokeWidth={1.5}
         d="M14.23 17.995c-.01-.75-.526-3.234 0-3.76c.527-.527 3.01-.01 3.76 0M21 20.999l-6.385-6.383M9.77 17.995c.01-.75.526-3.234-.001-3.76c-.527-.527-3.01-.01-3.759 0M3 20.999l6.385-6.383M6.008 9.761c.75.01 3.233.522 3.759-.005s.006-3.01-.006-3.76m-.384 3.371L3.002 3.002m14.99 6.759c-.75.01-3.234.522-3.76-.005s-.005-3.01.006-3.76m.384 3.371l6.375-6.365"
+        color="currentColor"
+      ></path>
+    </svg>
+  );
+}
+
+export function MoreHorizontalSquare02(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={24}
+      height={24}
+      fill="none"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1.5}
+        d="M2.5 12c0-4.478 0-6.718 1.391-8.109S7.521 2.5 12 2.5c4.478 0 6.718 0 8.109 1.391S21.5 7.521 21.5 12c0 4.478 0 6.718-1.391 8.109S16.479 21.5 12 21.5c-4.478 0-6.718 0-8.109-1.391S2.5 16.479 2.5 12m9.492 0h.009m3.995 0h.009m-8.009 0h.009"
         color="currentColor"
       ></path>
     </svg>

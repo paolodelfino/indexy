@@ -12,94 +12,73 @@ const db = new Kysely<DB>({
   }),
 });
 
-console.log(
-  db
-    .selectFrom("inspiration_relations")
-    .select(
-      db.fn
-        .coalesce(db.fn.countAll(), sql<number>`0`)
-        .$castTo<string>()
-        .$notNull()
-        .as("num_related_inspirations"),
-    )
-    .whereRef("inspiration_relations.inspiration1_id", "=", "id")
-    .whereRef("inspiration_relations.inspiration2_id", "=", "id")
-    .compile().sql,
-);
+const id = "13dd81ee-7383-4d7d-bec1-134a523dbfd2";
 
-console.log(
-  db
-    .selectFrom("inspiration_relations")
-    .select(
-      db.fn
-        .coalesce(db.fn.countAll(), sql<number>`0`)
-        .$castTo<string>()
-        .$notNull()
-        .as("num_related_inspirations"),
-    )
-    .where("inspiration_relations.inspiration1_id", "=", "id")
-    .where("inspiration_relations.inspiration2_id", "=", "id")
-    .compile().sql,
-);
-
-console.log(
-  db
-    .selectFrom("inspiration_relations")
-    .select(
-      db.fn
-        .coalesce(db.fn.countAll(), sql<number>`0`)
-        .$castTo<string>()
-        .$notNull()
-        .as("num_related_inspirations"),
-    )
-    .where((eb) =>
-      eb.or([
-        eb("inspiration_relations.inspiration1_id", "=", "id"),
-        eb("inspiration_relations.inspiration2_id", "=", "id"),
-      ]),
-    )
-    .compile().sql,
-);
-
-console.log(
-  db
-    .selectFrom("inspiration_relations")
-    .select(
-      db.fn
-        .coalesce(db.fn.countAll(), sql<number>`0`)
-        .$castTo<string>()
-        .$notNull()
-        .as("num_related_inspirations"),
-    )
-    .where((eb) =>
-      eb.or([
-        eb("inspiration_relations.inspiration1_id", "=", sql<string>`"id"`),
-        eb("inspiration_relations.inspiration2_id", "=", sql<string>`"id"`),
-      ]),
-    )
-    .compile().sql,
-);
-
-console.log(
-  db
-    .selectFrom("inspiration_relations as ir")
-    .where((eb) =>
-      eb.or([
-        eb("ir.inspiration1_id", "=", id),
-        eb("ir.inspiration2_id", "=", id),
-      ]),
-    )
-    .leftJoin("inspiration as i", (jc) =>
-      jc.on((eb) =>
+const q = db
+  .selectFrom((te) =>
+    te
+      .selectFrom("big_paint_relations as br")
+      .where((eb) =>
         eb.or([
-          eb("i.id", "=", sql<string>`"ir"."inspiration1_id"`),
-          eb("i.id", "=", sql<string>`"ir"."inspiration2_id"`),
+          eb(sql`br.big_paint1_id::text`, "=", sql`${id}::text`),
+          eb(sql`br.big_paint2_id::text`, "=", sql`${id}::text`),
         ]),
-      ),
-    )
-    .where("i.id", "!=", id)
-    .select(["i.id", "i.content"])
-    .compile().sql,
-);
+      )
+      .select((eb) =>
+        eb
+          .case()
+          .when(sql`br.big_paint1_id::text`, "!=", sql`${id}::text`)
+          .then(sql`"br"."big_paint1_id"::text`)
+          .when(sql`br.big_paint2_id::text`, "!=", sql`${id}::text`)
+          .then(sql`"br"."big_paint2_id"::text`)
+          .end()
+          .$notNull()
+          .as("big_paint_id"),
+      )
+      .as("r"),
+  )
+  .innerJoin("big_paint as b", "b.id", "r.big_paint_id");
+
+const data = q
+  .select([
+    "b.name",
+    "b.date",
+    "b.id",
+    db
+      .selectFrom("big_paint_relations as br")
+      .select(
+        db.fn
+          .coalesce(db.fn.countAll(), sql<number>`0`)
+          .$castTo<string>()
+          .$notNull()
+          .as("num_related_big_paints"),
+      )
+      .where((eb) =>
+        eb.or([
+          eb(sql`"br"."big_paint1_id"::text`, "=", sql<string>`"b"."id"::text`),
+          eb(sql`"br"."big_paint2_id"::text`, "=", sql<string>`"b"."id"::text`),
+        ]),
+      )
+      .as("num_related_big_paints"),
+    db
+      .selectFrom("big_paint_inspiration_relations as bir")
+      .select(
+        db.fn
+          .coalesce(db.fn.countAll(), sql<number>`0`)
+          .$castTo<string>()
+          .$notNull()
+          .as("num_related_inspirations"),
+      )
+      .whereRef(
+        sql`"bir"."big_paint_id"::text`,
+        "=",
+        sql<string>`"b"."id"::text`,
+      )
+      .as("num_related_inspirations"),
+  ])
+  .offset(0)
+  .limit(20);
+
+await data.execute();
 
 await db.destroy();

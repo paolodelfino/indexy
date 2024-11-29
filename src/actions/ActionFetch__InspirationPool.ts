@@ -1,11 +1,13 @@
 "use server";
 
+import ActionInjectBuffer__Resource from "@/actions/ActionInjectBuffer__Resource";
 import { db } from "@/db/db";
-import minioClient from "@/minio/minioClient";
 import schemaEntry__InspirationPool__Fetch from "@/schemas/schemaEntry__InspirationPool__Fetch";
 import { FormValues } from "@/utils/form";
 import { sql } from "kysely";
 import { z } from "zod";
+
+// TODO: Put entry in the pool
 
 export default async function ActionFetch__InspirationPool(
   offset: number,
@@ -13,212 +15,118 @@ export default async function ActionFetch__InspirationPool(
   values: FormValues<typeof schemaEntry__InspirationPool__Fetch>,
 ) {
   const { limit: validatedLimit, offset: validatedOffset } = z
-    .object({ offset: z.number().gt(0), limit: z.number().gt(0) })
+    .object({ offset: z.number().gte(0), limit: z.number().gte(0) })
     .parse({ offset, limit });
   const { id, type } = schemaEntry__InspirationPool__Fetch.parse(values);
 
-  if (type === "inspiration") {
-    const q = db
-      .selectFrom((te) =>
-        te
-          .selectFrom("inspiration_relations as ir")
-          .where((eb) =>
-            eb.or([
-              eb("ir.inspiration1_id", "=", id),
-              eb("ir.inspiration2_id", "=", id),
-            ]),
-          )
-          .select((eb) =>
-            eb
-              .case()
-              .when("ir.inspiration1_id", "!=", id)
-              .then("ir.inspiration1_id")
-              .when("ir.inspiration2_id", "!=", id)
-              .then("ir.inspiration2_id")
-              .endCase()
-              .$notNull()
-              .as("inspiration_id"),
-          )
-          .as("r"),
-      )
-      .innerJoin("inspiration as i", "i.id", "r.inspiration_id");
+  let base;
+  if (type === "inspiration")
+    base = db.selectFrom((te) =>
+      te
+        .selectFrom("inspiration_relations as br")
+        .where((eb) =>
+          eb.or([
+            eb("br.inspiration1_id", "=", id),
+            eb("br.inspiration2_id", "=", id),
+          ]),
+        )
+        .select((eb) =>
+          eb
+            .case()
+            .when("br.inspiration1_id", "!=", id)
+            .then(sql`br.inspiration1_id`) // TODO: Aggiusta anche dalle altre parti
+            .else(sql`br.inspiration2_id`)
+            .end()
+            .$notNull()
+            .as("inspiration_id"),
+        )
+        .as("r"),
+    );
+  else
+    base = db.selectFrom((te) =>
+      te
+        .selectFrom("big_paint_inspiration_relations as bir")
+        .where("bir.big_paint_id", "=", id)
+        .select("bir.inspiration_id")
+        .as("r"),
+    );
 
-    const a = await q
-      .select([
-        "i.content",
-        "i.date",
-        "i.id",
-        "i.highlight",
-        db
-          .selectFrom("inspiration_relations as ir")
-          .select(
-            db.fn
-              .coalesce(db.fn.countAll(), sql<number>`0`)
-              .$castTo<string>()
-              .$notNull()
-              .as("num_related_inspirations"),
-          )
-          .where((eb) =>
-            eb.or([
-              eb("ir.inspiration1_id", "=", sql<string>`"id"`),
-              eb("ir.inspiration2_id", "=", sql<string>`"id"`),
-            ]),
-          )
-          .as("num_related_inspirations"),
-        db
-          .selectFrom("big_paint_inspiration_relations as bir")
-          .select(
-            db.fn
-              .coalesce(db.fn.countAll(), sql<number>`0`)
-              .$castTo<string>()
-              .$notNull()
-              .as("num_related_big_paints"),
-          )
-          .whereRef("bir.inspiration_id", "=", "id")
-          .as("num_related_big_paints"),
-      ])
+  const [data, total] = await Promise.all([
+    base
+      .innerJoin("inspiration as i", "i.id", "r.inspiration_id")
+      .select(["i.content", "i.date", "i.id", "i.highlight"])
       .offset(validatedOffset)
       .limit(validatedLimit)
-      .execute();
+      .execute()
+      .then(
+        async (itemsWithFewerProps) =>
+          await Promise.all(
+            itemsWithFewerProps.map(async (it) => {
+              const [
+                num_related_inspirations,
+                num_related_big_paints,
+                resources,
+              ] = await Promise.all([
+                (
+                  await db
+                    .selectFrom("inspiration_relations as br")
+                    .where((eb) =>
+                      eb.or([
+                        eb("br.inspiration1_id", "=", it.id),
+                        eb("br.inspiration2_id", "=", it.id),
+                      ]),
+                    )
+                    .select((eb) =>
+                      eb.fn
+                        .countAll()
+                        .$castTo<string>()
+                        .as("num_related_inspirations"),
+                    )
+                    .executeTakeFirstOrThrow()
+                ).num_related_inspirations,
 
-    const b = await Promise.all(
-      a.map(async (it) => {
-        // TODO: Can we join the previous query?
-        const resources = await db
-          .selectFrom("resource")
-          .where("inspiration_id", "=", it.id)
-          .selectAll()
-          .execute();
+                (
+                  await db
+                    .selectFrom("big_paint_inspiration_relations as bir")
+                    .where("bir.inspiration_id", "=", it.id)
+                    .select((eb) =>
+                      eb.fn
+                        .countAll()
+                        .$castTo<string>()
+                        .as("num_related_big_paints"),
+                    )
+                    .executeTakeFirstOrThrow()
+                ).num_related_big_paints,
 
-        return {
-          ...it,
-          resources: await Promise.all(
-            resources.map(async ({ inspiration_id, ...rest }) => {
-              const a = Buffer.concat(
-                await (
-                  await minioClient.getObject(rest.type, rest.sha256)
-                ).toArray(),
-              );
-              const b = a.buffer.slice(
-                a.byteOffset,
-                a.byteOffset + a.byteLength,
-              );
+                // TODO: Possible call inutile se l'array è vuoto
+                ActionInjectBuffer__Resource({
+                  // TODO: Should I use another action? Does it make another html request?
+                  resources: await db
+                    .selectFrom("resource")
+                    .where("inspiration_id", "=", id)
+                    .select(["type", "n", "sha256", "id"])
+                    .execute(),
+                }),
+              ]);
+
               return {
-                ...rest,
-                buff:
-                  b instanceof SharedArrayBuffer
-                    ? new ArrayBuffer(b.byteLength)
-                    : b, // TODO: Is this bullshit necessary?
+                ...it,
+                num_related_big_paints,
+                num_related_inspirations,
+                resources,
               };
             }),
           ),
-        };
-      }),
-    );
-
-    return {
-      data: b,
-      total: Number(
-        (
-          await q
-            .select((eb) => eb.fn.countAll().as("total"))
-            .executeTakeFirstOrThrow()
-        ).total,
       ),
-    };
-  } else {
-    const q = db
-      .selectFrom((te) =>
-        te
-          .selectFrom("big_paint_inspiration_relations as bir")
-          .where("bir.inspiration_id", "=", id)
-          .select("bir.inspiration_id")
-          .as("r"),
-      )
-      .innerJoin("inspiration as i", "i.id", "r.inspiration_id");
 
-    const a = await q
-      .select([
-        "i.content",
-        "i.date",
-        "i.id",
-        "i.highlight",
-        db
-          .selectFrom("inspiration_relations as ir")
-          .select(
-            db.fn
-              .coalesce(db.fn.countAll(), sql<number>`0`)
-              .$castTo<string>()
-              .$notNull()
-              .as("num_related_inspirations"),
-          )
-          .where((eb) =>
-            eb.or([
-              eb("ir.inspiration1_id", "=", sql<string>`"id"`),
-              eb("ir.inspiration2_id", "=", sql<string>`"id"`),
-            ]),
-          )
-          .as("num_related_inspirations"),
-        db
-          .selectFrom("big_paint_inspiration_relations as bir")
-          .select(
-            db.fn
-              .coalesce(db.fn.countAll(), sql<number>`0`)
-              .$castTo<string>()
-              .$notNull()
-              .as("num_related_big_paints"),
-          )
-          .whereRef("bir.inspiration_id", "=", "id")
-          .as("num_related_big_paints"),
-      ])
-      .offset(validatedOffset)
-      .limit(validatedLimit)
-      .execute();
+    Number(
+      (
+        await base
+          .select((eb) => eb.fn.countAll().as("total"))
+          .executeTakeFirstOrThrow()
+      ).total,
+    ),
+  ]);
 
-    const b = await Promise.all(
-      a.map(async (it) => {
-        // TODO: Can we join the previous query?
-        const resources = await db
-          .selectFrom("resource")
-          .where("inspiration_id", "=", it.id)
-          .selectAll()
-          .execute();
-
-        return {
-          ...it,
-          resources: await Promise.all(
-            resources.map(async ({ inspiration_id, ...rest }) => {
-              const a = Buffer.concat(
-                await (
-                  await minioClient.getObject(rest.type, rest.sha256)
-                ).toArray(),
-              );
-              const b = a.buffer.slice(
-                a.byteOffset,
-                a.byteOffset + a.byteLength,
-              );
-              return {
-                ...rest,
-                buff:
-                  b instanceof SharedArrayBuffer
-                    ? new ArrayBuffer(b.byteLength)
-                    : b, // TODO: Is this bullshit necessary?
-              };
-            }),
-          ),
-        };
-      }),
-    );
-
-    return {
-      data: b,
-      total: Number(
-        (
-          await q
-            .select((eb) => eb.fn.countAll().as("total"))
-            .executeTakeFirstOrThrow()
-        ).total,
-      ),
-    };
-  }
+  return { data, total };
 }

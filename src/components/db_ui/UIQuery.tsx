@@ -32,7 +32,7 @@ export default function UIQuery({
     <div className="m-px flex flex-col ring-1 ring-neutral-600">
       <ButtonLink
         id={id}
-        href={`/${data.values}/query/${data.category}`}
+        href={`/query/${data.category}/${data.values}`}
         full
         size="large"
         color="ghost"

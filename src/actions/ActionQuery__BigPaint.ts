@@ -88,8 +88,16 @@ export default async function ActionQuery__BigPaint(
           )
           .where((eb) =>
             eb.or([
-              eb("big_paint_relations.big_paint1_id", "=", sql<string>`"id"`),
-              eb("big_paint_relations.big_paint2_id", "=", sql<string>`"id"`),
+              eb(
+                "big_paint_relations.big_paint1_id",
+                "=",
+                sql<string>`"big_paint"."id"`,
+              ),
+              eb(
+                "big_paint_relations.big_paint2_id",
+                "=",
+                sql<string>`"big_paint"."id"`,
+              ),
             ]),
           )
           .as("num_related_big_paints"),
@@ -102,13 +110,18 @@ export default async function ActionQuery__BigPaint(
               .$notNull()
               .as("num_related_inspirations"),
           )
-          .whereRef("big_paint_inspiration_relations.big_paint_id", "=", "id")
+          .whereRef(
+            "big_paint_inspiration_relations.big_paint_id",
+            "=",
+            sql<string>`"big_paint"."id"`,
+          )
           .as("num_related_inspirations"),
       ])
       .$if(offset !== null, (qb) => qb.offset(offset!)) // TODO: Remove optional
       .$if(limit !== null, (qb) => qb.limit(limit!)) // TODO: Remove optional
       .execute(),
-    total: Number( // TODO: Convert to string
+    total: Number(
+      // TODO: Convert to string
       (
         await q
           .select((eb) => eb.fn.countAll().as("total"))

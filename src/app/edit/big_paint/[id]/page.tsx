@@ -43,7 +43,7 @@ export default function Page({ params }: { params: { id: string } }) {
   }, [id]);
 
   useEffect(() => {
-    console.log("probably query.data has changed", query.data);
+    console.log("probably query.data has changed", query.data); // TODO: Take a look
 
     if (query.data !== undefined)
       form.setMetas({
@@ -174,6 +174,7 @@ export default function Page({ params }: { params: { id: string } }) {
             })),
           )
         }
+        blacklist={[id]}
       />
       <FieldDynamicSelect
         title="Related Inspirations"
@@ -199,7 +200,6 @@ export default function Page({ params }: { params: { id: string } }) {
             })),
           )
         }
-        blacklist={[id]}
       />
     </div>
   );

@@ -24,14 +24,7 @@ export default async function ActionEdit__BigPaint(
     const old = await db
       .selectFrom("big_paint_relations")
       .where((eb) =>
-        eb
-          .or([
-            eb("big_paint1_id", "in", related_big_paints_ids),
-            eb("big_paint2_id", "in", related_big_paints_ids),
-          ])
-          .and(
-            eb.or([eb("big_paint1_id", "=", id), eb("big_paint2_id", "=", id)]),
-          ),
+        eb.or([eb("big_paint1_id", "=", id), eb("big_paint2_id", "=", id)]),
       )
       .select([
         (eb) =>
@@ -41,7 +34,7 @@ export default async function ActionEdit__BigPaint(
             .then("big_paint1_id")
             .when("big_paint2_id", "!=", id)
             .then("big_paint2_id")
-            .endCase()
+            .end()
             .$notNull()
             .as("matched_big_paint_id"),
         "id as relation_id",
@@ -56,30 +49,30 @@ export default async function ActionEdit__BigPaint(
     const added = related_big_paints_ids.filter(
       (it) => old.find((it2) => it2.matched_big_paint_id === it) === undefined,
     );
-
     await Promise.all([
-      db
-        .deleteFrom("big_paint_relations")
-        .where((eb) =>
-          eb.or(deleted.map((it) => eb("id", "=", it.relation_id))),
-        )
-        .execute(),
-      db
-        .insertInto("big_paint_relations")
-        .values(added.map((it) => ({ big_paint1_id: it, big_paint2_id: id })))
-        .execute(),
+      deleted.length <= 0 // TODO: Mi dimentico di questo problema. Trova gli altri posti
+        ? undefined
+        : db
+            .deleteFrom("big_paint_relations")
+            .where((eb) =>
+              eb.or(deleted.map((it) => eb("id", "=", it.relation_id))),
+            )
+            .execute(),
+      added.length <= 0
+        ? undefined
+        : db
+            .insertInto("big_paint_relations")
+            .values(
+              added.map((it) => ({ big_paint1_id: it, big_paint2_id: id })),
+            )
+            .execute(),
     ]);
   }
 
   if (related_inspirations_ids !== undefined) {
     const old = await db
       .selectFrom("big_paint_inspiration_relations")
-      .where((eb) =>
-        eb.and([
-          eb("inspiration_id", "in", related_inspirations_ids),
-          eb("big_paint_id", "=", id),
-        ]),
-      )
+      .where("big_paint_id", "=", id)
       .select(["inspiration_id", "id as relation_id"])
       .execute();
     const deleted = old.filter(
@@ -92,16 +85,22 @@ export default async function ActionEdit__BigPaint(
     );
 
     await Promise.all([
-      db
-        .deleteFrom("big_paint_inspiration_relations")
-        .where((eb) =>
-          eb.or(deleted.map((it) => eb("id", "=", it.relation_id))),
-        )
-        .execute(),
-      db
-        .insertInto("big_paint_inspiration_relations")
-        .values(added.map((it) => ({ inspiration_id: it, big_paint_id: id })))
-        .execute(),
+      deleted.length <= 0
+        ? undefined
+        : db
+            .deleteFrom("big_paint_inspiration_relations")
+            .where((eb) =>
+              eb.or(deleted.map((it) => eb("id", "=", it.relation_id))),
+            )
+            .execute(),
+      added.length <= 0
+        ? undefined
+        : db
+            .insertInto("big_paint_inspiration_relations")
+            .values(
+              added.map((it) => ({ inspiration_id: it, big_paint_id: id })),
+            )
+            .execute(),
     ]);
   }
 

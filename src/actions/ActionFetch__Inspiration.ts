@@ -47,7 +47,7 @@ export default async function ActionFetch__Inspiration(
         .execute(),
       // TODO: Possible call inutile se l'array è vuoto
       ActionInjectBuffer__Resource({
-        // TODO: Shouldn't I use another action? Does it make another html request?
+        // TODO: Should I use another action? Does it make another html request?
         resources: await db
           .selectFrom("resource")
           .where("inspiration_id", "=", id)

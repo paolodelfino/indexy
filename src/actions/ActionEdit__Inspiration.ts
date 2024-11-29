@@ -29,17 +29,7 @@ export default async function ActionEdit__Inspiration(
     const old = await db
       .selectFrom("inspiration_relations")
       .where((eb) =>
-        eb
-          .or([
-            eb("inspiration1_id", "in", related_inspirations_ids),
-            eb("inspiration2_id", "in", related_inspirations_ids),
-          ])
-          .and(
-            eb.or([
-              eb("inspiration1_id", "=", id),
-              eb("inspiration2_id", "=", id),
-            ]),
-          ),
+        eb.or([eb("inspiration1_id", "=", id), eb("inspiration2_id", "=", id)]),
       )
       .select([
         (eb) =>
@@ -49,7 +39,7 @@ export default async function ActionEdit__Inspiration(
             .then("inspiration1_id")
             .when("inspiration2_id", "!=", id)
             .then("inspiration2_id")
-            .endCase()
+            .end()
             .$notNull()
             .as("matched_inspiration_id"),
         "id as relation_id",
@@ -67,30 +57,29 @@ export default async function ActionEdit__Inspiration(
     );
 
     await Promise.all([
-      db
-        .deleteFrom("inspiration_relations")
-        .where((eb) =>
-          eb.or(deleted.map((it) => eb("id", "=", it.relation_id))),
-        )
-        .execute(),
-      db
-        .insertInto("inspiration_relations")
-        .values(
-          added.map((it) => ({ inspiration1_id: it, inspiration2_id: id })),
-        )
-        .execute(),
+      deleted.length <= 0
+        ? undefined
+        : db
+            .deleteFrom("inspiration_relations")
+            .where((eb) =>
+              eb.or(deleted.map((it) => eb("id", "=", it.relation_id))),
+            )
+            .execute(),
+      added.length <= 0
+        ? undefined
+        : db
+            .insertInto("inspiration_relations")
+            .values(
+              added.map((it) => ({ inspiration1_id: it, inspiration2_id: id })),
+            )
+            .execute(),
     ]);
   }
 
   if (related_big_paints_ids !== undefined) {
     const old = await db
       .selectFrom("big_paint_inspiration_relations")
-      .where((eb) =>
-        eb.and([
-          eb("big_paint_id", "in", related_big_paints_ids),
-          eb("inspiration_id", "=", id),
-        ]),
-      )
+      .where("inspiration_id", "=", id)
       .select(["big_paint_id", "id as relation_id"])
       .execute();
     const deleted = old.filter(
@@ -103,16 +92,22 @@ export default async function ActionEdit__Inspiration(
     );
 
     await Promise.all([
-      db
-        .deleteFrom("big_paint_inspiration_relations")
-        .where((eb) =>
-          eb.or(deleted.map((it) => eb("id", "=", it.relation_id))),
-        )
-        .execute(),
-      db
-        .insertInto("big_paint_inspiration_relations")
-        .values(added.map((it) => ({ big_paint_id: it, inspiration_id: id })))
-        .execute(),
+      deleted.length <= 0
+        ? undefined
+        : db
+            .deleteFrom("big_paint_inspiration_relations")
+            .where((eb) =>
+              eb.or(deleted.map((it) => eb("id", "=", it.relation_id))),
+            )
+            .execute(),
+      added.length <= 0
+        ? undefined
+        : db
+            .insertInto("big_paint_inspiration_relations")
+            .values(
+              added.map((it) => ({ big_paint_id: it, inspiration_id: id })),
+            )
+            .execute(),
     ]);
   }
 
@@ -135,10 +130,12 @@ export default async function ActionEdit__Inspiration(
     );
 
     await Promise.all([
-      db
-        .deleteFrom("resource")
-        .where((eb) => eb.or(deleted.map((it) => eb("id", "=", it.id))))
-        .execute(),
+      deleted.length <= 0
+        ? undefined
+        : db
+            .deleteFrom("resource")
+            .where((eb) => eb.or(deleted.map((it) => eb("id", "=", it.id))))
+            .execute(),
       added.length > 0
         ? db
             .insertInto("resource")

@@ -3,9 +3,8 @@
 import { ButtonLink } from "@/components/Button";
 import {
   BinaryCode,
-  InkStroke20Filled,
+  MoreHorizontalSquare02,
   PencilEdit01,
-  Square,
   Star,
 } from "@/components/icons";
 import { cn } from "@/utils/cn";
@@ -101,6 +100,19 @@ export default function UIInspiration({
             color="ghost"
             href={`/pool/inspiration/${data.id}`}
             size="large"
+            disabled={
+              data.num_related_big_paints! <= "0" &&
+              data.num_related_inspirations! <= "0"
+            }
+            classNames={{ button: "data-[disabled=false]:text-neutral-300" }}
+          >
+            <MoreHorizontalSquare02 />
+          </ButtonLink>
+
+          {/* <ButtonLink
+            color="ghost"
+            href={`/pool/inspiration/${data.id}`}
+            size="large"
             disabled={data.num_related_big_paints! <= "0"}
             classNames={{ button: "data-[disabled=false]:text-neutral-300" }}
           >
@@ -115,7 +127,7 @@ export default function UIInspiration({
             classNames={{ button: "data-[disabled=false]:text-neutral-300" }}
           >
             <InkStroke20Filled />
-          </ButtonLink>
+          </ButtonLink> */}
 
           <ButtonLink
             color="ghost"

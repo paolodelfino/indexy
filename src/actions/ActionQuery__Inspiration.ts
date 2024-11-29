@@ -107,8 +107,16 @@ export default async function ActionQuery__Inspiration(
         )
         .where((eb) =>
           eb.or([
-            eb("inspiration_relations.inspiration1_id", "=", sql<string>`"id"`),
-            eb("inspiration_relations.inspiration2_id", "=", sql<string>`"id"`),
+            eb(
+              "inspiration_relations.inspiration1_id",
+              "=",
+              sql<string>`"inspiration"."id"`,
+            ),
+            eb(
+              "inspiration_relations.inspiration2_id",
+              "=",
+              sql<string>`"inspiration"."id"`,
+            ),
           ]),
         )
         .as("num_related_inspirations"),
@@ -121,14 +129,16 @@ export default async function ActionQuery__Inspiration(
             .$notNull()
             .as("num_related_big_paints"),
         )
-        .whereRef("big_paint_inspiration_relations.inspiration_id", "=", "id")
+        .whereRef(
+          "big_paint_inspiration_relations.inspiration_id",
+          "=",
+          sql<string>`"inspiration"."id"`,
+        )
         .as("num_related_big_paints"),
     ])
     .$if(offset !== null, (qb) => qb.offset(offset!))
     .$if(limit !== null, (qb) => qb.limit(limit!))
     .execute();
-
-  console.log("a", a);
 
   const b = await Promise.all(
     a.map(async (it) => {
