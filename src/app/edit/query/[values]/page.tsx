@@ -31,7 +31,7 @@ export default function FormEdit__Query({
 
   useEffect(() => {
     query.active();
-    return query.inactive();
+    return () => query.inactive();
   }, []);
 
   useEffect(() => {

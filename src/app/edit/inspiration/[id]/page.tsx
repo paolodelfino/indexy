@@ -44,7 +44,9 @@ export default function Page({ params }: { params: { id: string } }) {
   }, [id]);
 
   useEffect(() => {
-    console.log("probably query.data has changed", query.data); // TODO: Take a look
+    // TODO: Ok, ho fatto il check e, come pensavo, react, al mount, chiama di nuovo tutti gli effect e il re-mount avviene ovviamente anche col cambio route client-side. Quindi dobbiamo mettere un guard (anche da altre parti)
+    
+    console.log("probably query.data has changed", query.data); // TODO: Take a look (anche per /edit/query)
 
     if (query.data !== undefined) {
       const maxN = query.data.resources.reduce((max, value) => {
