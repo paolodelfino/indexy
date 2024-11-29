@@ -11,6 +11,7 @@ import { cn } from "@/utils/cn";
 import { dateToString } from "@/utils/date";
 import { Selectable } from "kysely";
 import { Inspiration, Resource } from "kysely-codegen/dist/db";
+import { usePathname } from "next/navigation";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
 // TODO: Supa double click to edit
@@ -83,6 +84,12 @@ export default function UIInspiration({
 
   const date = useMemo(() => dateToString(data.date), [data.date]);
 
+  const pathname = usePathname();
+  const isItsPage = useMemo(
+    () => pathname === `/pool/inspiration/${data.id}`,
+    [pathname],
+  );
+
   return (
     /* TODO: Sarebbe meglio se fosse la lista ad aggiungere lo spacing tra gli elementi */
     <div id={id} className="my-2">
@@ -94,6 +101,8 @@ export default function UIInspiration({
         <p className="shrink-0 text-neutral-500">{date}</p>
 
         <p>{<Star className={cn(data.highlight && "fill-current")} />}</p>
+
+        {isItsPage && <span className="h-2 w-2 rounded-full bg-blue-500" />}
 
         <div className="ml-2 flex">
           <ButtonLink

@@ -6,6 +6,8 @@ const useFormQuery__Pool = createForm(
   {},
   {
     lastValues: undefined as undefined | { type: string; id: string },
+    showBigPaint: false,
+    showInspiration: false,
   },
 );
 export default useFormQuery__Pool;

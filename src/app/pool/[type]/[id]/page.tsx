@@ -1,5 +1,6 @@
 "use client";
 
+import Button from "@/components/Button";
 import UIBigPaint from "@/components/db_ui/UIBigPaint";
 import UIInspiration from "@/components/db_ui/UIInspiration";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
@@ -7,6 +8,7 @@ import schemaPool__Query from "@/schemas/schemaPool__Query";
 import useFormQuery__Pool from "@/stores/forms/useFormQuery__Pool";
 import useQueryBigPaint__Pool from "@/stores/queries/useQueryBigPaint__Pool";
 import useQueryInspiration__Pool from "@/stores/queries/useQueryInspiration__Pool";
+import { cn } from "@/utils/cn";
 import { useEffect, useMemo } from "react";
 import { VList } from "virtua";
 
@@ -72,17 +74,28 @@ export default function Page({
   });
 
   return (
-    <div className="flex h-full max-h-screen flex-col space-y-6">
-      <div className="flex h-[40vh] shrink-0 flex-col">
-        <h2
-          data-disabled={query__BigPaint.isFetching}
-          className="bg-neutral-800 py-4 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
+    <div className="flex h-full max-h-screen flex-col">
+      <div className={cn("flex flex-col", form.meta.showBigPaint && "h-full")}>
+        <Button
+          disabled={query__BigPaint.isFetching}
+          full
+          size="large"
+          classNames={{ button: "py-5" }}
+          onClick={() =>
+            form.setFormMeta({
+              showBigPaint: !form.meta.showBigPaint,
+              showInspiration: false,
+            })
+          }
         >
           BigPaints{" "}
-          {!query__BigPaint.isFetching && `(${query__BigPaint.total})`}
-        </h2>
-        {query__BigPaint.data === undefined && <p>loading no cache</p>}
-        {query__BigPaint.data !== undefined &&
+          {query__BigPaint.data !== undefined && `(${query__BigPaint.total})`}
+        </Button>
+        {form.meta.showBigPaint && query__BigPaint.data === undefined && (
+          <p>loading no cache</p>
+        )}
+        {form.meta.showBigPaint &&
+          query__BigPaint.data !== undefined &&
           query__BigPaint.data.length > 0 && (
             <VList
               keepMounted={
@@ -109,16 +122,30 @@ export default function Page({
           )}
       </div>
 
-      <div className="flex h-[50vh] shrink-0 flex-col">
-        <h2
-          data-disabled={query__Inspiration.isFetching}
-          className="bg-neutral-800 py-4 pl-4 text-lg font-medium leading-10 data-[disabled=true]:opacity-50"
+      <div
+        className={cn("flex flex-col", form.meta.showInspiration && "h-full")}
+      >
+        <Button
+          disabled={query__Inspiration.isFetching}
+          full
+          size="large"
+          classNames={{ button: "py-5" }}
+          onClick={() =>
+            form.setFormMeta({
+              showInspiration: !form.meta.showInspiration,
+              showBigPaint: false,
+            })
+          }
         >
           Inspirations{" "}
-          {!query__Inspiration.isFetching && `(${query__Inspiration.total})`}
-        </h2>
-        {query__Inspiration.data === undefined && <p>loading no cache</p>}
-        {query__Inspiration.data !== undefined &&
+          {query__Inspiration.data !== undefined &&
+            `(${query__Inspiration.total})`}
+        </Button>
+        {form.meta.showInspiration && query__Inspiration.data === undefined && (
+          <p>loading no cache</p>
+        )}
+        {form.meta.showInspiration &&
+          query__Inspiration.data !== undefined &&
           query__Inspiration.data.length > 0 && (
             <VList
               keepMounted={

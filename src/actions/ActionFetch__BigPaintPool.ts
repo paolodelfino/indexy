@@ -52,8 +52,19 @@ export default async function ActionFetch__BigPaintPool(
 
   const [data, total] = await Promise.all([
     base
-      .innerJoin("big_paint as b", "b.id", "r.big_paint_id")
+      .innerJoin("big_paint as b", (j) =>
+        type === "big_paint"
+          ? j.on((eb) =>
+              eb.or([
+                eb("b.id", "=", sql<string>`r.big_paint_id`),
+                eb("b.id", "=", id),
+              ]),
+            )
+          : j.onRef("b.id", "=", "r.big_paint_id"),
+      )
+      .distinct() // TODO: Tra l'altro capire perché aggiunge il big paint con id id per ogni related e controlla dall'altra parte
       .select(["b.name", "b.date", "b.id"])
+      .orderBy("b.date asc")
       .offset(validatedOffset)
       .limit(validatedLimit)
       .execute()

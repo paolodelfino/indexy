@@ -5,6 +5,7 @@ import { MoreHorizontalSquare02, PencilEdit01 } from "@/components/icons";
 import { dateToString } from "@/utils/date";
 import { Selectable } from "kysely";
 import { BigPaint } from "kysely-codegen/dist/db";
+import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 
 // TODO: Supa double click to edit
@@ -21,6 +22,12 @@ export default function UIBigPaint({
 }) {
   const date = useMemo(() => dateToString(data.date), [data.date]);
 
+  const pathname = usePathname();
+  const isItsPage = useMemo(
+    () => pathname === `/pool/big_paint/${data.id}`,
+    [pathname],
+  );
+
   return (
     /* TODO: Sarebbe meglio se fosse la lista ad aggiungere lo spacing tra gli elementi */
     <div id={id} className="my-2">
@@ -30,6 +37,8 @@ export default function UIBigPaint({
 
       <div className="flex h-16 items-center gap-2 overflow-x-auto rounded-b bg-neutral-900 px-2">
         <p className="shrink-0 text-neutral-500">{date}</p>
+
+        {isItsPage && <span className="h-2 w-2 rounded-full bg-blue-500" />}
 
         <div className="ml-2 flex">
           <ButtonLink

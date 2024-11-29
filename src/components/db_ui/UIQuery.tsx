@@ -45,7 +45,7 @@ export default function UIQuery({
         <p className="bg-neutral-600 text-neutral-300">{data.category}</p>
         <p className="grow-0 text-neutral-500">{date}</p>
         <ButtonLink
-          href={`/edit/${data.values}/query`}
+          href={`/edit/query/${data.values}`}
           color="ghost"
           size="large"
           disabled={isDeleteFormPending}

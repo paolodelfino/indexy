@@ -53,7 +53,17 @@ export default async function ActionFetch__InspirationPool(
 
   const [data, total] = await Promise.all([
     base
-      .innerJoin("inspiration as i", "i.id", "r.inspiration_id")
+      .innerJoin("inspiration as i", (j) =>
+        type === "inspiration"
+          ? j.on((eb) =>
+              eb.or([
+                eb("i.id", "=", sql<string>`r.inspiration_id`),
+                eb("i.id", "=", id),
+              ]),
+            )
+          : j.onRef("i.id", "=", "r.inspiration_id"),
+      )
+      .distinct()
       .select(["i.content", "i.date", "i.id", "i.highlight"])
       .offset(validatedOffset)
       .limit(validatedLimit)
