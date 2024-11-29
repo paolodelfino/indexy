@@ -10,24 +10,24 @@ import FieldSelect from "@/components/form_ui/FieldSelect";
 import FieldText from "@/components/form_ui/FieldText";
 import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
-import useFormQuery__BigPaint from "@/stores/forms/useFormQuery__BigPaint";
-import useQueryQueries__Search from "@/stores/queries/useQueryQueries__Search";
-import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
+import useFormCreate__BigPaintQuery from "@/stores/forms/useFormCreate__BigPaintQuery";
+import useQueryQuery__Query from "@/stores/queries/useQueryQuery__Query";
+import useQueryQuery__View from "@/stores/queries/useQueryQuery__View";
 import { formValuesToString } from "@/utils/url";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 
 export default function Page() {
-  const form = useFormQuery__BigPaint();
+  const form = useFormCreate__BigPaintQuery();
   const router = useRouter();
 
   const [isFormPending, setIsFormPending] = useState(false);
 
-  const invalidateQueryQueries__View = useQueryQueries__View(
+  const invalidateQueryQueries__View = useQueryQuery__View(
     (state) => state.invalidate,
   );
-  const invalidateQueryQueries__Search = useQueryQueries__Search(
+  const invalidateQueryQueries__Search = useQueryQuery__Query(
     (state) => state.invalidate,
   );
 

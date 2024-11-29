@@ -9,8 +9,8 @@ import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import schemaQuery__Edit__Params from "@/schemas/schemaQuery__Edit__Params";
 import useFormEdit__Query from "@/stores/forms/useFormEdit__Query";
-import useQueryQueries__Search from "@/stores/queries/useQueryQueries__Search";
-import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
+import useQueryQuery__Query from "@/stores/queries/useQueryQuery__Query";
+import useQueryQuery__View from "@/stores/queries/useQueryQuery__View";
 import useQueryQuery__Edit from "@/stores/queries/useQueryQuery__Edit";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -58,10 +58,10 @@ export default function FormEdit__Query({
       });
   }, [query.data]);
 
-  const invalidateQueryQueries__View = useQueryQueries__View(
+  const invalidateQueryQueries__View = useQueryQuery__View(
     (state) => state.invalidate,
   );
-  const invalidateQueryQueries__Search = useQueryQueries__Search(
+  const invalidateQueryQueries__Search = useQueryQuery__Query(
     (state) => state.invalidate,
   );
 

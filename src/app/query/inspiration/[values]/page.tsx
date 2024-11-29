@@ -4,10 +4,10 @@ import ActionEdit__Query from "@/actions/ActionEdit__Query";
 import UIInspiration from "@/components/db_ui/UIInspiration";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
 import schemaInspiration__Query from "@/schemas/schemaInspiration__Query";
-import useFormQuery__Inspiration from "@/stores/forms/useFormQuery__Inspiration";
+import useFormCreate__InspirationQuery from "@/stores/forms/useFormCreate__InspirationQuery";
 import useQueryInspiration__Query from "@/stores/queries/useQueryInspiration__Query";
-import useQueryQueries__Search from "@/stores/queries/useQueryQueries__Search";
-import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
+import useQueryQuery__Query from "@/stores/queries/useQueryQuery__Query";
+import useQueryQuery__View from "@/stores/queries/useQueryQuery__View";
 import { formValuesFromString } from "@/utils/url";
 import { useEffect, useMemo } from "react";
 import { VList } from "virtua";
@@ -25,12 +25,12 @@ export default function Page({
   );
 
   const query = useQueryInspiration__Query();
-  const form = useFormQuery__Inspiration();
+  const form = useFormCreate__InspirationQuery();
 
-  const invalidateQueryQueries__View = useQueryQueries__View(
+  const invalidateQueryQueries__View = useQueryQuery__View(
     (state) => state.invalidate,
   );
-  const invalidateQueryQueries__Search = useQueryQueries__Search(
+  const invalidateQueryQueries__Search = useQueryQuery__Query(
     (state) => state.invalidate,
   );
 

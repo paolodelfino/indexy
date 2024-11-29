@@ -1,9 +1,9 @@
 "use server";
 
-import ActionInjectBuffer__Resource from "@/actions/ActionInjectBuffer__Resource";
 import { db } from "@/db/db";
 import schemaEntry__InspirationPool__Fetch from "@/schemas/schemaEntry__InspirationPool__Fetch";
 import { FormValues } from "@/utils/form";
+import { resourceInjectBuffer } from "@/utils/resource";
 import { sql } from "kysely";
 import { z } from "zod";
 
@@ -109,7 +109,7 @@ export default async function ActionFetch__InspirationPool(
                 ).num_related_big_paints,
 
                 // TODO: Possible call inutile se l'array è vuoto
-                ActionInjectBuffer__Resource({
+                resourceInjectBuffer({
                   // TODO: Should I use another action? Does it make another html request?
                   resources: await db
                     .selectFrom("resource")

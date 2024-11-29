@@ -3,7 +3,7 @@ import { fieldText } from "@/components/form_ui/FieldText";
 import schemaQuery__Edit from "@/schemas/schemaQuery__Edit";
 import { createForm } from "@/utils/form";
 
-export default createForm(
+const useFormEdit__Query = createForm(
   schemaQuery__Edit,
   {
     name: fieldText(),
@@ -13,3 +13,4 @@ export default createForm(
     lastValues: undefined as string | undefined,
   },
 );
+export default useFormEdit__Query;

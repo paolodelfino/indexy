@@ -12,24 +12,24 @@ import FieldText from "@/components/form_ui/FieldText";
 import FieldTextArea from "@/components/form_ui/FieldTextArea";
 import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
-import useFormQuery__Inspiration from "@/stores/forms/useFormQuery__Inspiration";
-import useQueryQueries__Search from "@/stores/queries/useQueryQueries__Search";
-import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
+import useFormCreate__InspirationQuery from "@/stores/forms/useFormCreate__InspirationQuery";
+import useQueryQuery__Query from "@/stores/queries/useQueryQuery__Query";
+import useQueryQuery__View from "@/stores/queries/useQueryQuery__View";
 import { formValuesToString } from "@/utils/url";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 
 export default function Page() {
-  const form = useFormQuery__Inspiration();
+  const form = useFormCreate__InspirationQuery();
   const router = useRouter();
 
   const [isFormPending, setIsFormPending] = useState(false);
 
-  const invalidateQueryQueries_View = useQueryQueries__View(
+  const invalidateQueryQueries_View = useQueryQuery__View(
     (state) => state.invalidate,
   );
-  const invalidateQueryQueries_Search = useQueryQueries__Search(
+  const invalidateQueryQueries_Search = useQueryQuery__Query(
     (state) => state.invalidate,
   );
 

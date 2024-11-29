@@ -1,18 +1,18 @@
 "use server";
 
 import { db } from "@/db/db";
-import schemaQuery__Search from "@/schemas/schemaQuery__Search";
+import schemaQuery__Query from "@/schemas/schemaQuery__Query";
 import { FormValues } from "@/utils/form";
 import { z } from "zod";
 
-export default async function ActionSearch__Query(
+export default async function ActionQuery__Query(
   _offset: number,
   _limit: number,
-  values: FormValues<typeof schemaQuery__Search>,
+  values: FormValues<typeof schemaQuery__Query>,
 ) {
   const offset = z.number().int().gte(0).parse(_offset); // TODO: Remove optional
   const limit = z.number().int().gte(0).parse(_limit); // TODO: Remove optional
-  const { name, category } = schemaQuery__Search.parse(values);
+  const { name, category } = schemaQuery__Query.parse(values);
 
   const q = db
     .selectFrom("query")

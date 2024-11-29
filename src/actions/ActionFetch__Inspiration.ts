@@ -1,9 +1,9 @@
 "use server";
 
-import ActionInjectBuffer__Resource from "@/actions/ActionInjectBuffer__Resource";
 import { db } from "@/db/db";
 import schemaInspiration__Fetch from "@/schemas/schemaInspiration__Fetch";
 import { FormValues } from "@/utils/form";
+import { resourceInjectBuffer } from "@/utils/resource";
 import { sql } from "kysely";
 
 export default async function ActionFetch__Inspiration(
@@ -46,7 +46,7 @@ export default async function ActionFetch__Inspiration(
         .select(["b.id", "b.name"]) // TODO: Potrei ritornare anche l'id della relazione
         .execute(),
       // TODO: Possible call inutile se l'array è vuoto
-      ActionInjectBuffer__Resource({
+      resourceInjectBuffer({
         // TODO: Should I use another action? Does it make another html request?
         resources: await db
           .selectFrom("resource")

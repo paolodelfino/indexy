@@ -1,10 +1,9 @@
-"use server";
-
+import "server-only";
 import minioClient from "@/minio/minioClient";
 import schemaResource__InjectBuffer from "@/schemas/schemaResource__InjectBuffer";
 import { FormValues } from "@/utils/form";
 
-export default async function ActionInjectBuffer__Resource(
+export async function resourceInjectBuffer(
   values: FormValues<typeof schemaResource__InjectBuffer>,
 ) {
   const validated = schemaResource__InjectBuffer.parse(values);

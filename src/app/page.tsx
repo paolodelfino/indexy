@@ -7,19 +7,19 @@ import FieldText from "@/components/form_ui/FieldText";
 import { Cloud, InformationCircle, SearchSquare } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
-import useFormSearch__Query from "@/stores/forms/useFormSearch__Query";
-import useQueryQueries__Search from "@/stores/queries/useQueryQueries__Search";
-import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
+import useFormQuery__Query from "@/stores/forms/useFormQuery__Query";
+import useQueryQuery__Query from "@/stores/queries/useQueryQuery__Query";
+import useQueryQuery__View from "@/stores/queries/useQueryQuery__View";
 import { useEffect, useState } from "react";
 import { VList } from "virtua";
 
 // TODO: Possibilità di route tra le ricerche
 
 export default function Page() {
-  const query = useQueryQueries__View();
+  const query = useQueryQuery__View();
   // TODO: Maybe form.isDirty instead of form.meta.showSearch
-  const form = useFormSearch__Query();
-  const searchQuery = useQueryQueries__Search();
+  const form = useFormQuery__Query();
+  const searchQuery = useQueryQuery__Query();
 
   const [isFormPending, setIsFormPending] = useState(false);
 

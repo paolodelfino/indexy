@@ -4,10 +4,10 @@ import ActionEdit__Query from "@/actions/ActionEdit__Query";
 import UIBigPaint from "@/components/db_ui/UIBigPaint";
 import useInfiniteQuery from "@/hooks/useInfiniteQuery";
 import schemaBigPaint__Query from "@/schemas/schemaBigPaint__Query";
-import useFormQuery__BigPaint from "@/stores/forms/useFormQuery__BigPaint";
+import useFormCreate__BigPaintQuery from "@/stores/forms/useFormCreate__BigPaintQuery";
 import useQueryBigPaint__Query from "@/stores/queries/useQueryBigPaint__Query";
-import useQueryQueries__Search from "@/stores/queries/useQueryQueries__Search";
-import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
+import useQueryQuery__Query from "@/stores/queries/useQueryQuery__Query";
+import useQueryQuery__View from "@/stores/queries/useQueryQuery__View";
 import { formValuesFromString } from "@/utils/url";
 import { useEffect, useMemo } from "react";
 import { VList } from "virtua";
@@ -25,12 +25,12 @@ export default function Page({
   );
 
   const query = useQueryBigPaint__Query();
-  const form = useFormQuery__BigPaint();
+  const form = useFormCreate__BigPaintQuery();
 
-  const invalidateQueryQueries__View = useQueryQueries__View(
+  const invalidateQueryQueries__View = useQueryQuery__View(
     (state) => state.invalidate,
   );
-  const invalidateQueryQueries__Search = useQueryQueries__Search(
+  const invalidateQueryQueries__Search = useQueryQuery__Query(
     (state) => state.invalidate,
   );
 

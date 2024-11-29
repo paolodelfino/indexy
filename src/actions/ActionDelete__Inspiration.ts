@@ -19,7 +19,7 @@ export default async function ActionDelete__Inspiration(
   await Promise.all([
     db.deleteFrom("inspiration").where("id", "=", validated.id).execute(),
 
-    resources.map(
+    ...resources.map(
       async (it) => await minioClient.removeObject(it.type, it.sha256),
     ),
   ]);

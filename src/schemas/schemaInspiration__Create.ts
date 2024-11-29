@@ -3,7 +3,7 @@ import schemaResource__DB from "@/schemas/schemaResource__DB";
 import { z } from "zod";
 
 // TODO: Extend this form
-export default z.object({
+const schemaInspiration__Create = z.object({
   content: schemaInspiration__DB.shape.content,
   resources: z.array(
     z.object({
@@ -14,3 +14,4 @@ export default z.object({
     }),
   ),
 });
+export default schemaInspiration__Create;

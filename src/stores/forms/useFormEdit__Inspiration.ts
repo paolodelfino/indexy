@@ -8,7 +8,7 @@ import { createForm } from "@/utils/form";
 
 // TODO: Probably has to be component-scoped context
 
-export default createForm(
+const useFormEdit__Inspiration = createForm(
   schemaInspiration__Edit,
   {
     date: fieldDate(),
@@ -20,3 +20,4 @@ export default createForm(
   },
   { lastId: undefined as string | undefined },
 );
+export default useFormEdit__Inspiration;

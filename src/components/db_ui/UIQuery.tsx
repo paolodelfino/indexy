@@ -3,8 +3,8 @@
 import ActionDelete__Query from "@/actions/ActionDelete__Query";
 import Button, { ButtonLink } from "@/components/Button";
 import { Delete01, PencilEdit01 } from "@/components/icons";
-import useQueryQueries__Search from "@/stores/queries/useQueryQueries__Search";
-import useQueryQueries__View from "@/stores/queries/useQueryQueries__View";
+import useQueryQuery__Query from "@/stores/queries/useQueryQuery__Query";
+import useQueryQuery__View from "@/stores/queries/useQueryQuery__View";
 import { dateToString } from "@/utils/date";
 import { Selectable } from "kysely";
 import { Query } from "kysely-codegen/dist/db";
@@ -21,10 +21,10 @@ export default function UIQuery({
 
   const [isDeleteFormPending, setIsDeleteFormPending] = useState(false);
 
-  const invalidateQueryQueries__View = useQueryQueries__View(
+  const invalidateQueryQueries__View = useQueryQuery__View(
     (state) => state.invalidate,
   );
-  const invalidateQueryQueries__Search = useQueryQueries__Search(
+  const invalidateQueryQueries__Search = useQueryQuery__Query(
     (state) => state.invalidate,
   );
 

@@ -1,10 +1,10 @@
 import { fieldSelect } from "@/components/form_ui/FieldSelect";
 import { fieldText } from "@/components/form_ui/FieldText";
-import schemaQuery__Search from "@/schemas/schemaQuery__Search";
+import schemaQuery__Query from "@/schemas/schemaQuery__Query";
 import { createForm } from "@/utils/form";
 
-export default createForm(
-  schemaQuery__Search,
+const useFormQuery__Query = createForm(
+  schemaQuery__Query,
   {
     name: fieldText(),
     category: fieldSelect({
@@ -16,3 +16,4 @@ export default createForm(
   },
   { showSearch: false },
 );
+export default useFormQuery__Query;

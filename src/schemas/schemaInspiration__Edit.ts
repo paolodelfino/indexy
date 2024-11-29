@@ -3,7 +3,7 @@ import schemaInspiration__DB from "@/schemas/schemaInspiration__DB";
 import schemaResource__DB from "@/schemas/schemaResource__DB";
 import { z } from "zod";
 
-export default z.object({
+const schemaInspiration__Edit = z.object({
   date: schemaInspiration__DB.shape.date.optional(), // TODO: Add date range check
   related_big_paints_ids: z.array(schemaBigPaint__DB.shape.id).optional(),
   related_inspirations_ids: z.array(schemaInspiration__DB.shape.id).optional(),
@@ -20,3 +20,4 @@ export default z.object({
     .optional(), // TODO: Probabile che content e resources debbano o essere undefined entrambi oppure defined entrambi (magari mettili in un object insieme)
   highlight: schemaInspiration__DB.shape.highlight.optional(),
 });
+export default schemaInspiration__Edit;

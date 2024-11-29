@@ -6,7 +6,7 @@ import schemaBigPaint__Query from "@/schemas/schemaBigPaint__Query";
 import { createForm } from "@/utils/form";
 
 // TODO: There are other predicates to play with like limit, maybe offset
-const useFormQuery__BigPaint = createForm(
+const useFormCreate__BigPaintQuery = createForm(
   schemaBigPaint__Query,
   {
     date: fieldComparisonDate(),
@@ -33,4 +33,4 @@ const useFormQuery__BigPaint = createForm(
     queryName: fieldText("Untitled"),
   },
 );
-export default useFormQuery__BigPaint;
+export default useFormCreate__BigPaintQuery;
