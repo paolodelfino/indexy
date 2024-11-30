@@ -3,6 +3,7 @@ const nextConfig = {
   experimental: {
     reactCompiler: true,
     ppr: true,
+    serverActions: { bodySizeLimit: `1TB` },
   },
 };
 
