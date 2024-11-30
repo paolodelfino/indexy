@@ -10,6 +10,11 @@ export default async function ActionEdit__Query(
   values: FormValues<typeof schemaQuery__Edit>,
 ) {
   const validated = schemaQuery__Edit.parse(values);
+  // TODO: Interessante come, nonostante esca l'errore, aggiorni lo stesso la colonna date
+  // console.log(
+  //   db.updateTable("query").where("values", "=", id).set(validated).compile(),
+  //   await sql`SELECT now()`.execute(db),
+  // );
   await db
     .updateTable("query")
     .where("values", "=", id)

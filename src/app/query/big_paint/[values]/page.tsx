@@ -39,7 +39,10 @@ export default function Page({
       query.reset();
       query.active();
 
-      ActionEdit__Query(valuesStr, { date: new Date() }).then(() => {
+      // TODO: NOTE: For some reason (take a look at the action below's implementation too), it is about 400ms behind
+      const d = new Date(Date.now() - 450);
+
+      ActionEdit__Query(valuesStr, { date: d }).then(() => {
         invalidate__QueryQuery__View();
         invalidate__QueryQuery__Query();
         // TODO: Furthemore I have to attach to an onRevalidate event, when useQueryInspirations__Search gets invalidated it does another fetch, furthermore maybe I should also attach to useInfiniteQuery's callback. I should move this whole to callback and onrevalidate
