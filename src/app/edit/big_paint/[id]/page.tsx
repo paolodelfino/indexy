@@ -30,6 +30,7 @@ export default function Page({ params }: { params: { id: string } }) {
   );
 
   const router = useRouter();
+  const form = useFormEdit__BigPaint();
   const query = useQueryBigPaint__Edit();
 
   useEffect(() => {
@@ -41,36 +42,31 @@ export default function Page({ params }: { params: { id: string } }) {
     if (id !== form.meta.lastId) {
       form.setFormMeta({ lastId: id });
 
-      query.fetch(id);
+      query.fetch(id).then((data) => {
+        form.setMetas({
+          related_big_paints_ids: {
+            selectedItems: data.relatedBigPaints.map((it) => ({
+              content: it.name,
+              id: it.id,
+            })),
+          },
+          related_inspirations_ids: {
+            selectedItems: data.relatedInspirations,
+          },
+          date: {
+            date: data.date,
+            time: {
+              hours: data.date.getHours(),
+              minutes: data.date.getMinutes(),
+              seconds: data.date.getSeconds(),
+              milliseconds: data.date.getMilliseconds(),
+            },
+          },
+          name: data.name,
+        });
+      });
     }
   }, [id]);
-
-  useEffect(() => {
-    console.log("probably query.data has changed", query.data); // TODO: Take a look
-
-    if (query.data !== undefined)
-      form.setMetas({
-        related_big_paints_ids: {
-          selectedItems: query.data.relatedBigPaints.map((it) => ({
-            content: it.name,
-            id: it.id,
-          })),
-        },
-        related_inspirations_ids: {
-          selectedItems: query.data.relatedInspirations,
-        },
-        date: {
-          date: query.data.date,
-          time: {
-            hours: query.data.date.getHours(),
-            minutes: query.data.date.getMinutes(),
-            seconds: query.data.date.getSeconds(),
-            milliseconds: query.data.date.getMilliseconds(),
-          },
-        },
-        name: query.data.name,
-      });
-  }, [query.data]);
 
   const [isDeleteFormPending, setIsDeleteFormPending] = useState(false);
   const [isEditFormPending, setIsEditFormPending] = useState(false); // TODO: Implement form.isPending
@@ -91,7 +87,6 @@ export default function Page({ params }: { params: { id: string } }) {
     (state) => state.invalidate,
   );
 
-  const form = useFormEdit__BigPaint();
   useEffect(() => {
     form.setOnSubmit(async (form) => {
       setIsEditFormPending(true);

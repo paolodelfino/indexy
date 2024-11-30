@@ -2,7 +2,6 @@ import { Kysely, sql } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
   // TODO: Create indexes for fetching, searching, whatever (like GIN index on the tsvector)
-  // TODO: Check dell'autoreference
   await sql`
       CREATE TABLE big_paint_relations (
           id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),

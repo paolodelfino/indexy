@@ -7,8 +7,6 @@ import { resourceInjectBuffer } from "@/utils/resource";
 import { sql } from "kysely";
 import { z } from "zod";
 
-// TODO: Put entry in the pool
-
 export default async function ActionFetch__InspirationPool(
   offset: number,
   limit: number,
@@ -34,7 +32,7 @@ export default async function ActionFetch__InspirationPool(
           eb
             .case()
             .when("br.inspiration1_id", "!=", id)
-            .then(sql`br.inspiration1_id`) // TODO: Aggiusta anche dalle altre parti
+            .then(sql`br.inspiration1_id`)
             .else(sql`br.inspiration2_id`)
             .end()
             .$notNull()
@@ -110,7 +108,6 @@ export default async function ActionFetch__InspirationPool(
 
                 // TODO: Possible call inutile se l'array è vuoto
                 resourceInjectBuffer({
-                  // TODO: Should I use another action? Does it make another html request?
                   resources: await db
                     .selectFrom("resource")
                     .where("inspiration_id", "=", id)

@@ -11,7 +11,7 @@ export interface QueryState<Fn extends (...args: any) => any> {
   isActive: boolean;
   active: () => Promise<void>;
   inactive: () => void;
-  fetch: (...args: Parameters<Fn>) => Promise<void>;
+  fetch: (...args: Parameters<Fn>) => Promise<Awaited<ReturnType<Fn>>>;
   invalidate: () => Promise<void>;
 }
 
@@ -42,12 +42,16 @@ export function createQuery<Fn extends (...args: any) => any>(fn: Fn) {
 
       set({ isFetching: true });
 
+      const data = await fn(...args);
+
       set({
-        data: await fn(...args),
+        data: data,
         isFresh: true,
         lastArgs: args,
         isFetching: false,
       });
+
+      return data;
     },
     async invalidate() {
       const state = get();

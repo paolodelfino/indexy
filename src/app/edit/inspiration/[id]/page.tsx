@@ -42,57 +42,49 @@ export default function Page({ params }: { params: { id: string } }) {
     if (id !== form.meta.lastId) {
       form.setFormMeta({ lastId: id });
 
-      query.fetch(id);
-    }
-  }, [id]);
-
-  useEffect(() => {
-    // TODO: Ok, ho fatto il check e, come pensavo, react, al mount, chiama di nuovo tutti gli effect e il re-mount avviene ovviamente anche col cambio route client-side. Quindi dobbiamo mettere un guard (anche da altre parti)
-
-    console.log("probably query.data has changed", query.data); // TODO: Take a look (anche per /edit/query)
-
-    if (query.data !== undefined) {
-      const maxN = query.data.resources.reduce((max, value) => {
-        return value.n > max ? value.n : max;
-      }, 0);
-      form.setMetas({
-        resources: {
-          items: query.data.resources.map((it) => {
-            // console.log(it.buff);
-            return {
-              n: it.n,
-              sha256: it.sha256,
-              type: it.type,
-              unused: true,
-              buff: it.buff,
-              blob_url: URL.createObjectURL(new Blob([it.buff])),
-            };
-          }),
-          n: maxN,
-        },
-        related_big_paints_ids: {
-          selectedItems: query.data.relatedBigPaints.map((it) => ({
-            content: it.name,
-            id: it.id,
-          })),
-        },
-        related_inspirations_ids: {
-          selectedItems: query.data.relatedInspirations,
-        },
-        date: {
-          date: query.data.date,
-          time: {
-            hours: query.data.date.getHours(),
-            minutes: query.data.date.getMinutes(),
-            seconds: query.data.date.getSeconds(),
-            milliseconds: query.data.date.getMilliseconds(),
+      query.fetch(id).then((data) => {
+        const maxN = data.resources.reduce((max, value) => {
+          return value.n > max ? value.n : max;
+        }, 0);
+        form.setMetas({
+          resources: {
+            items: data.resources.map((it) => {
+              // console.log(it.buff);
+              return {
+                n: it.n,
+                sha256: it.sha256,
+                type: it.type,
+                unused: true,
+                buff: it.buff,
+                blob_url: URL.createObjectURL(new Blob([it.buff])),
+              };
+            }),
+            n: maxN,
           },
-        },
-        content: query.data.content,
-        highlight: query.data.highlight,
+          related_big_paints_ids: {
+            selectedItems: data.relatedBigPaints.map((it) => ({
+              content: it.name,
+              id: it.id,
+            })),
+          },
+          related_inspirations_ids: {
+            selectedItems: data.relatedInspirations,
+          },
+          date: {
+            date: data.date,
+            time: {
+              hours: data.date.getHours(),
+              minutes: data.date.getMinutes(),
+              seconds: data.date.getSeconds(),
+              milliseconds: data.date.getMilliseconds(),
+            },
+          },
+          content: data.content,
+          highlight: data.highlight,
+        });
       });
     }
-  }, [query.data]);
+  }, [id]);
 
   const [isDeleteFormPending, setIsDeleteFormPending] = useState(false);
   const [isEditFormPending, setIsEditFormPending] = useState(false); // TODO: Implement form.isPending

@@ -52,7 +52,7 @@ export function fieldAEditor(meta?: Partial<Meta>): FieldAEditor__Type {
   };
 }
 
-// TODO: Problema del mismatch $n nel text field con l'n degli uploads quando ricarichi, tipo col edit form
+// TODO: Magari ordina per n per la memoria visiva
 // TODO: Dovremmo fare il check dell'unused anche al submit (sopratutto per il delay aggiunto al check relativo al text field). Magari dovremmo aggiungere la possibilità di mettere più listeners sul form.onSubmit e dare la possibilità ai field di iscriversi
 export default function AEditor({
   meta,

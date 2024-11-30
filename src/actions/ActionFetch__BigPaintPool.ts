@@ -6,8 +6,6 @@ import { FormValues } from "@/utils/form";
 import { sql } from "kysely";
 import { z } from "zod";
 
-// TODO: Put entry in the pool
-
 export default async function ActionFetch__BigPaintPool(
   offset: number,
   limit: number,
@@ -33,7 +31,7 @@ export default async function ActionFetch__BigPaintPool(
           eb
             .case()
             .when("br.big_paint1_id", "!=", id)
-            .then(sql`br.big_paint1_id`) // TODO: Aggiusta anche dalle altre parti
+            .then(sql`br.big_paint1_id`)
             .else(sql`br.big_paint2_id`)
             .end()
             .$notNull()

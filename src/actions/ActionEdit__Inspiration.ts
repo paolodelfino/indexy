@@ -5,7 +5,6 @@ import minioClient from "@/minio/minioClient";
 import schemaInspiration__Edit from "@/schemas/schemaInspiration__Edit";
 import { FormValues } from "@/utils/form";
 
-// TODO: Problema della grandezza massima della richiesta
 // TODO: Problema dell'esecuzione in parallelo
 // TODO: There is room for improvement here
 export default async function ActionEdit__Inspiration(

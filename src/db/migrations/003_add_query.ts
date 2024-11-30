@@ -3,7 +3,7 @@ import { Kysely, sql } from "kysely";
 export async function up(db: Kysely<any>): Promise<void> {
   // TODO: Create indexes for fetching, searching, whatever (like GIN index on the tsvector)
   await sql`
-      CREATE TYPE query_category AS ENUM ('inspiration', 'big_paint');i
+      CREATE TYPE query_category AS ENUM ('inspiration', 'big_paint');
   
       CREATE TABLE query (
         --TODO: Dato il corrente formato di values, cambierei o rimuoverei il check

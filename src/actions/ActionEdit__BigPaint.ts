@@ -4,7 +4,6 @@ import { db } from "@/db/db";
 import schemaBigPaint__Edit from "@/schemas/schemaBigPaint__Edit";
 import { FormValues } from "@/utils/form";
 
-// TODO: Problema della grandezza massima della richiesta
 // TODO: Problema dell'esecuzione in parallelo
 // TODO: There is room for improvement here
 export default async function ActionEdit__BigPaint(
@@ -50,7 +49,7 @@ export default async function ActionEdit__BigPaint(
       (it) => old.find((it2) => it2.matched_big_paint_id === it) === undefined,
     );
     await Promise.all([
-      deleted.length <= 0 // TODO: Mi dimentico di questo problema. Trova gli altri posti
+      deleted.length <= 0
         ? undefined
         : db
             .deleteFrom("big_paint_relations")

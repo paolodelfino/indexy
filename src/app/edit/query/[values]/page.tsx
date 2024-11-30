@@ -9,9 +9,9 @@ import { InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import schemaQuery__Edit__Params from "@/schemas/schemaQuery__Edit__Params";
 import useFormEdit__Query from "@/stores/forms/useFormEdit__Query";
+import useQueryQuery__Edit from "@/stores/queries/useQueryQuery__Edit";
 import useQueryQuery__Query from "@/stores/queries/useQueryQuery__Query";
 import useQueryQuery__View from "@/stores/queries/useQueryQuery__View";
-import useQueryQuery__Edit from "@/stores/queries/useQueryQuery__Edit";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
@@ -38,25 +38,22 @@ export default function FormEdit__Query({
     if (valuesStr !== form.meta.lastValues) {
       form.setFormMeta({ lastValues: valuesStr });
 
-      query.fetch(valuesStr);
+      query.fetch(valuesStr).then((data) => {
+        form.setMetas({
+          name: data.name,
+          date: {
+            date: data.date,
+            time: {
+              hours: data.date.getHours(),
+              minutes: data.date.getMinutes(),
+              seconds: data.date.getSeconds(),
+              milliseconds: data.date.getMilliseconds(),
+            },
+          },
+        });
+      });
     }
   }, [valuesStr]);
-
-  useEffect(() => {
-    if (query.data !== undefined)
-      form.setMetas({
-        name: query.data.name,
-        date: {
-          date: query.data.date,
-          time: {
-            hours: query.data.date.getHours(),
-            minutes: query.data.date.getMinutes(),
-            seconds: query.data.date.getSeconds(),
-            milliseconds: query.data.date.getMilliseconds(),
-          },
-        },
-      });
-  }, [query.data]);
 
   const invalidate__QueryQuery__View = useQueryQuery__View(
     (state) => state.invalidate,
