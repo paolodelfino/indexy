@@ -28,7 +28,7 @@ export default async function Page({
       "",
     );
     const base64 = btoa(bin);
-    return <img src={`data:image;base64,${base64}`} />;
+    return <img alt="" src={`data:image;base64,${base64}`} />;
   } else {
     const bin = new Uint8Array(buff).reduce(
       (bin, byte) => (bin += String.fromCharCode(byte)),

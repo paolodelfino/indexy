@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev --turbo --experimental-https",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 2999",
+    "proxy": "local-ssl-proxy --source 3000 --target 2999",
     "lint": "next lint",
     "db:migrate": "bun run src/db/migrate.ts",
     "db:test": "bun run src/db/test.ts",
@@ -41,6 +42,7 @@
     "eslint-plugin-jsx-a11y": "^6.9.0",
     "eslint-plugin-react-compiler": "^0.0.0-experimental-b8a7b48-20240830",
     "kysely-codegen": "^0.16.3",
+    "local-ssl-proxy": "^2.0.5",
     "postcss": "^8",
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.6",

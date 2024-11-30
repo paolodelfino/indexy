@@ -167,6 +167,7 @@ export function PopoverTrigger({
   )) {
   const context = usePopoverContext();
   const childrenRef = (children as any).ref;
+  // eslint-disable-next-line react-compiler/react-compiler
   const mergedRef = useMergeRefs([context.refs.setReference, ref, childrenRef]);
 
   // `asChild` allows the user to pass any element as the anchor
@@ -203,6 +204,7 @@ export const PopoverContent = React.forwardRef<
   React.HTMLProps<HTMLDivElement>
 >(function PopoverContent({ style, ...props }, propRef) {
   const { context: floatingContext, ...context } = usePopoverContext();
+  // eslint-disable-next-line react-compiler/react-compiler
   const ref = useMergeRefs([context.refs.setFloating, propRef]);
 
   if (!floatingContext.open) return null;

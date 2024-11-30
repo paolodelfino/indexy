@@ -176,7 +176,7 @@ function ImageView({
       target="_blank"
       classNames={{ button: "w-max p-0 m-0 inline-flex" }}
     >
-      <img src={`data:image;base64,${base64}`} width={48} className="inline" />
+      <img alt="" src={`data:image;base64,${base64}`} width={48} className="inline" />
     </ButtonLink>
   );
 }
