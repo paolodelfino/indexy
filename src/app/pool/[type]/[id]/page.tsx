@@ -106,7 +106,7 @@ export default function Page({
                       query__BigPaint.data.length - 1 + 1,
                     ]
               }
-              className="pb-16 scrollbar-hidden"
+              className="pb-32 scrollbar-hidden"
             >
               {query__BigPaint.data.map((it, i) => {
                 return (
@@ -156,7 +156,7 @@ export default function Page({
                       query__Inspiration.data.length - 1 + 1,
                     ]
               }
-              className="pb-16 scrollbar-hidden"
+              className="pb-32 scrollbar-hidden"
             >
               {query__Inspiration.data.map((it, i) => {
                 return (

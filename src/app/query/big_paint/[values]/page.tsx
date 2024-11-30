@@ -73,7 +73,7 @@ export default function Page({
               ? []
               : [query.data.length - 1, query.data.length - 1 + 1]
           }
-          className="pb-16 scrollbar-hidden"
+          className="pb-32 scrollbar-hidden"
         >
           {query.data.map((it, i) => {
             return <UIBigPaint key={it.id} data={it} id={`${id}_${it.id}`} />;

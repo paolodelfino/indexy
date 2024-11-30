@@ -85,7 +85,7 @@ export default function FormEdit__Query({
   }, [form.setOnSubmit, valuesStr]);
 
   return (
-    <div className="space-y-6 pb-16">
+    <div className="space-y-6 pb-32">
       <div className="flex items-center justify-end gap-4 p-4">
         {form.error !== undefined && (
           <Popover>

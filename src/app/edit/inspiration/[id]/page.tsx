@@ -137,7 +137,7 @@ export default function Page({ params }: { params: { id: string } }) {
   }, [form.setOnSubmit, id]);
 
   return (
-    <div className="space-y-6 pb-16">
+    <div className="space-y-6 pb-32">
       <div className="flex items-center justify-end gap-4 p-4">
         <Button
           onClick={async () => {
