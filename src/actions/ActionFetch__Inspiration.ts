@@ -3,7 +3,7 @@
 import { db } from "@/db/db";
 import schemaInspiration__Fetch from "@/schemas/schemaInspiration__Fetch";
 import { FormValues } from "@/utils/form";
-import { resourceInjectBuffer } from "@/utils/resource";
+import { resourceInjectBuffer } from "@/utils/resource__server";
 import { sql } from "kysely";
 
 export default async function ActionFetch__Inspiration(

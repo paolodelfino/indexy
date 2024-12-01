@@ -8,6 +8,11 @@ import { BinaryCode, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import { cn } from "@/utils/cn";
 import { FormField } from "@/utils/form";
+import {
+  resource__ExtractFromFile,
+  resource__GetReferences,
+  resource__SetUnused,
+} from "@/utils/resource__client";
 import { Selectable } from "kysely";
 import { Resource } from "kysely-codegen/dist/db";
 import Image from "next/image";
@@ -22,6 +27,7 @@ type Item = Pick<Selectable<Resource>, "n" | "sha256" | "type"> & {
 type Meta = {
   items: Item[];
   n: number;
+  inspiration_id: string | undefined;
 };
 
 type Value =
@@ -37,6 +43,7 @@ export function fieldAEditor(meta?: Partial<Meta>): FieldAEditor__Type {
     meta: {
       items: [],
       n: 0,
+      inspiration_id: undefined,
       ...meta,
     },
     value: undefined,
@@ -44,6 +51,7 @@ export function fieldAEditor(meta?: Partial<Meta>): FieldAEditor__Type {
       meta: {
         items: [],
         n: 0,
+        inspiration_id: undefined,
         ...meta,
       },
       value: undefined,
@@ -53,7 +61,6 @@ export function fieldAEditor(meta?: Partial<Meta>): FieldAEditor__Type {
 }
 
 // TODO: Magari ordina per n per la memoria visiva
-// TODO: Dovremmo fare il check dell'unused anche al submit (sopratutto per il delay aggiunto al check relativo al text field). Magari dovremmo aggiungere la possibilità di mettere più listeners sul form.onSubmit e dare la possibilità ai field di iscriversi
 export default function AEditor({
   meta,
   setMeta,
@@ -157,43 +164,10 @@ export default function AEditor({
           setValue__FieldTextArea(value);
 
           clearTimeout(timeout.current);
-          timeout.current = setTimeout(() => {
-            const uploads = meta.items;
-
-            let ups = uploads.map((it) => ({ ...it, unused: true }));
-
-            const text = value!;
-
-            // let b = "";
-            for (let i = 0; i < text.length; ++i) {
-              // b += text[i];
-              if (text[i] === "$") {
-                let j: number;
-                for (
-                  j = i + 1;
-                  j < text.length && text[j] >= "0" && text[j] <= "9";
-                  ++j
-                ) {
-                  // if (!isNumber(text.charCodeAt(j))) break;
-                }
-                const n = parseInt(text.slice(i + 1, j));
-                if (!Number.isNaN(n)) {
-                  // console.log(j, i, n);
-                  for (let j = 0; j < ups.length; ++j) {
-                    if (ups[j].n === n) {
-                      ups[j].unused = false;
-                      break;
-                    }
-                  }
-                }
-                i = j - 1;
-              }
-            }
-
-            if (meta.items.some((it, i) => it.unused !== ups[i].unused))
-              setMeta({ items: ups });
-            // console.log(b);
-          }, 250);
+          timeout.current = setTimeout(
+            () => resource__SetUnused(value!, meta, setMeta),
+            250,
+          );
         }}
         error={error__FieldTextArea}
         disabled={disabled}
@@ -226,99 +200,43 @@ function UploadButton({
           if (e.target.files !== null) {
             // console.log("e.target.files", e.target.files);
             // TODO: Maybe use startTransition
-            // TODO: Check for pre-existing resource (client and server)
-            let n = meta.n;
-            const newItems = [
-              ...meta.items,
-              ...(
-                await Promise.all(
-                  Array.from(e.target.files).map(async (it) => {
-                    // console.log("it", it)
 
-                    const sha256 = Array.from(
-                      new Uint8Array(
-                        await crypto.subtle.digest(
-                          { name: "SHA-256" },
-                          await it.arrayBuffer(),
-                        ),
-                      ),
-                    )
-                      .map((byte) => byte.toString(16).padStart(2, "0"))
-                      .join("");
+            const added = (
+              await Promise.all(
+                Array.from(e.target.files).map(async (it) => {
+                  const res = await resource__ExtractFromFile(meta, it);
+                  if (res === undefined)
+                    alert(`${it.name} is an already uploaded resource`);
+                  return res;
+                }),
+              )
+            ).filter((it) => it !== undefined);
 
-                    const image = new Set([
-                      "jpg",
-                      "jpeg",
-                      "png",
-                      "gif",
-                      "bmp",
-                      "svg",
-                      "webp",
-                      "ico",
-                      "tif",
-                      "tiff",
-                    ]);
+            if (added.length > 0) {
+              let n = meta.n;
 
-                    const ext = it.name.split(".").pop()?.toLowerCase(); // TODO: Try with magic number
+              // TODO: Magari dovremmo usare il valore anche qui, oppure sempre il meta
+              const references = resource__GetReferences(meta__FieldTextArea);
 
-                    const type: Selectable<Resource>["type"] =
-                      ext === undefined
-                        ? "binary"
-                        : image.has(ext)
-                          ? "image"
-                          : "binary";
+              const newUploads = added.map((it) => {
+                const itN = it.n ?? ++n;
 
-                    // TODO: Also do server-side check
-                    // TODO: Check più sicuri, perché, ad esempio, potrei essere connesso da più dispositivi
-                    if (
-                      meta.items.find(
-                        (it) => it.sha256 === sha256 && it.type === type,
-                      )
-                    ) {
-                      alert(`${it.name} is an already uploaded resource`);
-                      return undefined;
-                    }
+                const isUnused =
+                  references.findIndex((ref) => itN === ref.n) === -1;
 
-                    return {
-                      buff: await it.arrayBuffer(),
-                      blob_url: URL.createObjectURL(it),
-                      sha256,
-                      type: type,
-                      n: ++n,
-                      unused: true,
-                    } satisfies Item;
-                  }),
-                )
-              ).filter((it) => it !== undefined),
-            ];
+                return {
+                  ...it,
+                  n: itN,
+                  unused: isUnused,
+                };
+              });
 
-            let ups = newItems.map((it) => ({ ...it, unused: true }));
-            const text = meta__FieldTextArea; // TODO: Magari dovremmo usare il valore anche qui, oppure sempre il meta
-            for (let i = 0; i < text.length; ++i) {
-              if (text[i] === "$") {
-                let j: number;
-                for (
-                  j = i + 1;
-                  j < text.length && text[j] >= "0" && text[j] <= "9";
-                  ++j
-                ) {}
-                const n = parseInt(text.slice(i + 1, j));
-                if (!Number.isNaN(n)) {
-                  for (let j = 0; j < ups.length; ++j) {
-                    if (ups[j].n === n) {
-                      ups[j].unused = false;
-                      break;
-                    }
-                  }
-                }
-                i = j - 1;
-              }
+              setMeta({
+                items: [...meta.items, ...newUploads],
+                n: n,
+              });
             }
 
-            setMeta({
-              items: ups,
-              n: n,
-            });
             e.target.value = "";
           }
         }}

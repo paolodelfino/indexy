@@ -3,7 +3,7 @@
 import { db } from "@/db/db";
 import schemaEntry__InspirationPool__Fetch from "@/schemas/schemaEntry__InspirationPool__Fetch";
 import { FormValues } from "@/utils/form";
-import { resourceInjectBuffer } from "@/utils/resource";
+import { resourceInjectBuffer } from "@/utils/resource__server";
 import { sql } from "kysely";
 import { z } from "zod";
 

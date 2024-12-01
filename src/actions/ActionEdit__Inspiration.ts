@@ -7,6 +7,8 @@ import { FormValues } from "@/utils/form";
 
 // TODO: Problema dell'esecuzione in parallelo
 // TODO: There is room for improvement here
+// TODO: Check unused per le risorse
+// TODO: Check duplicato per le risorse
 export default async function ActionEdit__Inspiration(
   id: string,
   values: FormValues<typeof schemaInspiration__Edit>,
@@ -148,6 +150,9 @@ export default async function ActionEdit__Inspiration(
             )
             .execute()
         : undefined,
+      ...deleted.map(
+        async (it) => await minioClient.removeObject(it.type, it.sha256),
+      ),
       ...added.map((it) =>
         minioClient.putObject(it.type, it.sha256, Buffer.from(it.buff)),
       ),

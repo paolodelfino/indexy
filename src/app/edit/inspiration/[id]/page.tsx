@@ -19,6 +19,10 @@ import useQueryBigPaint__Query from "@/stores/queries/useQueryBigPaint__Query";
 import useQueryInspiration__Edit from "@/stores/queries/useQueryInspiration__Edit";
 import useQueryInspiration__Pool from "@/stores/queries/useQueryInspiration__Pool";
 import useQueryInspiration__Query from "@/stores/queries/useQueryInspiration__Query";
+import {
+  resource__GetUnusedNumber,
+  resource__SetUnused,
+} from "@/utils/resource__client";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
@@ -48,6 +52,7 @@ export default function Page({ params }: { params: { id: string } }) {
         }, 0);
         form.setMetas({
           resources: {
+            inspiration_id: id,
             items: data.resources.map((it) => {
               // console.log(it.buff);
               return {
@@ -111,8 +116,15 @@ export default function Page({ params }: { params: { id: string } }) {
       setIsEditFormPending(true);
 
       // TODO: Qui assumiamo che il valore corrente di value è sempre associato al valore corrente di meta
-      const unused = form.fields.resources.meta.items.filter((it) => it.unused);
-      if (unused.length > 0) alert(`${unused.length} unused assets`);
+
+      resource__SetUnused(
+        form.fields.content.meta,
+        form.fields.resources.meta,
+        form.setMeta.bind(null, "resources"),
+      );
+
+      const unused = resource__GetUnusedNumber(form.fields.resources.meta);
+      if (unused > 0) alert(`${unused} unused assets`);
       else {
         await ActionEdit__Inspiration(id, form.values());
 
