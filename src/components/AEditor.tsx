@@ -4,7 +4,14 @@ import Button from "@/components/Button";
 import FieldTextArea, {
   FieldTextArea__Type,
 } from "@/components/form_ui/FieldTextArea";
-import { BinaryCode, InformationCircle } from "@/components/icons";
+import {
+  GoBackward5Sec,
+  GoForward5Sec,
+  InformationCircle,
+  Menu11,
+  Pause,
+  Play,
+} from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import { cn } from "@/utils/cn";
 import { FormField } from "@/utils/form";
@@ -16,7 +23,7 @@ import {
 import { Selectable } from "kysely";
 import { Resource } from "kysely-codegen/dist/db";
 import Image from "next/image";
-import { useEffect, useId, useMemo, useRef } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 
 type Item = Pick<Selectable<Resource>, "n" | "sha256" | "type"> & {
   buff: ArrayBuffer;
@@ -106,11 +113,31 @@ export default function AEditor({
   const itemsView = useMemo(
     () =>
       meta.items.map((it) => {
+        // TODO: Is the revoke being handled? Has it to?
+        // TODO: Maybe store the blob url (you can probably manually revoke it when necessary)
         if (it.type === "image")
-          // TODO: Is the revoke being handled? Has it to?
-          // TODO: Maybe store the blob url (you can probably manually revoke it when necessary)
           return (
             <ImageView
+              key={`${it.type}/${it.sha256}`}
+              data={it}
+              meta={meta}
+              setMeta={setMeta}
+              disabled={disabled}
+            />
+          );
+        else if (it.type === "video")
+          return (
+            <VideoView
+              key={`${it.type}/${it.sha256}`}
+              data={it}
+              meta={meta}
+              setMeta={setMeta}
+              disabled={disabled}
+            />
+          );
+        else if (it.type === "audio")
+          return (
+            <AudioView
               key={`${it.type}/${it.sha256}`}
               data={it}
               meta={meta}
@@ -134,8 +161,7 @@ export default function AEditor({
 
   return (
     <div className="space-y-2">
-      {/* TODO: Sticky doesn't work on iphone, I think because it scrolls the window */}
-      <div className="sticky top-0 flex items-end gap-2 overflow-x-auto bg-black">
+      <div className="flex items-end gap-2 overflow-x-auto">
         {error !== undefined && (
           <Popover>
             <PopoverTrigger color="danger">
@@ -154,7 +180,7 @@ export default function AEditor({
           disabled={disabled}
         />
 
-        <div className="flex items-end gap-2">{itemsView}</div>
+        <div className="flex gap-2">{itemsView}</div>
       </div>
 
       <FieldTextArea
@@ -245,6 +271,7 @@ function UploadButton({
       <label
         className="m-px flex w-min gap-2 whitespace-nowrap rounded-xl bg-neutral-800 px-2 py-1 text-start ring-1 ring-neutral-600 hover:cursor-pointer hover:bg-neutral-600 hover:ring-0 active:!bg-neutral-700 active:!ring-1 data-[disabled=true]:pointer-events-none data-[disabled=true]:text-neutral-500"
         htmlFor={id}
+        data-disabled={disabled}
       >
         Upload
       </label>
@@ -264,32 +291,251 @@ function ImageView({
   disabled: boolean;
 }) {
   return (
-    <Button
-      disabled={disabled}
-      classNames={{
-        button: cn(
-          "relative h-40 w-auto shrink-0 block p-0 overflow-hidden",
-          data.unused && "opacity-50",
-        ),
-      }}
-      key={`${data.type}/${data.sha256}`}
-      onClick={() =>
-        setMeta({
-          items: meta.items.filter((it) => it.n !== data.n),
-        })
-      }
+    <div
+      className={cn(
+        "group relative block h-40 w-auto shrink-0",
+        data.unused && "opacity-50",
+        disabled && "pointer-events-none opacity-50",
+      )}
     >
       <Image
         width={160}
         height={160}
         src={data.blob_url}
         alt={""}
-        className="h-full w-full"
+        className="h-40 w-auto"
       />
+
+      <Popover placement="bottom-end">
+        <PopoverTrigger
+          disabled={disabled}
+          classNames={{
+            button:
+              "absolute top-1 right-1 rounded-full group-hover:opacity-100 opacity-0",
+          }}
+          color="ghost"
+        >
+          <Menu11 />
+        </PopoverTrigger>
+
+        <PopoverContent>
+          <Button
+            disabled={disabled}
+            color="danger"
+            full
+            size="large"
+            onClick={() =>
+              setMeta({
+                items: meta.items.filter((it) => it.n !== data.n),
+              })
+            }
+          >
+            Remove
+          </Button>
+        </PopoverContent>
+      </Popover>
+
       <p className="absolute bottom-1 right-1 rounded-full bg-black/40 px-2">
         {data.n}
       </p>
-    </Button>
+    </div>
+  );
+}
+
+function VideoView({
+  data,
+  meta,
+  setMeta,
+  disabled,
+}: {
+  data: Item;
+  meta: Meta;
+  setMeta: (value: Partial<Meta>) => void;
+  disabled: boolean;
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const handlePlayPause = () => {
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+        videoRef.current.play();
+        setIsPlaying(true);
+      } else {
+        videoRef.current.pause();
+        setIsPlaying(false);
+      }
+    }
+  };
+
+  const handleBackward = () => {
+    if (videoRef.current) {
+      videoRef.current.currentTime -= 5;
+    }
+  };
+
+  const handleForward = () => {
+    if (videoRef.current) {
+      videoRef.current.currentTime += 5;
+    }
+  };
+
+  return (
+    <div
+      className={cn(
+        "group relative block h-40 w-auto shrink-0",
+        data.unused && "opacity-50",
+        disabled && "pointer-events-none opacity-50",
+      )}
+    >
+      <video className="h-40" ref={videoRef}>
+        {/* TODO: I guess, Webkit, ass. It doesn't work  */}
+        <source src={data.blob_url} />
+      </video>
+
+      <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2">
+        <Button color="ghost" size="large" onClick={handleBackward}>
+          <GoBackward5Sec />
+        </Button>
+        <Button color="ghost" size="large" onClick={handlePlayPause}>
+          {isPlaying ? <Pause /> : <Play />}
+        </Button>
+        <Button color="ghost" size="large" onClick={handleForward}>
+          <GoForward5Sec />
+        </Button>
+      </div>
+
+      <Popover placement="bottom-end">
+        <PopoverTrigger
+          disabled={disabled}
+          classNames={{
+            button:
+              "absolute top-1 right-1 rounded-full group-hover:opacity-100 opacity-0",
+          }}
+          color="ghost"
+        >
+          <Menu11 />
+        </PopoverTrigger>
+
+        <PopoverContent>
+          <Button
+            disabled={disabled}
+            color="danger"
+            full
+            size="large"
+            onClick={() =>
+              setMeta({
+                items: meta.items.filter((it) => it.n !== data.n),
+              })
+            }
+          >
+            Remove
+          </Button>
+        </PopoverContent>
+      </Popover>
+
+      <p className="absolute bottom-1 right-1 rounded-full bg-black/40 px-2">
+        {data.n}
+      </p>
+    </div>
+  );
+}
+
+function AudioView({
+  data,
+  meta,
+  setMeta,
+  disabled,
+}: {
+  data: Item;
+  meta: Meta;
+  setMeta: (value: Partial<Meta>) => void;
+  disabled: boolean;
+}) {
+  const audioRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const handlePlayPause = () => {
+    if (audioRef.current) {
+      if (audioRef.current.paused) {
+        audioRef.current.play();
+        setIsPlaying(true);
+      } else {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      }
+    }
+  };
+
+  const handleBackward = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime -= 5;
+    }
+  };
+
+  const handleForward = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime += 5;
+    }
+  };
+
+  return (
+    <div
+      className={cn(
+        "group relative flex h-40 w-auto shrink-0 items-center",
+        data.unused && "opacity-50",
+        disabled && "pointer-events-none opacity-50",
+      )}
+    >
+      <audio ref={audioRef}>
+        <source src={data.blob_url} />
+      </audio>
+
+      <div className="flex">
+        <Button color="ghost" size="large" onClick={handleBackward}>
+          <GoBackward5Sec />
+        </Button>
+        <Button color="ghost" size="large" onClick={handlePlayPause}>
+          {isPlaying ? <Pause /> : <Play />}
+        </Button>
+        <Button color="ghost" size="large" onClick={handleForward}>
+          <GoForward5Sec />
+        </Button>
+      </div>
+
+      <Popover placement="bottom-end">
+        <PopoverTrigger
+          disabled={disabled}
+          classNames={{
+            button:
+              "absolute top-1 right-1 rounded-full group-hover:opacity-100 opacity-0",
+          }}
+          color="ghost"
+        >
+          <Menu11 />
+        </PopoverTrigger>
+
+        <PopoverContent>
+          <Button
+            disabled={disabled}
+            color="danger"
+            full
+            size="large"
+            onClick={() =>
+              setMeta({
+                items: meta.items.filter((it) => it.n !== data.n),
+              })
+            }
+          >
+            Remove
+          </Button>
+        </PopoverContent>
+      </Popover>
+
+      <p className="absolute bottom-1 right-1 rounded-full bg-black/40 px-2">
+        {data.n}
+      </p>
+    </div>
   );
 }
 
@@ -304,27 +550,59 @@ function BinaryView({
   setMeta: (value: Partial<Meta>) => void;
   disabled: boolean;
 }) {
+  const bin = useMemo(
+    () =>
+      new Uint8Array(data.buff).reduce(
+        (bin, byte) => (bin += String.fromCharCode(byte)),
+        "",
+      ),
+    [data.buff],
+  );
+
   return (
-    <Button
-      disabled={disabled}
-      classNames={{
-        button: cn(
-          "relative h-20 w-20 shrink-0 block p-0 overflow-hidden",
-          data.unused && "opacity-50",
-        ),
-        text: "flex justify-center",
-      }}
-      key={`${data.type}/${data.sha256}`}
-      onClick={() =>
-        setMeta({
-          items: meta.items.filter((it) => it.n !== data.n),
-        })
-      }
+    <div
+      className={cn(
+        "group relative block aspect-video h-40 w-auto shrink-0 overflow-y-auto",
+        data.unused && "opacity-50",
+        disabled && "pointer-events-none opacity-50",
+      )}
     >
-      <BinaryCode className="h-10 w-10" />
-      <p className="absolute bottom-1 right-1 rounded-full bg-black/40 px-2">
+      <p className="hyphens-auto whitespace-pre-wrap break-words bg-neutral-700 p-4">
+        {bin}
+      </p>
+
+      <Popover placement="bottom-end">
+        <PopoverTrigger
+          disabled={disabled}
+          classNames={{
+            button:
+              "absolute top-1 right-1 rounded-full group-hover:opacity-100 opacity-0",
+          }}
+          color="ghost"
+        >
+          <Menu11 />
+        </PopoverTrigger>
+
+        <PopoverContent>
+          <Button
+            disabled={disabled}
+            color="danger"
+            full
+            size="large"
+            onClick={() =>
+              setMeta({
+                items: meta.items.filter((it) => it.n !== data.n),
+              })
+            }
+          >
+            Remove
+          </Button>
+        </PopoverContent>
+      </Popover>
+
+      <p className="absolute bottom-1 right-1 w-fit rounded-full bg-black/40 px-2">
         {data.n}
       </p>
-    </Button>
+    </div>
   );
 }

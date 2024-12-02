@@ -3,7 +3,6 @@
 import { db } from "@/db/db";
 import schemaEntry__InspirationPool__Fetch from "@/schemas/schemaEntry__InspirationPool__Fetch";
 import { FormValues } from "@/utils/form";
-import { resourceInjectBuffer } from "@/utils/resource__server";
 import { sql } from "kysely";
 import { z } from "zod";
 
@@ -107,13 +106,18 @@ export default async function ActionFetch__InspirationPool(
                 ).num_related_big_paints,
 
                 // TODO: Possible call inutile se l'array è vuoto
-                resourceInjectBuffer({
-                  resources: await db
-                    .selectFrom("resource")
-                    .where("inspiration_id", "=", id)
-                    .select(["type", "n", "sha256", "id"])
-                    .execute(),
-                }),
+                // resourceInjectBuffer({
+                //   resources: await db
+                //     .selectFrom("resource")
+                //     .where("inspiration_id", "=", id)
+                //     .select(["type", "n", "sha256", "id"])
+                //     .execute(),
+                // }),
+                db
+                  .selectFrom("resource")
+                  .where("inspiration_id", "=", id)
+                  .select(["type", "n", "sha256", "id"])
+                  .execute(),
               ]);
 
               return {

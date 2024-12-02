@@ -43,6 +43,8 @@ export async function resource__ExtractFromFile(
     .map((byte) => byte.toString(16).padStart(2, "0"))
     .join("");
 
+  // TODO: I think there are some unsupported formats here, at least for video and audio
+
   const image = new Set([
     "jpg",
     "jpeg",
@@ -56,10 +58,46 @@ export async function resource__ExtractFromFile(
     "tiff",
   ]);
 
+  const video = new Set([
+    "mp4",
+    "avi",
+    "mkv",
+    "mov",
+    "wmv",
+    "flv",
+    "webm",
+    "mpeg",
+    "mpg",
+    "m4v",
+    "3gp",
+  ]);
+
+  const audio = new Set([
+    "mp3",
+    "wav",
+    "aac",
+    "flac",
+    "ogg",
+    "wma",
+    "m4a",
+    "alac",
+    "opus",
+    "amr",
+    "aiff",
+  ]);
+
   const ext = file.name.split(".").pop()?.toLowerCase(); // TODO: Try with magic number
 
   const type: Selectable<Resource>["type"] =
-    ext === undefined ? "binary" : image.has(ext) ? "image" : "binary";
+    ext === undefined
+      ? "binary"
+      : image.has(ext)
+        ? "image"
+        : video.has(ext)
+          ? "video"
+          : audio.has(ext)
+            ? "audio"
+            : "binary";
 
   // TODO: Check più sicuri, perché, ad esempio, potrei essere connesso da più dispositivi
 

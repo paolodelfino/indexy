@@ -3,9 +3,12 @@
 import { ButtonLink } from "@/components/Button";
 import {
   BinaryCode,
+  Image01,
   MoreHorizontalSquare02,
+  MusicNoteSquare02,
   PencilEdit01,
   Star,
+  Video02,
 } from "@/components/icons";
 import { cn } from "@/utils/cn";
 import { dateToString } from "@/utils/date";
@@ -25,9 +28,7 @@ export default function UIInspiration({
     Selectable<Inspiration>,
     "content" | "date" | "id" | "highlight"
   > & {
-    resources: (Pick<Selectable<Resource>, "id" | "type" | "sha256" | "n"> & {
-      buff: ArrayBuffer;
-    })[];
+    resources: Pick<Selectable<Resource>, "id" | "type" | "sha256" | "n">[];
     num_related_inspirations: string | null;
     num_related_big_paints: string | null;
   };
@@ -57,14 +58,10 @@ export default function UIInspiration({
             const res = data.resources.find((u) => u.n === n);
             if (res !== undefined) {
               // TODO: Handle empty, invalid binary
-              if (res.type === "image")
-                b.push(
-                  <ImageView
-                    key={key++}
-                    data={{ buff: res.buff, id: res.id }}
-                  />,
-                );
-              else b.push(<BinaryView key={key++} data={{ id: res.id }} />);
+              // TODO: Al momento non sto usando il buff
+              b.push(
+                <ResView key={key++} data={{ type: res.type, id: res.id }} />,
+              );
             } else b.push(<span key={key++}>{data.content.slice(i, j)}</span>);
           } else {
             b.push(<span key={key++}>$</span>);
@@ -155,40 +152,25 @@ export default function UIInspiration({
 // TODO: Add intercepting route
 // TODO: Optimization type based (for example, BinaryView doesn't currently need the buffer)
 
-function ImageView({
+function ResView({
   data,
 }: {
-  data: Pick<Selectable<Resource>, "id"> & { buff: ArrayBuffer };
+  data: Pick<Selectable<Resource>, "id" | "type">;
 }) {
-  const [base64, setBase64] = useState("");
-
-  useEffect(() => {
-    const bin = new Uint8Array(data.buff).reduce(
-      (bin, byte) => (bin += String.fromCharCode(byte)),
-      "",
-    );
-    setBase64(btoa(bin));
-  }, [data.buff]);
+  const icon = useMemo(() => {
+    if (data.type === "binary") return <BinaryCode />;
+    else if (data.type === "audio") return <MusicNoteSquare02 />;
+    else if (data.type === "video") return <Video02 />;
+    else if (data.type === "image") return <Image01 />;
+  }, [data.type]);
 
   return (
     <ButtonLink
       href={`/res/${data.id}`}
       target="_blank"
-      classNames={{ button: "w-max p-0 m-0 inline-flex" }}
+      classNames={{ button: "w-max inline-flex" }}
     >
-      <img alt="" src={`data:image;base64,${base64}`} width={48} className="inline" />
-    </ButtonLink>
-  );
-}
-
-function BinaryView({ data }: { data: Pick<Selectable<Resource>, "id"> }) {
-  return (
-    <ButtonLink
-      href={`/res/${data.id}`}
-      target="_blank"
-      classNames={{ button: "inline-flex", text: "inline" }}
-    >
-      <BinaryCode />
+      {icon}
     </ButtonLink>
   );
 }

@@ -144,6 +144,7 @@ export default function Page({
         {form.meta.showInspiration && query__Inspiration.data === undefined && (
           <p>loading no cache</p>
         )}
+        {/* TODO: Non sono mostrate le risorse */}
         {form.meta.showInspiration &&
           query__Inspiration.data !== undefined &&
           query__Inspiration.data.length > 0 && (

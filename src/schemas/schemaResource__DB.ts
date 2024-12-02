@@ -7,7 +7,7 @@ const schemaResource__DB = z.object({
     .string()
     .trim()
     .regex(/^[a-f0-9]{64}$/i, "Invalid SHA-256 hash"),
-  type: z.enum(["image", "binary"]),
+  type: z.enum(["image", "binary", "video", "audio"]),
   n: z.number().gt(0),
   inspiration_id: schemaUUID,
 });
