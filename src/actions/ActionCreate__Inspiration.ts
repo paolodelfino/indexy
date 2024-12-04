@@ -1,7 +1,7 @@
 "use server";
 
-import { db } from "@/db/db";
-import minioClient from "@/minio/minioClient";
+import { db } from "@/r/db";
+import minioClient from "@/o/db";
 import schemaInspiration__Create from "@/schemas/schemaInspiration__Create";
 import { FormValues } from "@/utils/form";
 

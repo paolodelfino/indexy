@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/db/db";
+import { db } from "@/r/db";
 import schemaQuery__Fetch from "@/schemas/schemaQuery__Fetch";
 import { FormValues } from "@/utils/form";
 

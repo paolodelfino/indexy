@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/db/db";
+import { db } from "@/r/db";
 import schemaEntry__InspirationPool__Fetch from "@/schemas/schemaEntry__InspirationPool__Fetch";
 import { FormValues } from "@/utils/form";
 import { sql } from "kysely";

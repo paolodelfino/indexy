@@ -1,6 +1,6 @@
 import { ButtonLink } from "@/components/Button";
-import { db } from "@/db/db";
-import minioClient from "@/minio/minioClient";
+import { db } from "@/r/db";
+import minioClient from "@/o/db";
 import schemaResource__View from "@/schemas/schemaResource__View";
 
 export default async function Page({

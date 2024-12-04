@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/db/db";
+import { db } from "@/r/db";
 
 export default async function ActionFetch__QueryMany(
   offset: number,

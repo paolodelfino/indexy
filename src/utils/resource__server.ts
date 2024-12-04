@@ -1,5 +1,5 @@
 import "server-only";
-import minioClient from "@/minio/minioClient";
+import minioClient from "@/o/db";
 import schemaResource__InjectBuffer from "@/schemas/schemaResource__InjectBuffer";
 import { FormValues } from "@/utils/form";
 

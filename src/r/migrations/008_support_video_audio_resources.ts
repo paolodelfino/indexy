@@ -16,6 +16,10 @@ export async function up(db: Kysely<any>): Promise<void> {
 
 export async function down(db: Kysely<any>): Promise<void> {
   await sql`
+      UPDATE resource
+      SET type = 'binary'
+      WHERE type NOT IN ('image', 'binary');
+  
       CREATE TYPE resource_type_new AS ENUM ('image', 'binary');
 
       ALTER TABLE resource

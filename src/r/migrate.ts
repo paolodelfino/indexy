@@ -10,7 +10,6 @@ import { DB } from "kysely-codegen/dist/db";
 import * as path from "path";
 import { Pool } from "pg";
 
-// Create a Kysely instance
 function createDb() {
   return new Kysely<DB>({
     dialect: new PostgresDialect({
@@ -21,20 +20,17 @@ function createDb() {
   });
 }
 
-// Create a Migrator instance
 function createMigrator(db: Kysely<DB>) {
   return new Migrator({
     db,
     provider: new FileMigrationProvider({
       fs,
       path,
-      // This needs to be an absolute path.
       migrationFolder: path.join(__dirname, "migrations"),
     }),
   });
 }
 
-// Command: Migrate Down the Last Migration
 async function migrateDownLast() {
   const db = createDb();
   const migrator = createMigrator(db);
@@ -65,7 +61,6 @@ async function migrateDownLast() {
   await db.destroy();
 }
 
-// Command: Migrate Up the Last Migration
 async function migrateUpLast() {
   const db = createDb();
   const migrator = createMigrator(db);
@@ -96,7 +91,6 @@ async function migrateUpLast() {
   await db.destroy();
 }
 
-// Command: Display Migrations
 async function displayMigrations() {
   const db = createDb();
   const migrator = createMigrator(db);
@@ -113,7 +107,6 @@ async function displayMigrations() {
   await db.destroy();
 }
 
-// Command-line Interface
 const command = process.argv[2];
 
 switch (command) {
@@ -127,6 +120,6 @@ switch (command) {
     displayMigrations();
     break;
   default:
-    console.log("Usage: bun db:migrate [up|down|status]");
+    console.log("Usage: bun [dev|prod]__r:migrate [up|down|status]");
     process.exit(1);
 }

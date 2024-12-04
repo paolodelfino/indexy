@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/db/db";
+import { db } from "@/r/db";
 import schemaInspiration__Fetch from "@/schemas/schemaInspiration__Fetch";
 import { FormValues } from "@/utils/form";
 import { resourceInjectBuffer } from "@/utils/resource__server";

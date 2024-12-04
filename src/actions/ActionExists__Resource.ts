@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/db/db";
+import { db } from "@/r/db";
 import schemaResource__Exists from "@/schemas/schemaResource__Exists";
 import { FormValues } from "@/utils/form";
 

@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/db/db";
+import { db } from "@/r/db";
 import schemaBigPaint__Delete from "@/schemas/schemaBigPaint__Delete";
 import { FormValues } from "@/utils/form";
 
