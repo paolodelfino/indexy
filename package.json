@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev__w": "bun x dotenv-cli -e dev.env -- cmd /C 'next dev --turbo --experimental-https'",
-    "dev__o": "bun x dotenv-cli -e dev.env -- cmd /C 'minio server %MINIO_DB_PATH%'",
+    "dev__o": "bun x dotenv-cli -e dev.env -- cmd /C 'minio server -S ./certificates %MINIO_DB_PATH%'",
     "dev__o:migrate": "bun x dotenv-cli -e dev.env -- cmd /C 'bun run src/o/migrate.ts'",
     "dev__r": "bun x dotenv-cli -e dev.env -- cmd /C 'postgres -D %POSTGRES_DATA_PATH%'",
     "dev__r:migrate": "bun x dotenv-cli -e dev.env -- cmd /C 'bun run src/r/migrate.ts'",
@@ -12,7 +12,7 @@
     "prod__w:build": "bun x dotenv-cli -e prod.env -- cmd /C 'next build'",
     "prod__w": "bun x dotenv-cli -e prod.env -- cmd /C 'next start -p 2999'",
     "prod__w:proxy": "bun x dotenv-cli -e prod.env -- cmd /C 'local-ssl-proxy --source 3000 --target 2999'",
-    "prod__o": "bun x dotenv-cli -e prod.env -- cmd /C 'minio server %MINIO_DB_PATH%'",
+    "prod__o": "bun x dotenv-cli -e prod.env -- cmd /C 'minio server -S ./certificates %MINIO_DB_PATH%'",
     "prod__o:migrate": "bun x dotenv-cli -e prod.env -- cmd /C 'bun run src/o/migrate.ts'",
     "prod__r": "bun x dotenv-cli -e prod.env -- cmd /C 'postgres -D %POSTGRES_DATA_PATH%'",
     "prod__r:migrate": "bun x dotenv-cli -e prod.env -- cmd /C 'bun run src/r/migrate.ts'",

@@ -1,6 +1,6 @@
 import { ButtonLink } from "@/components/Button";
-import { db } from "@/r/db";
 import minioClient from "@/o/db";
+import { db } from "@/r/db";
 import schemaResource__View from "@/schemas/schemaResource__View";
 
 export default async function Page({
@@ -16,58 +16,42 @@ export default async function Page({
     .select(["type", "sha256"])
     .executeTakeFirstOrThrow();
 
-  const a = Buffer.concat(
-    await (await minioClient.getObject(type, sha256)).toArray(),
-  );
-  const b = a.buffer.slice(a.byteOffset, a.byteOffset + a.byteLength);
-  const buff =
-    b instanceof SharedArrayBuffer ? new ArrayBuffer(b.byteLength) : b; // TODO: Is this bullshit necessary?
+  const object = await minioClient.getObject(type, sha256);
 
   let view;
   if (type === "image") {
-    const bin = new Uint8Array(buff).reduce(
-      (bin, byte) => (bin += String.fromCharCode(byte)),
-      "",
+    view = (
+      <img
+        alt=""
+        src={`https://${process.env.MINIO_ADDRESS}/${type}/${sha256}`}
+      />
     );
-    const base64 = btoa(bin);
-    view = <img alt="" src={`data:image;base64,${base64}`} />;
   } else if (type === "video") {
-    const bin = new Uint8Array(buff).reduce(
-      (bin, byte) => (bin += String.fromCharCode(byte)),
-      "",
-    );
-    const base64 = btoa(bin);
-    // TODO: Hardcoded mime
-    // TODO: Doensn't work on safari
     view = (
       <video controls>
-        <source src={`data:video/mp4;base64,${base64}`} />
+        <source src={`https://${process.env.MINIO_ADDRESS}/${type}/${sha256}`} />
       </video>
     );
   } else if (type === "audio") {
-    const bin = new Uint8Array(buff).reduce(
-      (bin, byte) => (bin += String.fromCharCode(byte)),
-      "",
-    );
-    const base64 = btoa(bin);
-    // TODO: Hardcoded mime
     view = (
       <audio controls>
-        <source src={`data:audio/mp3;base64,${base64}`} />
+        <source src={`https://${process.env.MINIO_ADDRESS}/${type}/${sha256}`} />
       </audio>
     );
   } else {
-    const bin = new Uint8Array(buff).reduce(
-      (bin, byte) => (bin += String.fromCharCode(byte)),
-      "",
-    );
-    view = <p className="whitespace-pre-wrap bg-black text-white">{bin}</p>;
+    const chunks = [];
+    for await (const chunk of object) {
+      chunks.push(chunk);
+    }
+    const text = Buffer.concat(chunks).toString("utf-8");
+    view = <p className="whitespace-pre-wrap bg-black text-white">{text}</p>;
   }
 
-  // TODO: Scarica senza estensione
   return (
-    <div>
-      <ButtonLink href={`http://127.0.0.1:9000/${type}/${sha256}`}>
+    <div className="pb-32">
+      <ButtonLink
+        href={`https://${process.env.MINIO_ADDRESS}/${type}/${sha256}`}
+      >
         Download
       </ButtonLink>
       {view}

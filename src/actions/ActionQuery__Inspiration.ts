@@ -1,7 +1,6 @@
 "use server";
 
 import { db } from "@/r/db";
-import minioClient from "@/o/db";
 import schemaInspiration__Query from "@/schemas/schemaInspiration__Query";
 import { FormValues } from "@/utils/form";
 import { sql } from "kysely";
@@ -96,7 +95,6 @@ export default async function ActionQuery__Inspiration(
       "id",
       "highlight",
       db
-
         .selectFrom("inspiration_relations")
         .select(
           db.fn
@@ -150,24 +148,26 @@ export default async function ActionQuery__Inspiration(
         .execute();
 
       return {
+        // TODO: Should I leave inspiration_id?
         ...it,
-        resources: await Promise.all(
-          resources.map(async ({ inspiration_id, ...rest }) => {
-            const a = Buffer.concat(
-              await (
-                await minioClient.getObject(rest.type, rest.sha256)
-              ).toArray(),
-            );
-            const b = a.buffer.slice(a.byteOffset, a.byteOffset + a.byteLength);
-            return {
-              ...rest,
-              buff:
-                b instanceof SharedArrayBuffer
-                  ? new ArrayBuffer(b.byteLength)
-                  : b, // TODO: Is this bullshit necessary?
-            };
-          }),
-        ),
+        resources,
+        // resources: await Promise.all(
+        //   resources.map(async ({ inspiration_id, ...rest }) => {
+        //     const a = Buffer.concat(
+        //       await (
+        //         await minioClient.getObject(rest.type, rest.sha256)
+        //       ).toArray(),
+        //     );
+        //     const b = a.buffer.slice(a.byteOffset, a.byteOffset + a.byteLength);
+        //     return {
+        //       ...rest,
+        //       buff:
+        //         b instanceof SharedArrayBuffer
+        //           ? new ArrayBuffer(b.byteLength)
+        //           : b, // TODO: Is this bullshit necessary?
+        //     };
+        //   }),
+        // ),
       };
     }),
   );

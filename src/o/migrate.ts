@@ -1,9 +1,11 @@
 import { Kysely, PostgresDialect } from "kysely";
 import { DB } from "kysely-codegen/dist/db";
 import { Client } from "minio";
-import { promises as fs } from "node:fs";
+import { promises } from "node:fs";
 import * as path from "path";
 import { Pool } from "pg";
+import https from "node:https";
+import fs from "node:fs";
 
 class Migrator {
   minioClient;
@@ -95,7 +97,7 @@ class Migrator {
   }
 
   async listMigrations() {
-    const files = await fs.readdir(this.migrationsPath);
+    const files = await promises.readdir(this.migrationsPath);
     return files
       .filter((file) => file.endsWith(".js") || file.endsWith(".ts"))
       .map((file) => path.basename(file, path.extname(file)));
@@ -103,12 +105,16 @@ class Migrator {
 }
 
 function createDb() {
+  const customAgent = new https.Agent({
+    ca: fs.readFileSync(path.join(__dirname, "../../certificates/public.crt")),
+  });
   return new Client({
     endPoint: process.env.MINIO_ENDPOINT!,
     port: Number(process.env.MINIO_PORT!),
     useSSL: false,
     accessKey: process.env.MINIO_ACCESS_KEY!,
     secretKey: process.env.MINIO_SECRET!,
+    transportAgent: customAgent,
   });
 }
 
