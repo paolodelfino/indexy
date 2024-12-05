@@ -128,6 +128,12 @@ export default function Page({ params }: { params: { id: string } }) {
       else {
         await ActionEdit__Inspiration(id, form.values());
 
+        form.setMeta("resources", {
+          items: form.fields.resources.meta.items.map(
+            ({ blobUrl, buff, ...it }) => it,
+          ),
+        });
+
         invalidate__QueryBigPaint__Edit();
         // invalidate__QueryInspiration__Edit(); // NOTE: Questo avrebbe senso se avessi più pagine aperte e fossero connesse
         invalidate__QueryBigPaint__Pool();

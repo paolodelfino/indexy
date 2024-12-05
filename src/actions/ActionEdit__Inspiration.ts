@@ -1,7 +1,7 @@
 "use server";
 
-import { db } from "@/r/db";
 import minioClient from "@/o/db";
+import { db } from "@/r/db";
 import schemaInspiration__Edit from "@/schemas/schemaInspiration__Edit";
 import { FormValues } from "@/utils/form";
 
@@ -19,7 +19,7 @@ export default async function ActionEdit__Inspiration(
     related_inspirations_ids,
     ...rest
   } = schemaInspiration__Edit.parse(values);
-console.log("res", resources)
+
   const inspirationUpdatePromise = db
     .updateTable("inspiration")
     .where("id", "=", id)
@@ -129,7 +129,7 @@ console.log("res", resources)
         old.find((it2) => it2.sha256 === it.sha256 && it2.type === it.type) ===
         undefined,
     );
-console.log(added)
+
     await Promise.all([
       deleted.length <= 0
         ? undefined
