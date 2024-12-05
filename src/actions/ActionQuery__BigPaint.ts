@@ -74,9 +74,9 @@ export default async function ActionQuery__BigPaint(
     data: await q
       .orderBy(orderBy, orderByDir)
       .select([
-        "id",
-        "date",
-        "name",
+        "big_paint.id",
+        "big_paint.date",
+        "big_paint.name",
         db
           .selectFrom("big_paint_relations")
           .select(

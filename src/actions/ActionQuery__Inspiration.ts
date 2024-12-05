@@ -90,10 +90,10 @@ export default async function ActionQuery__Inspiration(
   const a = await q
     .orderBy(orderBy, orderByDir)
     .select([
-      "content",
-      "date",
-      "id",
-      "highlight",
+      "inspiration.content",
+      "inspiration.date",
+      "inspiration.id",
+      "inspiration.highlight",
       db
         .selectFrom("inspiration_relations")
         .select(
