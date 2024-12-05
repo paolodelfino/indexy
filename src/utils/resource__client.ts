@@ -1,6 +1,7 @@
 import ActionExists__Resource from "@/actions/ActionExists__Resource";
 import { FieldAEditor__Type } from "@/components/AEditor";
 import { FieldTextArea__Type } from "@/components/form_ui/FieldTextArea";
+import "client-only";
 import { Selectable } from "kysely";
 import { Resource } from "kysely-codegen/dist/db";
 
@@ -111,23 +112,21 @@ export async function resource__ExtractFromFile(
   if (uploadedOnServer === undefined)
     return {
       buff: await file.arrayBuffer(),
-      blob_url: URL.createObjectURL(file),
+      blobUrl: type === "binary" ? undefined : URL.createObjectURL(file),
       sha256,
       type: type,
     } satisfies Pick<
       FieldAEditor__Type["meta"]["items"][number],
-      "buff" | "blob_url" | "sha256" | "type"
+      "buff" | "blobUrl" | "sha256" | "type"
     >;
   else if (uploadedOnServer.inspiration_id === meta.inspiration_id)
     return {
-      buff: await file.arrayBuffer(),
-      blob_url: URL.createObjectURL(file),
       sha256,
       type: type,
       n: uploadedOnServer.n,
     } satisfies Pick<
       FieldAEditor__Type["meta"]["items"][number],
-      "buff" | "blob_url" | "sha256" | "type" | "n"
+      "sha256" | "type" | "n"
     >;
 }
 

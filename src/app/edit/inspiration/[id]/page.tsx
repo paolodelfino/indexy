@@ -60,8 +60,8 @@ export default function Page({ params }: { params: { id: string } }) {
                 sha256: it.sha256,
                 type: it.type,
                 unused: true,
-                buff: it.buff,
-                blob_url: URL.createObjectURL(new Blob([it.buff])),
+                // buff: it.buff,
+                // blobUrl: URL.createObjectURL(new Blob([it.buff])),
               };
             }),
             n: maxN,

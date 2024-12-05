@@ -19,7 +19,7 @@ export default async function ActionEdit__Inspiration(
     related_inspirations_ids,
     ...rest
   } = schemaInspiration__Edit.parse(values);
-
+console.log("res", resources)
   const inspirationUpdatePromise = db
     .updateTable("inspiration")
     .where("id", "=", id)
@@ -129,7 +129,7 @@ export default async function ActionEdit__Inspiration(
         old.find((it2) => it2.sha256 === it.sha256 && it2.type === it.type) ===
         undefined,
     );
-
+console.log(added)
     await Promise.all([
       deleted.length <= 0
         ? undefined
@@ -154,7 +154,7 @@ export default async function ActionEdit__Inspiration(
         async (it) => await minioClient.removeObject(it.type, it.sha256),
       ),
       ...added.map((it) =>
-        minioClient.putObject(it.type, it.sha256, Buffer.from(it.buff)),
+        minioClient.putObject(it.type, it.sha256, Buffer.from(it.buff!)),
       ),
     ]);
   }

@@ -1,5 +1,6 @@
 "use client";
 
+import ActionFetch__ResourceBuffer from "@/actions/ActionFetch__ResourceBuffer";
 import Button from "@/components/Button";
 import FieldTextArea, {
   FieldTextArea__Type,
@@ -13,6 +14,7 @@ import {
   Play,
 } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
+import clientEnv from "@/utils/clientEnv";
 import { cn } from "@/utils/cn";
 import { FormField } from "@/utils/form";
 import {
@@ -22,12 +24,11 @@ import {
 } from "@/utils/resource__client";
 import { Selectable } from "kysely";
 import { Resource } from "kysely-codegen/dist/db";
-import Image from "next/image";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 
 type Item = Pick<Selectable<Resource>, "n" | "sha256" | "type"> & {
-  buff: ArrayBuffer;
-  blob_url: string;
+  buff?: ArrayBuffer;
+  blobUrl?: string;
   unused: boolean;
 };
 
@@ -39,7 +40,7 @@ type Meta = {
 
 type Value =
   | (Pick<Selectable<Resource>, "n" | "sha256" | "type"> & {
-      buff: ArrayBuffer;
+      buff?: ArrayBuffer;
     })[]
   | undefined;
 
@@ -161,6 +162,7 @@ export default function AEditor({
 
   return (
     <div className="space-y-2">
+      {/* NOTE: At the moment, I don't see necessary the virtualization */}
       <div className="flex items-end gap-2 overflow-x-auto">
         {error !== undefined && (
           <Popover>
@@ -180,7 +182,7 @@ export default function AEditor({
           disabled={disabled}
         />
 
-        <div className="flex gap-2">{itemsView}</div>
+        {itemsView}
       </div>
 
       <FieldTextArea
@@ -216,7 +218,7 @@ function UploadButton({
   const id = useId();
 
   return (
-    <div>
+    <div className="mt-auto">
       <input
         type="file"
         disabled={disabled}
@@ -298,11 +300,12 @@ function ImageView({
         disabled && "pointer-events-none opacity-50",
       )}
     >
-      <Image
-        width={160}
-        height={160}
-        src={data.blob_url}
-        alt={""}
+      <img
+        alt=""
+        src={
+          data.blobUrl ??
+          `https://${clientEnv.MINIO_ADDRESS}/${data.type}/${data.sha256}`
+        }
         className="h-40 w-auto"
       />
 
@@ -388,9 +391,15 @@ function VideoView({
         disabled && "pointer-events-none opacity-50",
       )}
     >
+      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <video className="h-40" ref={videoRef}>
         {/* TODO: I guess, Webkit, ass. It doesn't work  */}
-        <source src={data.blob_url} />
+        <source
+          src={
+            data.blobUrl ??
+            `https://${clientEnv.MINIO_ADDRESS}/${data.type}/${data.sha256}`
+          }
+        />
       </video>
 
       <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2">
@@ -487,8 +496,14 @@ function AudioView({
         disabled && "pointer-events-none opacity-50",
       )}
     >
+      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <audio ref={audioRef}>
-        <source src={data.blob_url} />
+        <source
+          src={
+            data.blobUrl ??
+            `https://${clientEnv.MINIO_ADDRESS}/${data.type}/${data.sha256}`
+          }
+        />
       </audio>
 
       <div className="flex">
@@ -550,25 +565,36 @@ function BinaryView({
   setMeta: (value: Partial<Meta>) => void;
   disabled: boolean;
 }) {
-  const bin = useMemo(
-    () =>
-      new Uint8Array(data.buff).reduce(
-        (bin, byte) => (bin += String.fromCharCode(byte)),
-        "",
-      ),
-    [data.buff],
-  );
+  const [text, setText] = useState<string | undefined>();
+
+  useEffect(() => {
+    if (data.buff !== undefined) {
+      // TODO: I already tested it, but for some reason now I'm unsure. The thing is that the ui block is due to the large text and not the computation process and that startTransition is useless in this case (extra info: buffer.toString() takes time if not cut off)
+      const buffer = Buffer.from(data.buff!);
+      let text = buffer.toString("utf-8", 0, 1024);
+      if (buffer.byteLength > 1024) text += "\r\n--- BIG FILE CUT OFF ---";
+      setText(text);
+    } else
+      ActionFetch__ResourceBuffer({
+        sha256: data.sha256,
+        type: data.type,
+      }).then((data) => {
+        // console.log(data);
+        setText(data);
+      });
+  }, [data.buff]);
 
   return (
     <div
       className={cn(
-        "group relative block aspect-video h-40 w-auto shrink-0 overflow-y-auto",
+        "group relative block aspect-video h-40 w-auto shrink-0 overflow-y-auto bg-neutral-700",
         data.unused && "opacity-50",
         disabled && "pointer-events-none opacity-50",
       )}
     >
-      <p className="hyphens-auto whitespace-pre-wrap break-words bg-neutral-700 p-4">
-        {bin}
+      <p className="hyphens-auto whitespace-pre-wrap break-words p-4">
+        {text === undefined && "loading..."}
+        {text !== undefined && text}
       </p>
 
       <Popover placement="bottom-end">
@@ -582,7 +608,6 @@ function BinaryView({
         >
           <Menu11 />
         </PopoverTrigger>
-
         <PopoverContent>
           <Button
             disabled={disabled}

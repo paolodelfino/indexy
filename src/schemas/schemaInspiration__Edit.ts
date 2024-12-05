@@ -14,7 +14,7 @@ const schemaInspiration__Edit = z.object({
         sha256: schemaResource__DB.shape.sha256,
         type: schemaResource__DB.shape.type,
         n: schemaResource__DB.shape.n,
-        buff: z.instanceof(ArrayBuffer),
+        buff: z.instanceof(ArrayBuffer).optional(), // NOTE: We need buff only if a resource is a new one and therefore its content still has to get stored
       }),
     ) // TODO: Utilizzare schemaInspiration__Create.shape.resources?
     .optional(), // TODO: Probabile che content e resources debbano o essere undefined entrambi oppure defined entrambi (magari mettili in un object insieme)

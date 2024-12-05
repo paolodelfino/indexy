@@ -3,7 +3,6 @@
 import { db } from "@/r/db";
 import schemaInspiration__Fetch from "@/schemas/schemaInspiration__Fetch";
 import { FormValues } from "@/utils/form";
-import { resourceInjectBuffer } from "@/utils/resource__server";
 import { sql } from "kysely";
 
 export default async function ActionFetch__Inspiration(
@@ -46,13 +45,18 @@ export default async function ActionFetch__Inspiration(
         .select(["b.id", "b.name"]) // TODO: Potrei ritornare anche l'id della relazione
         .execute(),
       // TODO: Possible call inutile se l'array è vuoto
-      resourceInjectBuffer({
-        resources: await db
-          .selectFrom("resource")
-          .where("inspiration_id", "=", id)
-          .select(["type", "n", "sha256", "id"])
-          .execute(),
-      }),
+      // resourceInjectBuffer({
+      //   resources: await db
+      //     .selectFrom("resource")
+      //     .where("inspiration_id", "=", id)
+      //     .select(["type", "n", "sha256", "id"])
+      //     .execute(),
+      // }),
+      db
+        .selectFrom("resource")
+        .where("inspiration_id", "=", id)
+        .select(["type", "n", "sha256", "id"])
+        .execute(),
     ]);
 
   return { ...a, relatedBigPaints, relatedInspirations, resources };

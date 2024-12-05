@@ -28,12 +28,14 @@ export default async function Page({
     );
   } else if (type === "video") {
     view = (
+      // eslint-disable-next-line jsx-a11y/media-has-caption
       <video controls>
         <source src={`https://${process.env.MINIO_ADDRESS}/${type}/${sha256}`} />
       </video>
     );
   } else if (type === "audio") {
     view = (
+      // eslint-disable-next-line jsx-a11y/media-has-caption
       <audio controls>
         <source src={`https://${process.env.MINIO_ADDRESS}/${type}/${sha256}`} />
       </audio>
