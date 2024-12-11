@@ -1,4 +1,5 @@
 import Button from "@/components/Button";
+import { cn } from "@/utils/cn";
 import {
   flip as _flip,
   autoUpdate,
@@ -218,6 +219,7 @@ export const PopoverContent = React.forwardRef<
           aria-labelledby={context.labelId}
           aria-describedby={context.descriptionId}
           {...context.getFloatingProps(props)}
+          className={cn("z-10", props.className)}
         >
           {props.children}
         </div>
