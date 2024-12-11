@@ -9,7 +9,7 @@
     "dev__r": "bun x dotenv-cli -e dev.env -- cmd /C 'postgres -D %POSTGRES_DATA_PATH%'",
     "dev__r:migrate": "bun x dotenv-cli -e dev.env -- cmd /C 'bun run src/r/migrate.ts'",
     "dev__r:codegen": "bun x dotenv-cli -e dev.env -- cmd /C 'kysely-codegen --url \"env(POSTGRES_URL_NO_SSL)\"'",
-    "prod__w:build": "bun x dotenv-cli -e prod.env -- cmd /C 'next build'",
+    "build": "bun x dotenv-cli -e prod.env -- cmd /C 'next build'",
     "prod__w": "bun x dotenv-cli -e prod.env -- cmd /C 'next start -p 2999'",
     "prod__w:proxy": "bun x dotenv-cli -e prod.env -- cmd /C 'local-ssl-proxy --source 3000 --target 2999'",
     "prod__o": "bun x dotenv-cli -e prod.env -- cmd /C 'minio server -S ./certificates %MINIO_DB_PATH%'",
