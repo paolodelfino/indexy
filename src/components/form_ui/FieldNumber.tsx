@@ -122,6 +122,7 @@ export default function FieldNumber({
         </Button>
 
         <label
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
           tabIndex={0}
           htmlFor={id}
           className={cn(

@@ -103,6 +103,8 @@ export default function Page({ params }: { params: { values: string } }) {
     <div ref={ref} className="h-[calc(100vh-8rem)]">
       <Popover open={popoverOpen} onOpenChange={setPopoverOpen} modal>
         <PopoverContent className="flex h-full w-full justify-center bg-black/95 pb-32 backdrop-blur">
+          {/* TODO: Possibilità di focus e un indicatore in alto a destra che ti dice che puoi uscire tramite questo */}
+          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */}
           <div
             ref={popoverContentRef}
             className="w-full max-w-4xl"
