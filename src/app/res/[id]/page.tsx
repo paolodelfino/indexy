@@ -3,6 +3,7 @@ import minioClient from "@/o/db";
 import { db } from "@/r/db";
 import schemaResource__View from "@/schemas/schemaResource__View";
 
+// TODO: Here it waits for the entire resource to be loaded (at least for binary at the moment) that is bad
 export default async function Page({
   params: values,
 }: {
