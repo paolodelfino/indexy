@@ -9,38 +9,28 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import schemaGraph__Fetch from "@/schemas/schemaGraph__Fetch";
 import useFormCreate__Strings from "@/stores/forms/useFormCreate__Strings";
 import { formValuesToString } from "@/utils/url";
-import { useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useMemo } from "react";
 
-export default function Page({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
+// TODO: Maybe I should do this everywhere, maybe on params too (See what nextjs guide says), but at the moment I don't see other problems
+function ComponentUseSearchParams() {
+  const searchParams = useSearchParams();
+  const form = useFormCreate__Strings();
+
   const init = useMemo(
     () =>
       schemaGraph__Fetch.parse({
-        type: searchParams.type,
-        id: searchParams.id,
+        type: searchParams.get("type"),
+        id: searchParams.get("id"),
         show: undefined,
         depth: 5,
       }),
     [searchParams],
   );
 
-  const form = useFormCreate__Strings();
-  const router = useRouter();
-
-  useEffect(() => {
-    form.setOnSubmit(async (form) => {
-      // const a = formValuesToString(form.values());
-      // console.log(a, formValuesFromString(a));
-      router.push(`/strings/${formValuesToString(form.values())}`);
-    });
-  }, [form.setOnSubmit]);
-
   useEffect(() => {
     if (
+      // TODO: Maybe save and compare this couple to form.meta in order to preserve form changes across re-routing
       init.type !== form.fields.type.value ||
       init.id !== form.fields.id.value
     ) {
@@ -55,8 +45,27 @@ export default function Page({
     }
   }, [init]);
 
+  return undefined;
+}
+
+export default function Page() {
+  const form = useFormCreate__Strings();
+  const router = useRouter();
+
+  useEffect(() => {
+    form.setOnSubmit(async (form) => {
+      // const a = formValuesToString(form.values());
+      // console.log(a, formValuesFromString(a));
+      router.push(`/strings/${formValuesToString(form.values())}`);
+    });
+  }, [form.setOnSubmit]);
+
   return (
     <div className="space-y-6 pb-32">
+      <Suspense>
+        <ComponentUseSearchParams />
+      </Suspense>
+
       <div className="flex items-center justify-end gap-4 p-4">
         {form.error !== undefined && (
           <Popover>
