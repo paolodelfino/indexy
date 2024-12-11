@@ -15,14 +15,14 @@ const useFormQuery__BigPaint = createForm(
         { content: "Date", id: "date" },
         { content: "Name", id: "name" },
       ],
-      selectedItem: { content: "Date", id: "date" },
+      selectedItem: "date",
     }),
     orderByDir: fieldSelect({
       items: [
         { content: "Desc", id: "desc" },
         { content: "Asc", id: "asc" },
       ],
-      selectedItem: { content: "Asc", id: "asc" },
+      selectedItem: "asc",
     }),
     related_big_paints_ids: fieldDynamicSelect(),
     related_inspirations_ids: fieldDynamicSelect(),

@@ -17,14 +17,14 @@ const useFormQuery__Inspiration = createForm(
         { content: "Highlight", id: "highlight" },
         { content: "Content", id: "content" },
       ],
-      selectedItem: { content: "Date", id: "date" },
+      selectedItem: "date",
     }),
     orderByDir: fieldSelect({
       items: [
         { content: "Desc", id: "desc" },
         { content: "Asc", id: "asc" },
       ],
-      selectedItem: { content: "Asc", id: "asc" },
+      selectedItem: "asc",
     }),
     related_big_paints_ids: fieldDynamicSelect(),
     content: fieldTextArea(),

@@ -40,7 +40,9 @@ export default function Page({
       query.active();
 
       // TODO: NOTE: For some reason (take a look at the action below's implementation too), it is about 400ms behind
-      const d = new Date(Date.now() - 1000);
+      // TODO: ^ Still here, to be fixed
+      // const d = new Date(Date.now() - 1000);
+      const d = new Date();
 
       ActionEdit__Query(valuesStr, { date: d }).then(() => {
         invalidate__QueryQuery__View();

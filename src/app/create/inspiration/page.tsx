@@ -8,6 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormCreate__Inspiration from "@/stores/forms/useFormCreate__Inspiration";
 import useQueryBigPaint__Pool from "@/stores/queries/useQueryBigPaint__Pool";
 import useQueryBigPaint__Query from "@/stores/queries/useQueryBigPaint__Query";
+import useQueryGraph__Fetch from "@/stores/queries/useQueryGraph__Fetch";
 import useQueryInspiration__Pool from "@/stores/queries/useQueryInspiration__Pool";
 import useQueryInspiration__Query from "@/stores/queries/useQueryInspiration__Query";
 import { useRouter } from "next/navigation";
@@ -23,6 +24,9 @@ export default function Page() {
     (state) => state.invalidate,
   );
   const invalidate__QueryInspiration__Pool = useQueryInspiration__Pool(
+    (state) => state.invalidate,
+  );
+  const invalidate__QueryGraph__Fetch = useQueryGraph__Fetch(
     (state) => state.invalidate,
   );
   const invalidate__QueryInspiration__Query = useQueryInspiration__Query(
@@ -42,14 +46,17 @@ export default function Page() {
       else {
         // console.log("form values", form.values());
         // console.log("value direct", form.fields.resources.value);
-        await ActionCreate__Inspiration(form.values());
+        const id = await ActionCreate__Inspiration(form.values());
 
         invalidate__QueryBigPaint__Pool();
         invalidate__QueryBigPaint__Query();
         invalidate__QueryInspiration__Pool();
+        invalidate__QueryGraph__Fetch();
         invalidate__QueryInspiration__Query();
 
         form.reset();
+
+        router.push(`/edit/inspiration/${id}`);
       }
 
       setIsCreateFormPending(false);
@@ -72,7 +79,7 @@ export default function Page() {
           disabled={isCreateFormPending || form.isInvalid}
           onClick={form.submit}
         >
-          {isCreateFormPending ? "Saving..." : "Save"}
+          {isCreateFormPending ? "Creating..." : "Create & Edit"}
         </Button>
       </div>
       {form.error !== undefined && (

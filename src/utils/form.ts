@@ -22,7 +22,7 @@ export type FormState<T extends FormFields, FormMeta, U extends FormSchema> = {
   meta: FormMeta;
   isInvalid: boolean;
   error: string | undefined;
-  onSubmit?: (form: FormState<T, FormMeta, U>) => void;
+  onSubmit?: (form: FormState<T, FormMeta, U>) => void; // TODO: Could return something
   values: () => FormValues<U>;
   reset: () => void;
   setValue: <Key extends keyof T, Value extends T[Key]["value"]>(
@@ -43,7 +43,7 @@ export type FormState<T extends FormFields, FormMeta, U extends FormSchema> = {
     value: FormMeta extends object ? Partial<FormMeta> : FormMeta,
   ) => void;
   setOnSubmit: (callback: (form: FormState<T, FormMeta, U>) => void) => void;
-  submit: () => void;
+  submit: () => void; // TODO: Wait for callback
 };
 
 // export type FormValues<T extends ZodType> = {

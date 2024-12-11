@@ -20,6 +20,7 @@ export default function Page({
   const values = useMemo(() => schemaPool__Query.parse(params), [params]);
 
   const form = useFormQuery__Pool();
+  // TODO: useQueryBigPaint__Pool and useQueryInspiration__Pool can be compressed in one query with additional param type with which you can decide which action to call. We can do this in other places like /query/[inspiration|big_paint]/[values] to the detriment of cache between types
   const query__BigPaint = useQueryBigPaint__Pool();
   const query__Inspiration = useQueryInspiration__Pool();
 
@@ -41,6 +42,8 @@ export default function Page({
     ) {
       form.setFormMeta({
         lastValues: values,
+        showBigPaint: false,
+        showInspiration: false,
       });
       query__BigPaint.reset();
       query__Inspiration.reset();

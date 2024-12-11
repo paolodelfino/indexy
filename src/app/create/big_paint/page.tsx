@@ -8,6 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import useFormCreate__BigPaint from "@/stores/forms/useFormCreate__BigPaint";
 import useQueryBigPaint__Pool from "@/stores/queries/useQueryBigPaint__Pool";
 import useQueryBigPaint__Query from "@/stores/queries/useQueryBigPaint__Query";
+import useQueryGraph__Fetch from "@/stores/queries/useQueryGraph__Fetch";
 import useQueryInspiration__Pool from "@/stores/queries/useQueryInspiration__Pool";
 import useQueryInspiration__Query from "@/stores/queries/useQueryInspiration__Query";
 import { useRouter } from "next/navigation";
@@ -25,6 +26,9 @@ export default function Page() {
   const invalidate__QueryInspiration__Pool = useQueryInspiration__Pool(
     (state) => state.invalidate,
   );
+  const invalidate__QueryGraph__Fetch = useQueryGraph__Fetch(
+    (state) => state.invalidate,
+  );
   const invalidate__QueryInspiration__Query = useQueryInspiration__Query(
     (state) => state.invalidate,
   );
@@ -36,14 +40,17 @@ export default function Page() {
     form.setOnSubmit(async (form) => {
       setIsCreateFormPending(true);
 
-      await ActionCreate__BigPaint(form.values());
+      const id = await ActionCreate__BigPaint(form.values());
 
       invalidate__QueryBigPaint__Pool();
       invalidate__QueryBigPaint__Query();
       invalidate__QueryInspiration__Pool();
+      invalidate__QueryGraph__Fetch();
       invalidate__QueryInspiration__Query();
 
       form.reset();
+
+      router.push(`/edit/big_paint/${id}`);
 
       setIsCreateFormPending(false);
     });
@@ -60,12 +67,13 @@ export default function Page() {
         >
           Close
         </Button>
+
         <Button
           color="accent"
           disabled={isCreateFormPending || form.isInvalid}
           onClick={form.submit}
         >
-          {isCreateFormPending ? "Saving..." : "Save"}
+          {isCreateFormPending ? "Creating..." : "Create & Edit"}
         </Button>
       </div>
       {form.error !== undefined && (

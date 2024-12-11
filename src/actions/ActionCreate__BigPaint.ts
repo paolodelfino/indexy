@@ -8,5 +8,10 @@ export default async function ActionCreate__BigPaint(
   values: FormValues<typeof schemaBigPaint__Create>,
 ) {
   const validated = schemaBigPaint__Create.parse(values);
-  await db.insertInto("big_paint").values(validated).execute();
+  const result = await db
+    .insertInto("big_paint")
+    .values(validated)
+    .returning("id")
+    .executeTakeFirstOrThrow();
+  return result.id;
 }

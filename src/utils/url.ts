@@ -5,7 +5,14 @@ import { types } from "util";
 // TODO: Maybe move in form
 
 interface FormValues {
-  [key: string]: string | string[] | Date | FormValues | undefined | boolean;
+  [key: string]:
+    | string
+    | string[]
+    | Date
+    | FormValues
+    | undefined
+    | boolean
+    | number;
 }
 
 /**
@@ -36,6 +43,8 @@ export function formValuesToString(values: FormValues) {
         sb += sb2;
       } else if (types.isDate(value))
         sb += `${key}=___date${encodeURIComponent(dateToString(value))}`;
+      else if (typeof value === "number")
+        sb += `${key}=___number${encodeURIComponent(value)}`;
       else sb += recursion(value, `___object${key}___`);
 
       if (i + 1 < keys.length) sb += "&";
@@ -85,6 +94,8 @@ export function formValuesFromSearchParams(searchParams: {
         else return value.slice(2).map((it) => decodeURIComponent(it));
       } else if (value.startsWith("___date"))
         return dateFromString(decodeURIComponent(value.slice(7)));
+      else if (value.startsWith("___number"))
+        return Number(decodeURIComponent(value.slice(9)));
       else if (value.startsWith("___boolean"))
         return value.slice(10) === "true" ? true : false;
       else if (value.startsWith("___undefined")) return undefined;

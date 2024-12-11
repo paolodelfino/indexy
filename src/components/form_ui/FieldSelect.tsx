@@ -4,7 +4,7 @@ import { Cloud, InformationCircle } from "@/components/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover";
 import { cn } from "@/utils/cn";
 import { FormField } from "@/utils/form";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 // TODO: Think of custom styling
 
@@ -15,21 +15,12 @@ type Item = {
 
 type Meta = {
   items: Item[];
-  selectedItem: Item;
+  selectedItem: string | undefined;
 };
 
 type Value = string | undefined;
 
 export type FieldSelect__Type = FormField<Value, Meta>;
-
-export const indeterminateGuard: Item = { content: "", id: "" };
-
-function isIndeterminateGuard(item: Item): boolean {
-  return (
-    item.content === indeterminateGuard.content &&
-    item.id === indeterminateGuard.id
-  );
-}
 
 // We use undefined as the guard value assuming that undefined is equivalent to indeterminate state and nothing else for any field
 export function fieldSelect(
@@ -38,13 +29,13 @@ export function fieldSelect(
   if (meta.items.length <= 0) throw new Error("No items to select");
   return {
     meta: {
-      selectedItem: indeterminateGuard,
+      selectedItem: undefined,
       ...meta,
     },
     value: undefined,
     default: {
       meta: {
-        selectedItem: indeterminateGuard,
+        selectedItem: undefined,
         ...meta,
       },
       value: undefined,
@@ -72,15 +63,23 @@ export default function FieldSelect({
 }) {
   useEffect(() => {
     setValue(
-      acceptIndeterminate && isIndeterminateGuard(meta.selectedItem)
+      acceptIndeterminate && meta.selectedItem === undefined
         ? undefined
-        : meta.selectedItem.id,
+        : meta.selectedItem,
     );
   }, [meta.selectedItem]);
 
   useEffect(() => {
     if (meta.items.length <= 0) throw new Error("No items to select");
   }, [meta.items]);
+
+  const selectedItem = useMemo(
+    () =>
+      meta.selectedItem === undefined
+        ? undefined
+        : meta.items.find((it) => it.id === meta.selectedItem),
+    [meta.selectedItem, meta.items],
+  );
 
   return (
     <div className="flex gap-1">
@@ -90,14 +89,11 @@ export default function FieldSelect({
           title={placeholder}
           classNames={{
             button: cn(
-              isIndeterminateGuard(meta.selectedItem) &&
-                "text-neutral-400 bg-neutral-700",
+              selectedItem === undefined && "text-neutral-400 bg-neutral-700",
             ),
           }}
         >
-          {isIndeterminateGuard(meta.selectedItem)
-            ? placeholder
-            : meta.selectedItem.content}
+          {selectedItem === undefined ? placeholder : selectedItem.content}
         </PopoverTrigger>
         <PopoverContent>
           <List meta={meta} setMeta={setMeta} disabled={disabled} />
@@ -115,21 +111,20 @@ export default function FieldSelect({
         </Popover>
       )}
 
-      {acceptIndeterminate === true &&
-        !isIndeterminateGuard(meta.selectedItem) && (
-          <Button
-            aria-label="Clear"
-            disabled={disabled}
-            color="ghost"
-            onClick={() =>
-              setMeta({
-                selectedItem: indeterminateGuard,
-              })
-            }
-          >
-            <Cloud />
-          </Button>
-        )}
+      {acceptIndeterminate === true && selectedItem !== undefined && (
+        <Button
+          aria-label="Clear"
+          disabled={disabled}
+          color="ghost"
+          onClick={() =>
+            setMeta({
+              selectedItem: undefined,
+            })
+          }
+        >
+          <Cloud />
+        </Button>
+      )}
     </div>
   );
 }
@@ -169,7 +164,7 @@ function ListItem({
       disabled={disabled}
       onClick={() =>
         setMeta({
-          selectedItem: data,
+          selectedItem: data.id,
         })
       }
     >

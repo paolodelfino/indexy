@@ -15,6 +15,7 @@ import useFormEdit__BigPaint from "@/stores/forms/useFormEdit__BigPaint";
 import useQueryBigPaint__Edit from "@/stores/queries/useQueryBigPaint__Edit";
 import useQueryBigPaint__Pool from "@/stores/queries/useQueryBigPaint__Pool";
 import useQueryBigPaint__Query from "@/stores/queries/useQueryBigPaint__Query";
+import useQueryGraph__Fetch from "@/stores/queries/useQueryGraph__Fetch";
 import useQueryInspiration__Edit from "@/stores/queries/useQueryInspiration__Edit";
 import useQueryInspiration__Pool from "@/stores/queries/useQueryInspiration__Pool";
 import useQueryInspiration__Query from "@/stores/queries/useQueryInspiration__Query";
@@ -83,6 +84,9 @@ export default function Page({ params }: { params: { id: string } }) {
   const invalidate__QueryInspiration__Pool = useQueryInspiration__Pool(
     (state) => state.invalidate,
   );
+  const invalidate__QueryGraph__Fetch = useQueryGraph__Fetch(
+    (state) => state.invalidate,
+  );
   const invalidate__QueryInspiration__Query = useQueryInspiration__Query(
     (state) => state.invalidate,
   );
@@ -98,6 +102,7 @@ export default function Page({ params }: { params: { id: string } }) {
       invalidate__QueryBigPaint__Pool();
       invalidate__QueryBigPaint__Query();
       invalidate__QueryInspiration__Pool();
+      invalidate__QueryGraph__Fetch();
       invalidate__QueryInspiration__Query();
 
       setIsEditFormPending(false);
@@ -119,6 +124,7 @@ export default function Page({ params }: { params: { id: string } }) {
               invalidate__QueryBigPaint__Pool();
               invalidate__QueryBigPaint__Query();
               invalidate__QueryInspiration__Pool();
+              invalidate__QueryGraph__Fetch();
               invalidate__QueryInspiration__Query();
 
               setIsDeleteFormPending(false);
@@ -139,6 +145,7 @@ export default function Page({ params }: { params: { id: string } }) {
           {isEditFormPending ? "Saving..." : "Save"}
         </Button>
       </div>
+      {/* TODO: Ho appena notato la posizione di questo e mi sa che deve stare dentro sopra (vedere pure da altre parti), se non è cosi beh ho fatto così adesso in /create/strings */}
       {form.error !== undefined && (
         <Popover>
           <PopoverTrigger color="danger">

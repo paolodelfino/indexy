@@ -4,6 +4,7 @@ import { ButtonLink } from "@/components/Button";
 import {
   BinaryCode,
   Image01,
+  InfinitySquare,
   MoreHorizontalSquare02,
   MusicNoteSquare02,
   PencilEdit01,
@@ -113,6 +114,19 @@ export default function UIInspiration({
             classNames={{ button: "data-[disabled=false]:text-neutral-300" }}
           >
             <MoreHorizontalSquare02 />
+          </ButtonLink>
+
+          <ButtonLink
+            color="ghost"
+            href={`/create/strings?type=inspiration&id=${data.id}`}
+            size="large"
+            disabled={
+              data.num_related_big_paints! <= "0" &&
+              data.num_related_inspirations! <= "0"
+            }
+            classNames={{ button: "data-[disabled=false]:text-neutral-300" }}
+          >
+            <InfinitySquare />
           </ButtonLink>
 
           {/* <ButtonLink

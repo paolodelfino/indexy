@@ -1,7 +1,7 @@
 "use server";
 
-import { db } from "@/r/db";
 import minioClient from "@/o/db";
+import { db } from "@/r/db";
 import schemaInspiration__Create from "@/schemas/schemaInspiration__Create";
 import { FormValues } from "@/utils/form";
 
@@ -37,4 +37,6 @@ export default async function ActionCreate__Inspiration(
       minioClient.putObject(it.type, it.sha256, Buffer.from(it.buff)),
     ),
   ]);
+
+  return id;
 }
